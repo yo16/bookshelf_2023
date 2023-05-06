@@ -1,7 +1,9 @@
 # coding:utf-8
 from flask import Flask, request, abort, redirect, url_for, render_template
 import json
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required
+import flask_wtf
+import wtforms
 
 from app_logger import initialize_logger
 from models import get_db_connection, DbOrganization, DbMember
@@ -17,6 +19,24 @@ initialize_logger(app.logger)
 # ログインマネージャーを初期化
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+# ログインフォーム
+class LoginForm(flask_wtf.FlaskForm):
+    org_id = wtforms.StringField(
+        'org_id',
+        [wtforms.validators.DataRequired()]
+    )
+    member_code = wtforms.StringField(
+        'member_code',
+        [wtforms.validators.DataRequired()]
+    )
+    password = wtforms.PasswordField(
+        'password',
+        [
+            wtforms.validators.DataRequired()
+        ]
+    )
+
 
 
 # ------ api ------
@@ -73,22 +93,22 @@ def signup():
                 cur.execute(query)
         message = f"組織ID={new_org_id}、メンバーID={member_code}を登録しました"
 
-        return render_template(
-            "login.html",
-            error=message,
-            org_id=new_org_id,
-            member_code=member_code
-        )
+        form = LoginForm(request.form)
+        form.org_id.data = new_org_id
+        form.member_code.data = member_code
+        return redirect(url_for("login", message=message, org_id=new_org_id, member_code=member_code))
 
     return render_template("signup.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        org_id = request.form["org_id"]
-        member_code = request.form["member_code"]
-        password = request.form["password"]
+    form = LoginForm(request.form)
+
+    if form.validate_on_submit():
+        org_id = form.org_id.data
+        member_code = form.member_code.data
+        password = form.password.data
 
         # DBのmemberを取得
         with get_db_connection(app) as db_con:
@@ -102,10 +122,24 @@ def login():
                 return redirect(url_for("top"))
         
         # 認証失敗
-        error_message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
-        return render_template("login.html", error=error_message)
+        message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
+        return render_template("login.html", message=message, form=form)
     
-    return render_template("login.html")
+    message = request.args.get('message')
+    form.org_id.data = request.args.get('org_id')
+    form.member_code.data = request.args.get('member_code')
+    return render_template("login.html", form=form, message=message)
+
+
+@app.route("/logout", methods=["GET", "POST"])
+@login_required
+def logout():
+    logout_user()
+
+    form = LoginForm(request.form)
+    message = "ログアウトしました"
+    return redirect(url_for("login", message=message))
+
 
 
 @login_manager.user_loader
