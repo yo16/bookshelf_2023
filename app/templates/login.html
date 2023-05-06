@@ -5,7 +5,7 @@
 {%- endblock %}
 
 {% block body -%}
-<form id="my-login-form" method="POST">
+<form method="POST">
     {{ form.csrf_token }}
     <p><label for="org_id">組織ID</label></p>
     {{ form.org_id }}

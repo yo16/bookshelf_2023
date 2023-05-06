@@ -1,7 +1,7 @@
 # coding:utf-8
 from flask import Flask, request, abort, redirect, url_for, render_template
 import json
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import flask_wtf
 import wtforms
 
@@ -22,7 +22,7 @@ login_manager.login_view = 'login'
 
 # ログインフォーム
 class LoginForm(flask_wtf.FlaskForm):
-    org_id = wtforms.StringField(
+    org_id = wtforms.IntegerField(
         'org_id',
         [wtforms.validators.DataRequired()]
     )
@@ -44,7 +44,10 @@ class LoginForm(flask_wtf.FlaskForm):
 @app.route("/")
 @login_required
 def top():
-    app.logger.info("hello world!")
+    app.logger.info("/")
+
+    print(current_user.to_string())
+
     return "hello world!"
 
 

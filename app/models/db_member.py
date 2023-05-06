@@ -16,6 +16,17 @@ class DbMember(UserMixin):
         self.member_code = member_code
         self.is_admin = is_admin
     
+    def to_string(self):
+        s = f"id:{id}\n" + \
+            f"org_id:{self.org_id}\n" + \
+            f"member_id:{self.member_id}\n" + \
+            f"password_hashed:{self.password_hashed}\n" + \
+            f"member_name:{self.member_name}\n" + \
+            f"member_code:{self.member_code}\n" + \
+            f"is_admin:{self.is_admin}\n"
+        
+        return s
+
 
     @staticmethod
     def hash_password(password):
