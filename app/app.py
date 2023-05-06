@@ -4,9 +4,7 @@ import json
 from flask_login import LoginManager, login_user, login_required
 
 from app_logger import initialize_logger
-from db_common import get_db_connection
-from db_member import DbMember
-from db_organization import DbOrganization
+from models import get_db_connection, DbOrganization, DbMember
 
 
 # アプリケーション

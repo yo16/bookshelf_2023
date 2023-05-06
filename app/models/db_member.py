@@ -17,9 +17,18 @@ class DbMember(UserMixin):
         self.is_admin = is_admin
     
 
+    @staticmethod
+    def hash_password(password):
+        """パスワードをハッシュ化
+        """
+        hasher = hashlib.sha3_512()
+        hasher.update(password.encode('utf-8'))
+        password_hashed = hasher.hexdigest()
+        return password_hashed
+
+
     def verify_password(self, password):
         """ハッシュ化前のパスワードと、変数のself.password_hashedを比較する
-        ハッシュ化の手法はこのクラスの責任なので、ここでハッシュ化する
 
         Returns:
             True: 一致, False: 不一致
@@ -29,23 +38,19 @@ class DbMember(UserMixin):
 
 
     @staticmethod
-    def hash_password(password):
-        hasher = hashlib.sha3_512()
-        hasher.update(password.encode('utf-8'))
-        password_hashed = hasher.hexdigest()
-        return password_hashed
-
-
-    @staticmethod
     def get(org_id, member_id, con):
-        """idからユーザー情報を取得する
+        """org_id, member_idからユーザー情報を取得する
 
         Args:
-            org_id (_type_): 組織ID
-            member_id (_type_): メンバーID
+            org_id (int): 組織ID
+            member_id (int): メンバーID
         """
         # PKだからあっても１件
         with con.cursor() as cur:
+            db_password_hashed = None
+            db_member_name = None
+            db_member_code = None
+            db_is_admin = None
             cur.execute(
                 "select " + \
                 "password_hashed, " + \
@@ -54,15 +59,11 @@ class DbMember(UserMixin):
                 "is_admin " + \
                 "from member " + \
                 f"where org_id={org_id} and member_id={member_id};")
-            db_password_hashed = None
-            db_member_name = None
-            db_member_code = None
-            db_is_admin = None
-            for (password_hashed, member_name, member_code, is_admin) in cur:
-                db_password_hashed = password_hashed
-                db_member_name = member_name
-                db_member_code = member_code
-                db_is_admin = is_admin
+            (password_hashed, member_name, member_code, is_admin) = cur.fetchone()
+            db_password_hashed = password_hashed
+            db_member_name = member_name
+            db_member_code = member_code
+            db_is_admin = is_admin
 
         # 取得出来たらDbMemberを作成
         member = None
