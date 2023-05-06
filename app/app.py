@@ -2,6 +2,7 @@
 from flask import Flask, request, abort
 import logging
 import json
+import mysql.connector
 
 from app_logger import initialize_logger
 
@@ -25,7 +26,26 @@ def hello_world():
 
 @app.route("/test", methods=["GET"])
 def test():
-    return "test ok!", 404
+    con = getDbConnection()
+    cur = con.cursor()
+    cur.execute("select count(*) from organization;")
+    text = ""
+    for cnt in cur:
+        text += f"{cnt},"
+    cur.close()
+    con.close()
+    
+    return "test ok!<br />" + text, 404
+
+
+def getDbConnection():
+    return mysql.connector.connect(
+        host=app.config["DBHOST"],
+        db=app.config["DBNAME"],
+        user=app.config["DBUSER"],
+        passwd=app.config["DBPASS"],
+        charset=app.config["DBCHARSET"]
+    )
 
 
 if __name__=='__main__':
