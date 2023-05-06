@@ -1,5 +1,5 @@
 -- docker-compose.yamlのみで使用
-use booshelf;
+use bookshelf;
 
 CREATE TABLE IF NOT EXISTS `organization` (
     `org_id`    INT             NOT NULL,

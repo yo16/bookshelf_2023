@@ -1,0 +1,9 @@
+{
+    "DEBUG": true,
+    "SECRET_KEY": "MY_SECRET_KEY",
+    "DBHOST": "mysql-db",
+    "DBNAME": "bookshelf",
+    "DBUSER": "MY_MYSQL_USER",
+    "DBPASS": "MY_MYSQL_USERS_PASS",
+    "DBCHARSET": "utf8"
+}
