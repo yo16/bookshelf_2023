@@ -1,7 +1,8 @@
 __pycache__/
 
-# draw.io auto backup file
+# draw.io's temp file
 doc/*.bkp
+doc/*.dtmp
 
 app/log/
 app/development.json
