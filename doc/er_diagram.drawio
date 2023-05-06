@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2023-05-06T07:04:59.387Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="of-U6eNRZkVMogtEM8XT" version="21.2.8" type="device">
+<mxfile host="Electron" modified="2023-05-06T11:51:46.501Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="1CmOmr3GUGk-_RUU26v7" version="21.2.8" type="device">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
     <mxGraphModel dx="1950" dy="1807" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
@@ -622,7 +622,7 @@
           <mxGeometry x="570" y="302.5" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="zbvu_X4n6_wAgmZ8vR49-18" value="member" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;whiteSpace=wrap;fillColor=#99FFCC;" parent="1" vertex="1">
-          <mxGeometry x="-560" y="120" width="200" height="210" as="geometry" />
+          <mxGeometry x="-560" y="120" width="200" height="240" as="geometry" />
         </mxCell>
         <mxCell id="zbvu_X4n6_wAgmZ8vR49-19" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;html=1;" parent="zbvu_X4n6_wAgmZ8vR49-18" vertex="1">
           <mxGeometry y="30" width="200" height="30" as="geometry" />
@@ -702,13 +702,35 @@
             <mxRectangle width="140" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="al1fOe79JtsS7sNvC9hn-12" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;html=1;" vertex="1" parent="zbvu_X4n6_wAgmZ8vR49-18">
+          <mxGeometry y="210" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="al1fOe79JtsS7sNvC9hn-13" value="UK" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;html=1;whiteSpace=wrap;" vertex="1" parent="al1fOe79JtsS7sNvC9hn-12">
+          <mxGeometry width="60" height="30" as="geometry">
+            <mxRectangle width="60" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="al1fOe79JtsS7sNvC9hn-14" value="org_id, member_code" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" vertex="1" parent="al1fOe79JtsS7sNvC9hn-12">
+          <mxGeometry x="60" width="140" height="30" as="geometry">
+            <mxRectangle width="140" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="zbvu_X4n6_wAgmZ8vR49-43" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#fff2cc;strokeColor=#d6b656;curved=1;" parent="1" source="zbvu_X4n6_wAgmZ8vR49-44" target="zbvu_X4n6_wAgmZ8vR49-37" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-570" y="275" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="zbvu_X4n6_wAgmZ8vR49-44" value="組織内の初めのユーザーが必ずadmin権限を持つ。" style="shape=note;size=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
-          <mxGeometry x="-840" y="140" width="200" height="100" as="geometry" />
+          <mxGeometry x="-770" y="390" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="al1fOe79JtsS7sNvC9hn-1" value="member_codeは、ログインで使用する" style="shape=note;size=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="-810" y="180" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="al1fOe79JtsS7sNvC9hn-2" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#fff2cc;strokeColor=#d6b656;curved=1;" edge="1" parent="1" source="al1fOe79JtsS7sNvC9hn-1" target="zbvu_X4n6_wAgmZ8vR49-34">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-550" y="325" as="targetPoint" />
+            <mxPoint x="-660" y="400" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title -%}
+ログイン
+{%- endblock %}
+
+{% block body -%}
+<form method="POST" action="{{ url_for('login') }}">
+    <input type="text" name="org_id" placeholder="組織ID" value="{{ org_id }}" required />
+    <input type="text" name="member_code" placeholder="ユーザーID" value="{{ member_code }}" required />
+    <input type="password" name="password" placeholder="パスワード" required />
+    <button type="submit">ログイン</button>
+</form>
+{% if error -%}
+<p>{{ error }}</p>
+{% endif -%}
+{% endblock -%}

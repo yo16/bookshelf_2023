@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title -%}
+サインアップ
+{%- endblock %}
+
+{% block body -%}
+<form method="POST" action="{{ url_for('signup') }}">
+    <input type="text" name="org_name" placeholder="組織名" required />
+    <input type="text" name="member_code" placeholder="管理者のユーザーID" required />
+    <input type="password" name="password" placeholder="パスワード" required />
+    <button type="submit">登録</button>
+</form>
+{% if error -%}
+<p>{{ error }}</p>
+{% endif -%}
+{% endblock -%}
