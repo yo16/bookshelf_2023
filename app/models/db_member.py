@@ -85,6 +85,8 @@ class DbMember(Base, UserMixin):
                 DbMember.member_id == member_id
             )
         )).scalars().first()
+        if not member:
+            return None
 
         member.id = f"{org_id}-{member_id}"
 
