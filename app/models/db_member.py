@@ -56,6 +56,10 @@ class DbMember(UserMixin):
             org_id (int): 組織ID
             member_id (int): メンバーID
         """
+        # org_id、member_idがNoneの場合は、return None
+        if ((not org_id) or (not member_id)):
+            return None
+
         # PKだからあっても１件
         with con.cursor() as cur:
             db_password_hashed = None
