@@ -9,8 +9,6 @@ services:
     container_name: 'app-server'
     ports:
       - '5000:5000'
-    depends_on:
-      - mysql-db
     networks:
       - bookshelf-network
     command: uwsgi --ini /app/uwsgi.ini
@@ -23,8 +21,6 @@ services:
     volumes:
       - ./web/default.conf:/etc/nginx/conf.d/default.conf
       - socket:/tmp
-    depends_on:
-      - app
     networks:
       - bookshelf-network
 
