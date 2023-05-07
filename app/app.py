@@ -6,7 +6,7 @@ import flask_wtf
 import wtforms
 
 from app_logger import initialize_logger
-from models import get_db_connection, DbOrganization, DbMember
+from models import create_sqlalchemy_engine, get_db, DbOrganization, DbMember, DbGenre
 
 
 # アプリケーション
@@ -37,6 +37,8 @@ class LoginForm(flask_wtf.FlaskForm):
         ]
     )
 
+# DB接続
+create_sqlalchemy_engine(app)
 
 
 # ------ api ------
@@ -46,20 +48,26 @@ class LoginForm(flask_wtf.FlaskForm):
 def top():
     app.logger.info("/")
 
-    print(current_user.to_string())
+    #print(current_user.to_string())
 
     return "hello world!"
 
 
 @app.route("/test", methods=["GET"])
 def test():
-    with get_db_connection(app) as con:
-        with con.cursor() as cur:
-            cur.execute("select count(*) from organization;")
-            text = ""
-            for cnt in cur:
-                text += f"{cnt},"
-    
+    from sqlalchemy import select
+    db = next(get_db())
+    #result = db.execute(select(DbOrganization)).scalars().all()
+    result = db.execute(select(DbMember)).scalars().all()
+    #count = result.count()
+    #text = f"DbOrganization count:{count}"
+    print(result)
+    len_result = len(result)
+    text = f"count:{len_result}"
+    for c in result:
+        print('----')
+        print(c.org_id)
+
     return "test ok!<br />" + text, 404
 
 
@@ -67,33 +75,52 @@ def test():
 def signup():
     if request.method == "POST":
         org_name = request.form["org_name"]
+        member_id = 0
         member_code = request.form["member_code"]
         member_name = member_code
+        member_is_admin = True
         password = request.form["password"]
         hashed_password = DbMember.hash_password(password)
+        genre_id = 0
+        genre_name = "分類なし"
+        parent_genre_id = None
 
         # 登録
-        with get_db_connection(app) as db_con:
-            new_org_id = DbOrganization.get_free_org_id(db_con)
+        db = next(get_db())
+        new_org_id = DbOrganization.get_free_org_id()
 
-            with db_con.cursor() as cur:
-                query = f"insert into organization values ({new_org_id}, \"{org_name}\");"
-                print(f"q:{query}")
-                cur.execute(query)
-                # member（初メンバーは、member_id=0、is_admin=True）
-                query = "insert into member values (" + \
-                    f"{new_org_id}, 0, \"{hashed_password}\", \"{member_name}\", \"{member_code}\", true)"
-                print(f"q:{query}")
-                cur.execute(query)
-                # genre
-                query = "insert into genre values(" + \
-                    f"{new_org_id}, 0, NULL, \"分類なし\");"
-                print(f"q:{query}")
-                cur.execute(query)
+        # organization
+        new_organization = DbOrganization(
+            org_id = new_org_id,
+            org_name = org_name
+        )
+        db.add(new_organization)
 
-                query = "commit;"
-                print(f"q:{query}")
-                cur.execute(query)
+        # member
+        new_member = DbMember(
+            org_id = new_org_id,
+            member_id = member_id,
+            password_hashed = hashed_password,
+            member_name = member_name,
+            member_code = member_code,
+            is_admin = member_is_admin,
+            id = f"{new_org_id}-{member_id}"
+        )
+        db.add(new_member)
+
+        # genre
+        new_genre = DbGenre(
+            org_id = new_org_id, 
+            genre_id = genre_id,
+            parent_genre_id = parent_genre_id,
+            genre_name = genre_name
+        )
+        db.add(new_genre)
+
+        db.commit()
+        db.refresh(new_organization)
+        db.refresh(new_member)
+        db.refresh(new_genre)
         message = f"組織ID={new_org_id}、メンバーID={member_code}を登録しました"
 
         form = LoginForm(request.form)
@@ -113,16 +140,13 @@ def login():
         member_code = form.member_code.data
         password = form.password.data
 
-        # DBのmemberを取得
-        with get_db_connection(app) as db_con:
-            # member_codeからmember_idを取得
-            member_id = DbMember.get_member_id_by_member_code(org_id, member_code, db_con)
-            # DbMemberを作成
-            db_user = DbMember.get(org_id, member_id, db_con)
-            if db_user and db_user.verify_password(password):
-                # 一致
-                login_user(db_user)
-                return redirect(url_for("top"))
+        # memberを取得してログイン
+        member_id = DbMember.get_member_id_by_member_code(org_id, member_code)
+        member = DbMember.get(org_id, member_id)
+        if member and member.verify_password(password):
+            # 一致
+            login_user(member)
+            return redirect(url_for("top"))
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
@@ -147,12 +171,13 @@ def logout():
 
 @login_manager.user_loader
 def load_user(id):
+    if id is None:
+        return None
+
     splitted_id = id.split("-")
     org_id = splitted_id[0]
     member_id = splitted_id[1]
-    member = None
-    with get_db_connection(app) as con:
-        member = DbMember.get(org_id, member_id, con)
+    member = DbMember.get(org_id, member_id)
     
     return member
 

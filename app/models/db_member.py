@@ -1,9 +1,26 @@
 from flask_login import UserMixin
+from sqlalchemy import String, Boolean, UniqueConstraint, select, and_
+from sqlalchemy.orm import Mapped, Session, mapped_column
+from sqlalchemy.ext.declarative import declared_attr
 import hashlib
 
+from .db_common import Base, get_db
 
-class DbMember(UserMixin):
-    """member
+
+class DbMember(Base, UserMixin):
+    __tablename__ = "member"
+    __table_args__ = (UniqueConstraint("org_id", "member_code", name="uk_member_org_id_member_code"),)
+
+    # id: UserMixinで使用するためのIDで、テーブルには持たないためmapped_columnにしない
+    org_id: Mapped[int] = mapped_column(primary_key=True)
+    member_id: Mapped[int] = mapped_column(primary_key=True)
+    password_hashed: Mapped[str] = mapped_column(String(512), nullable=False)
+    member_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    member_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    
+    id = None
+
     """
     def __init__(self, org_id, member_id, password_hashed, member_name, member_code, is_admin):
         # UserMixinで使用するためのID
@@ -15,7 +32,8 @@ class DbMember(UserMixin):
         self.member_name = member_name
         self.member_code = member_code
         self.is_admin = is_admin
-    
+    """
+
     def to_string(self):
         s = f"id:{id}\n" + \
             f"org_id:{self.org_id}\n" + \
@@ -49,7 +67,7 @@ class DbMember(UserMixin):
 
 
     @staticmethod
-    def get(org_id, member_id, con):
+    def get(org_id, member_id):
         """org_id, member_idからユーザー情報を取得する
 
         Args:
@@ -57,54 +75,34 @@ class DbMember(UserMixin):
             member_id (int): メンバーID
         """
         # org_id、member_idがNoneの場合は、return None
-        if ((not org_id) or (not member_id)):
+        if ((org_id is None) or (member_id is None)):
             return None
 
-        # PKだからあっても１件
-        with con.cursor() as cur:
-            db_password_hashed = None
-            db_member_name = None
-            db_member_code = None
-            db_is_admin = None
-            cur.execute(
-                "select " + \
-                "password_hashed, " + \
-                "member_name, " + \
-                "member_code, " + \
-                "is_admin " + \
-                "from member " + \
-                f"where org_id={org_id} and member_id={member_id};")
-            (password_hashed, member_name, member_code, is_admin) = cur.fetchone()
-            db_password_hashed = password_hashed
-            db_member_name = member_name
-            db_member_code = member_code
-            db_is_admin = is_admin
-
-        # 取得出来たらDbMemberを作成
-        member = None
-        if db_password_hashed is not None:
-            member = DbMember(
-                org_id,
-                member_id,
-                db_password_hashed,
-                db_member_name,
-                db_member_code,
-                db_is_admin
+        db = next(get_db())
+        member = db.execute(select(DbMember).where(
+            and_(
+                DbMember.org_id == org_id,
+                DbMember.member_id == member_id
             )
+        )).scalars().first()
+
+        member.id = f"{org_id}-{member_id}"
 
         return member
 
     @staticmethod
-    def get_member_id_by_member_code(org_id, member_code, con):
+    def get_member_id_by_member_code(org_id, member_code):
         ret_member_id = None
+        db = next(get_db())
+        member = db.execute(select(DbMember).where(
+            and_(
+                DbMember.org_id == org_id,
+                DbMember.member_code == member_code
+            )
+        )).scalars().first()
 
-        with con.cursor() as cur:
-            query = "select member_id from member " + \
-                f"where org_id={org_id} and " + \
-                f"member_code=\"{member_code}\";"
-            cur.execute(query)
-            ret = cur.fetchone()
-            if (ret is not None):
-                ret_member_id = ret[0]
+        if member:
+            ret_member_id = member.member_id
         
         return ret_member_id
+
