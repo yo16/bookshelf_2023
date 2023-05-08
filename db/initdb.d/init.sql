@@ -8,9 +8,11 @@ CREATE TABLE IF NOT EXISTS `organization` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `book` (
-    `book_id`   INT             NOT NULL,
-    `isbn`      VARCHAR(100),
-    `book_name` VARCHAR(100)    NOT NULL,
+    `book_id`       INT             NOT NULL,
+    `isbn`          VARCHAR(50),
+    `book_name`     VARCHAR(100)    NOT NULL,
+    `image_url`     VARCHAR(150)    UNIQUE,
+    `publisher_id`  INT,
     PRIMARY KEY (book_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
@@ -23,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `author` (
 CREATE TABLE IF NOT EXISTS `publisher` (
     `publisher_id`      INT             NOT NULL,
     `publisher_name`    VARCHAR(100)    NOT NULL,
-    `publisher_code`     VARCHAR(10),
+    `publisher_code`    VARCHAR(10),
     PRIMARY KEY (publisher_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
@@ -84,9 +86,4 @@ CREATE TABLE IF NOT EXISTS `writing` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 
-CREATE TABLE IF NOT EXISTS `publication` (
-    `book_id`           INT             NOT NULL,
-    `publisher_id`      INT             NOT NULL,
-    PRIMARY KEY (book_id, publisher_id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

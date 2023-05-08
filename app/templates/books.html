@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title -%}
+本リスト
+{%- endblock %}
+
+{% block org_name -%}
+{{ organization.org_name }}
+{%- endblock %}
+
+{% block body -%}
+{% if member.is_admin -%}
+<p>管理者専用メニュー:<a href="{{ url_for('maintenance') }}">メンテナンス</a><p>
+{% endif -%}
+<p><a href="{{ url_for('logout') }}">ログアウト</a></p>
+<hr />
+{% endblock -%}

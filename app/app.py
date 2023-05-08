@@ -7,6 +7,9 @@ import wtforms
 
 from app_logger import initialize_logger
 from models import create_sqlalchemy_engine, get_db, DbOrganization, DbMember, DbGenre
+from views.books_view import main as books_view_main
+from views.maintenance_view import main as maintenance_view_main
+from views.get_book_with_isbn_view import main as get_book_with_isbn_view_main
 
 
 # アプリケーション
@@ -45,12 +48,13 @@ create_sqlalchemy_engine(app)
 
 @app.route("/")
 @login_required
-def top():
+def books():
     app.logger.info("/")
 
     #print(current_user.to_string())
 
-    return "hello world!"
+    #return "hello world!"
+    return books_view_main(app)
 
 
 @app.route("/test", methods=["GET"])
@@ -67,6 +71,22 @@ def test():
     for c in result:
         print('----')
         print(c.org_id)
+    
+    # join
+    print('join test')
+    result = db.execute(
+        select(DbOrganization.org_id, DbOrganization.org_name, DbMember.member_id, DbMember.member_name)
+        .join(DbMember, DbOrganization.org_id == DbMember.org_id)
+    #).scalars().all()
+    ).all()
+    print('len---')
+    print(len(result))
+    print(result)
+    for row in result:
+        print(row)
+        print(type(row))
+        print('++++')
+        print(f"org_id:{row.org_id}, org_name:{row.org_name}, mem_id:{row.member_id}, mem_nm:{row.member_name}")
 
     return "test ok!<br />" + text, 404
 
@@ -146,7 +166,7 @@ def login():
         if member and member.verify_password(password):
             # 一致
             login_user(member)
-            return redirect(url_for("top"))
+            return redirect(url_for("books"))
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
@@ -158,7 +178,7 @@ def login():
     return render_template("login.html", form=form, message=message)
 
 
-@app.route("/logout", methods=["GET", "POST"])
+@app.route("/logout", methods=["GET"])
 @login_required
 def logout():
     logout_user()
@@ -167,6 +187,16 @@ def logout():
     message = "ログアウトしました"
     return redirect(url_for("login", message=message))
 
+
+@app.route("/maintenance", methods=["GET"])
+@login_required
+def maintenance():
+    return maintenance_view_main(app)
+
+@app.route("/get_book_with_isbn", methods=["POST"])
+@login_required
+def get_book_with_isbn():
+    return get_book_with_isbn_view_main(app)
 
 
 @login_manager.user_loader
