@@ -46,6 +46,10 @@ create_sqlalchemy_engine(app)
 # ****** login不要 ******
 @app.route("/test", methods=["GET"])
 def test():
+    debug = app.config["DEBUG"]
+    if not debug:
+        return redirect(url_for("main"))
+    
     from sqlalchemy import select
     db = next(get_db())
     #result = db.execute(select(DbOrganization)).scalars().all()
@@ -137,7 +141,7 @@ def login():
         if member and member.verify_password(password):
             # 一致
             login_user(member)
-            return redirect(url_for("books"))
+            return redirect(main"))
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
@@ -152,14 +156,14 @@ def login():
 @app.errorhandler(404)
 def page_not_found(error):
     # page not found時は何も言わず転送する
-    return redirect(url_for("books"))
+    return redirect(url_for("main"))
 
 
 # ****** login必要（通常ユーザー） ******
 
 @app.route("/")
 @login_required
-def books():
+def main():
     app.logger.info("/")
 
     #print(current_user.to_string())
@@ -197,7 +201,7 @@ def borrow():
 def maintenance():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(url_for("books"))
+        redirect(main"))
 
     return "maintenance"
  
@@ -207,7 +211,7 @@ def maintenance():
 def export_books():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(url_for("books"))
+        redirect(url_for("main"))
     
     return "export_books"
 
@@ -217,7 +221,7 @@ def export_books():
 def regist_book():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(url_for("books"))
+        redirect(url_for("main"))
     
     return "regist_book"
 
@@ -227,7 +231,7 @@ def regist_book():
 def get_book_with_isbn():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(url_for("books"))
+        redirect(url_for("main"))
     
     return "get_book_with_isbn"
 
@@ -237,7 +241,7 @@ def get_book_with_isbn():
 def member():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(url_for("books"))
+        redirect(url_for("main"))
     
     return "member"
 
@@ -247,7 +251,7 @@ def member():
 def regist_member_with_csv():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(url_for("books"))
+        redirect(url_for("main"))
     
     return "regist_member_with_csv"
 
