@@ -57,8 +57,13 @@ def books():
     return books_view_main(app)
 
 
+# ****** login不要 ******
 @app.route("/test", methods=["GET"])
 def test():
+    debug = app.config["DEBUG"]
+    if not debug:
+        return redirect(url_for("main"))
+    
     from sqlalchemy import select
     db = next(get_db())
     #result = db.execute(select(DbOrganization)).scalars().all()
@@ -166,7 +171,7 @@ def login():
         if member and member.verify_password(password):
             # 一致
             login_user(member)
-            return redirect(url_for("books"))
+            return redirect("main")
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
@@ -178,7 +183,25 @@ def login():
     return render_template("login.html", form=form, message=message)
 
 
-@app.route("/logout", methods=["GET"])
+@app.errorhandler(404)
+def page_not_found(error):
+    # page not found時は何も言わず転送する
+    return redirect(url_for("main"))
+
+
+# ****** login必要（通常ユーザー） ******
+
+@app.route("/")
+@login_required
+def main():
+    app.logger.info("/")
+
+    #print(current_user.to_string())
+    org_mem = get_org_mem()
+    return render_template("main.html", **org_mem)
+
+
+@app.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
     logout_user()
@@ -188,15 +211,94 @@ def logout():
     return redirect(url_for("login", message=message))
 
 
+@app.route("/book", methods=["GET", "POST"])
+@login_required
+def book():
+    org_mem = get_org_mem()
+    return render_template("book.html", **org_mem)
+
+
+@app.route("/borrow", methods=["POST"])
+@login_required
+def borrow():
+    return "borrow"
+
+
+
+# ****** login必要（管理者ユーザー） ******
+
 @app.route("/maintenance", methods=["GET"])
 @login_required
 def maintenance():
-    return maintenance_view_main(app)
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect("main")
+
+    org_mem = get_org_mem()
+    return render_template("maintenance.html", **org_mem)
+ 
+
+@app.route("/export_books", methods=["POST"])
+@login_required
+def export_books():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("main"))
+    
+    return "export_books"
+
+
+@app.route("/regist_book", methods=["POST"])
+@login_required
+def regist_book():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("main"))
+    
+    return "regist_book"
+
 
 @app.route("/get_book_with_isbn", methods=["POST"])
 @login_required
 def get_book_with_isbn():
-    return get_book_with_isbn_view_main(app)
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("main"))
+    
+    return "get_book_with_isbn"
+
+
+@app.route("/member", methods=["GET", "POST"])
+@login_required
+def member():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("main"))
+    
+    org_mem = get_org_mem()
+    return render_template("member.html", **org_mem)
+
+
+@app.route("/regist_member_with_csv", methods=["POST"])
+@login_required
+def regist_member_with_csv():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("main"))
+    
+    return "regist_member_with_csv"
+
+
+def get_org_mem():
+    """組織とメンバー情報を取得
+
+    Returns:
+        dict: {organization:DbOrganization, member:DbMember}
+    """
+    return {
+        "organization": DbOrganization.get(current_user.org_id),
+        "member": current_user
+    }
 
 
 @login_manager.user_loader
