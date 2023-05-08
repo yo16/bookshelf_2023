@@ -201,7 +201,7 @@ def borrow():
 def maintenance():
     # 管理者以外はbooksへ飛ばす
     if not current_user.is_admin:
-        redirect(main"))
+        redirect("main")
 
     return "maintenance"
  
