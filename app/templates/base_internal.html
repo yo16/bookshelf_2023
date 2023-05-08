@@ -1,0 +1,20 @@
+{# ログインした後のテンプレート #}
+{% extends "base.html" %}
+
+
+{% block title -%}internal{%- endblock %}
+
+
+{% block org_name %}{{ organization.org_name }}{% endblock %}
+
+
+{% block body_header %}
+<p>org_id:{{ organization.org_id }}</p>
+<p>org_name:{{ organization.org_name }}</p>
+<p>member_id:{{ member.member_id }}</p>
+<p>member_name:{{ member.member_name }}</p>
+{% endblock %}
+
+{% block body -%}
+internal
+{% endblock -%}

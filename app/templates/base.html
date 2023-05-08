@@ -3,10 +3,12 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}{% endblock %} - {% block org_name %}うち{% endblock %}の図書館</title>
+        <title>{% block title_header %}{% endblock %}{% block title %}{% endblock %} - {% block org_name %}うち{% endblock %}の図書館</title>
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body_header %}{% endblock %}
+        <hr />
+        {% block body %}{% endblock -%}
     </body>
 </html>
 

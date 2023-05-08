@@ -167,8 +167,8 @@ def main():
     app.logger.info("/")
 
     #print(current_user.to_string())
-
-    return "hello world!"
+    org_mem = get_org_mem()
+    return render_template("main.html", **org_mem)
 
 
 @app.route("/logout", methods=["GET", "POST"])
@@ -184,7 +184,8 @@ def logout():
 @app.route("/book", methods=["GET", "POST"])
 @login_required
 def book():
-    return "book"
+    org_mem = get_org_mem()
+    return render_template("book.html", **org_mem)
 
 
 @app.route("/borrow", methods=["POST"])
@@ -203,7 +204,8 @@ def maintenance():
     if not current_user.is_admin:
         redirect("main")
 
-    return "maintenance"
+    org_mem = get_org_mem()
+    return render_template("maintenance.html", **org_mem)
  
 
 @app.route("/export_books", methods=["POST"])
@@ -243,7 +245,8 @@ def member():
     if not current_user.is_admin:
         redirect(url_for("main"))
     
-    return "member"
+    org_mem = get_org_mem()
+    return render_template("member.html", **org_mem)
 
 
 @app.route("/regist_member_with_csv", methods=["POST"])
@@ -254,6 +257,18 @@ def regist_member_with_csv():
         redirect(url_for("main"))
     
     return "regist_member_with_csv"
+
+
+def get_org_mem():
+    """組織とメンバー情報を取得
+
+    Returns:
+        dict: {organization:DbOrganization, member:DbMember}
+    """
+    return {
+        "organization": DbOrganization.get(current_user.org_id),
+        "member": current_user
+    }
 
 
 @login_manager.user_loader

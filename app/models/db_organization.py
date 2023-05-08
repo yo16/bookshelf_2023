@@ -13,6 +13,14 @@ class DbOrganization(Base):
 
 
     @staticmethod
+    def get(org_id):
+        db = next(get_db())
+        return db.execute(
+            select(DbOrganization).where(DbOrganization.org_id == org_id)
+        ).scalars().first()
+
+
+    @staticmethod
     def get_free_org_id():
         """新しいorg_idのために、かぶらないorg_idを適当に決めて返す
         """
