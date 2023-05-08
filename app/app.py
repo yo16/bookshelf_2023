@@ -151,6 +151,7 @@ def login():
 
 @app.errorhandler(404)
 def page_not_found(error):
+    # page not found時は何も言わず転送する
     return redirect(url_for("books"))
 
 
