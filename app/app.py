@@ -141,7 +141,7 @@ def login():
         if member and member.verify_password(password):
             # 一致
             login_user(member)
-            return redirect(main"))
+            return redirect("main")
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
