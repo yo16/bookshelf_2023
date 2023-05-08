@@ -43,16 +43,7 @@ create_sqlalchemy_engine(app)
 
 # ------ api ------
 
-@app.route("/")
-@login_required
-def top():
-    app.logger.info("/")
-
-    #print(current_user.to_string())
-
-    return "hello world!"
-
-
+# ****** login不要 ******
 @app.route("/test", methods=["GET"])
 def test():
     from sqlalchemy import select
@@ -146,7 +137,7 @@ def login():
         if member and member.verify_password(password):
             # 一致
             login_user(member)
-            return redirect(url_for("top"))
+            return redirect(url_for("books"))
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
@@ -158,6 +149,23 @@ def login():
     return render_template("login.html", form=form, message=message)
 
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return redirect(url_for("books"))
+
+
+# ****** login必要（通常ユーザー） ******
+
+@app.route("/")
+@login_required
+def books():
+    app.logger.info("/")
+
+    #print(current_user.to_string())
+
+    return "hello world!"
+
+
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
@@ -167,6 +175,80 @@ def logout():
     message = "ログアウトしました"
     return redirect(url_for("login", message=message))
 
+
+@app.route("/book", methods=["GET", "POST"])
+@login_required
+def book():
+    return "book"
+
+
+@app.route("/borrow", methods=["POST"])
+@login_required
+def borrow():
+    return "borrow"
+
+
+
+# ****** login必要（管理者ユーザー） ******
+
+@app.route("/maintenance", methods=["GET"])
+@login_required
+def maintenance():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("books"))
+
+    return "maintenance"
+ 
+
+@app.route("/export_books", methods=["POST"])
+@login_required
+def export_books():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("books"))
+    
+    return "export_books"
+
+
+@app.route("/regist_book", methods=["POST"])
+@login_required
+def regist_book():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("books"))
+    
+    return "regist_book"
+
+
+@app.route("/get_book_with_isbn", methods=["POST"])
+@login_required
+def get_book_with_isbn():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("books"))
+    
+    return "get_book_with_isbn"
+
+
+@app.route("/member", methods=["GET", "POST"])
+@login_required
+def member():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("books"))
+    
+    return "member"
+
+
+@app.route("/regist_member_with_csv", methods=["POST"])
+@login_required
+def regist_member_with_csv():
+    # 管理者以外はbooksへ飛ばす
+    if not current_user.is_admin:
+        redirect(url_for("books"))
+    
+    return "regist_member_with_csv"
 
 
 @login_manager.user_loader
