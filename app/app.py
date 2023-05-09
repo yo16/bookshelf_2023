@@ -7,8 +7,10 @@ import wtforms
 
 from app_logger import initialize_logger
 from models import create_sqlalchemy_engine, get_db, DbOrganization, DbMember, DbGenre
-from views.books_view import main as books_view_main
+from views.main_view import main as main_view_main
+from views.book_view import main as book_view_main
 from views.maintenance_view import main as maintenance_view_main
+from views.member_view import main as member_view_main
 from views.get_book_with_isbn_view import main as get_book_with_isbn_view_main
 
 
@@ -54,7 +56,7 @@ def books():
     #print(current_user.to_string())
 
     #return "hello world!"
-    return books_view_main(app)
+    return main_view_main(app)
 
 
 # ****** login不要 ******
@@ -194,11 +196,7 @@ def page_not_found(error):
 @app.route("/")
 @login_required
 def main():
-    app.logger.info("/")
-
-    #print(current_user.to_string())
-    org_mem = get_org_mem()
-    return render_template("main.html", **org_mem)
+    return main_view_main(app)
 
 
 @app.route("/logout", methods=["GET", "POST"])
@@ -214,8 +212,7 @@ def logout():
 @app.route("/book", methods=["GET", "POST"])
 @login_required
 def book():
-    org_mem = get_org_mem()
-    return render_template("book.html", **org_mem)
+    return book_view_main(app)
 
 
 @app.route("/borrow", methods=["POST"])
@@ -234,8 +231,7 @@ def maintenance():
     if not current_user.is_admin:
         redirect("main")
 
-    org_mem = get_org_mem()
-    return render_template("maintenance.html", **org_mem)
+    return maintenance_view_main(app)
  
 
 @app.route("/export_books", methods=["POST"])
@@ -275,8 +271,7 @@ def member():
     if not current_user.is_admin:
         redirect(url_for("main"))
     
-    org_mem = get_org_mem()
-    return render_template("member.html", **org_mem)
+    return member_view_main(app)
 
 
 @app.route("/regist_member_with_csv", methods=["POST"])
@@ -288,17 +283,6 @@ def regist_member_with_csv():
     
     return "regist_member_with_csv"
 
-
-def get_org_mem():
-    """組織とメンバー情報を取得
-
-    Returns:
-        dict: {organization:DbOrganization, member:DbMember}
-    """
-    return {
-        "organization": DbOrganization.get(current_user.org_id),
-        "member": current_user
-    }
 
 
 @login_manager.user_loader

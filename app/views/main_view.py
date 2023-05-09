@@ -8,4 +8,4 @@ from views.view_common import get_org_mem
 
 def main(app):
     org_mem = get_org_mem()
-    return render_template("maintenance.html", **org_mem)
+    return render_template("main.html", **org_mem)
