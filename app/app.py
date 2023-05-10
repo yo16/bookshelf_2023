@@ -4,6 +4,7 @@ import json
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import flask_wtf
 import wtforms
+from functools import wraps
 
 from app_logger import initialize_logger
 from models import create_sqlalchemy_engine, get_db, DbOrganization, DbMember, DbGenre
@@ -21,6 +22,14 @@ app.config.from_file("development.json", load=json.load, silent=True)
 # ロガーを設定
 initialize_logger(app.logger)
 
+def log_info(func):
+    @wraps(func)
+    def wrapper(*args, **keywords):
+        app.logger.info(func.__name__)
+        return func(*args, **keywords)
+    return wrapper
+
+
 # ログインマネージャーを初期化
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -37,27 +46,15 @@ class LoginForm(flask_wtf.FlaskForm):
     )
     password = wtforms.PasswordField(
         'password',
-        [
-            wtforms.validators.DataRequired()
-        ]
+        [wtforms.validators.DataRequired()]
     )
+
 
 # DB接続
 create_sqlalchemy_engine(app)
 
 
 # ------ api ------
-
-@app.route("/")
-@login_required
-def books():
-    app.logger.info("/")
-
-    #print(current_user.to_string())
-
-    #return "hello world!"
-    return main_view_main(app)
-
 
 # ****** login不要 ******
 @app.route("/test", methods=["GET"])
@@ -173,7 +170,7 @@ def login():
         if member and member.verify_password(password):
             # 一致
             login_user(member)
-            return redirect("main")
+            return redirect(url_for("main"))
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
@@ -195,12 +192,14 @@ def page_not_found(error):
 
 @app.route("/")
 @login_required
+@log_info
 def main():
     return main_view_main(app)
 
 
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
+@log_info
 def logout():
     logout_user()
 
@@ -211,76 +210,76 @@ def logout():
 
 @app.route("/book", methods=["GET", "POST"])
 @login_required
+@log_info
 def book():
     return book_view_main(app)
 
 
 @app.route("/borrow", methods=["POST"])
 @login_required
+@log_info
 def borrow():
     return "borrow"
 
 
 
 # ****** login必要（管理者ユーザー） ******
+def admin_required(func):
+    @wraps(func)
+    def admin_wrapper(*args, **keywords):
+        # 管理者以外はbooksへ飛ばす
+        if not current_user.is_admin:
+            redirect(url_for("main"))
+        return func(*args, **keywords)
+    
+    return admin_wrapper
+    
 
 @app.route("/maintenance", methods=["GET"])
 @login_required
+@admin_required
+@log_info
 def maintenance():
-    # 管理者以外はbooksへ飛ばす
-    if not current_user.is_admin:
-        redirect("main")
-
     return maintenance_view_main(app)
  
 
 @app.route("/export_books", methods=["POST"])
 @login_required
+@admin_required
+@log_info
 def export_books():
-    # 管理者以外はbooksへ飛ばす
-    if not current_user.is_admin:
-        redirect(url_for("main"))
-    
     return "export_books"
 
 
 @app.route("/regist_book", methods=["POST"])
 @login_required
+@admin_required
+@log_info
 def regist_book():
-    # 管理者以外はbooksへ飛ばす
-    if not current_user.is_admin:
-        redirect(url_for("main"))
-    
     return "regist_book"
 
 
 @app.route("/get_book_with_isbn", methods=["POST"])
 @login_required
+@admin_required
+@log_info
 def get_book_with_isbn():
-    # 管理者以外はbooksへ飛ばす
-    if not current_user.is_admin:
-        redirect(url_for("main"))
-    
     return "get_book_with_isbn"
 
 
 @app.route("/member", methods=["GET", "POST"])
 @login_required
+@admin_required
+@log_info
 def member():
-    # 管理者以外はbooksへ飛ばす
-    if not current_user.is_admin:
-        redirect(url_for("main"))
-    
     return member_view_main(app)
 
 
 @app.route("/regist_member_with_csv", methods=["POST"])
 @login_required
+@admin_required
+@log_info
 def regist_member_with_csv():
-    # 管理者以外はbooksへ飛ばす
-    if not current_user.is_admin:
-        redirect(url_for("main"))
-    
     return "regist_member_with_csv"
 
 
