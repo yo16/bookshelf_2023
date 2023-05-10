@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from models import get_db, DbOrganization, DbMember, DbGenre
 from views.view_common import get_org_mem
-from views.login_form import LoginForm
+from views.forms import LoginForm
 
 
 def main(app):

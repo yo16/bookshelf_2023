@@ -15,3 +15,14 @@ class LoginForm(flask_wtf.FlaskForm):
         'password',
         [wtforms.validators.DataRequired()]
     )
+
+# 本の登録
+class RegistBookForm(flask_wtf.FlaskForm):
+    isbn = wtforms.IntegerField(
+        'isbn',
+        [wtforms.validators.DataRequired()]
+    )
+    book_name = wtforms.StringField(
+        'book_name',
+        [wtforms.validators.DataRequired()]
+    )

@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request
 from flask_login import login_user
 
-from views.login_form import LoginForm
+from views.forms import LoginForm
 from models import DbMember
 
 
@@ -25,6 +25,7 @@ def main(app):
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"
         return render_template("login.html", message=message, form=form)
     
+    # 初期値
     message = request.args.get('message')
     form.org_id.data = request.args.get('org_id')
     form.member_code.data = request.args.get('member_code')
