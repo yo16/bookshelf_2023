@@ -35,6 +35,9 @@ def main(app):
         for cur_author in cur_authors:
             db.execute()
 
-
+    else:
+        # 見つからなかったので、Googleに問い合わせる
+        url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}&country=JP"
+        print(f"URL:{url}")
 
     return jsonify(ResultSet=json.dumps(ret_dic))

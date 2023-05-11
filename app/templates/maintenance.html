@@ -4,6 +4,10 @@
 maintenance
 {%- endblock %}
 
+{% block header_append -%}
+<script src="{{ url_for('static', filename='js/maintenance.js') }}"></script>
+{% endblock -%}
+
 
 {% block body -%}
 maintenance
