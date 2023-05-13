@@ -4,17 +4,18 @@ from sqlalchemy import select
 
 from models import get_db, DbOrganization, DbMember, DbGenre
 from views.view_common import get_org_mem
-from views.forms import LoginForm
+from views.forms import LoginForm, SignupForm
 
 
 def main(app):
-    if request.method == "POST":
-        org_name = request.form["org_name"]
+    form = SignupForm(request.form)
+    if form.validate_on_submit():
+        org_name = form.org_name.data
         member_id = 0
-        member_code = request.form["member_code"]
+        member_code = form.member_code.data
         member_name = member_code
         member_is_admin = True
-        password = request.form["password"]
+        password = form.password.data
         hashed_password = DbMember.hash_password(password)
         genre_id = 0
         genre_name = "分類なし"
@@ -63,4 +64,4 @@ def main(app):
         form.member_code.data = member_code
         return redirect(url_for("login", message=message, org_id=new_org_id, member_code=member_code))
 
-    return render_template("signup.html")
+    return render_template("signup.html", form=form)

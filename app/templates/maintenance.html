@@ -12,10 +12,11 @@ maintenance
 {% block body -%}
 maintenance
 <h1>本の登録</h1>
-<form action="{{ url_for('regist_book') }}" method="POST">
+<form method="POST">
     {{ form.csrf_token }}
     <p>
-        <label for="isbn">isbn: </label>{{ form.isbn }}
+        <label for="isbn">isbn: </label>{{ form.isbn(placeholder="あいえす") }}
+        {{ render_error(form.isbn) }}
         <button type="button" id="search_book">検索</button>
     </p>
     <p>book_name: <input type="text" name="book_name" /></p>

@@ -6,9 +6,19 @@
 
 {% block body -%}
 <form method="POST" action="{{ url_for('signup') }}">
+    {{ form.csrf_token }}
+    <p><label for="org_name">組織名</label></p>
+    {{ form.org_name }}
+    <p><label for="member_code">ユーザーID</label></p>
+    {{ form.member_code }}
+    <p><label for="password">パスワード</label></p>
+    {{ form.password }}
+
+    {#
     <input type="text" name="org_name" placeholder="組織名" required />
     <input type="text" name="member_code" placeholder="管理者のユーザーID" required />
     <input type="password" name="password" placeholder="パスワード" required />
+    #}
     <button type="submit">登録</button>
 </form>
 {% if error -%}

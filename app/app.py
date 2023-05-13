@@ -15,7 +15,6 @@ from views.get_book_with_isbn_view import main as get_book_with_isbn_view_main
 from views.signup_view import main as signup_view_main
 from views.login_view import main as login_view_main
 from views.logout_view import main as logout_view_main
-from views.regist_book_view import main as regist_book_main
 from views.export_books_view import main as export_books_view_main
 from views.regist_member_with_csv_view import main as regist_member_with_csv_view_main
 from views.test_view import main as test_view_main
@@ -112,7 +111,7 @@ def admin_required(func):
     return admin_wrapper
     
 
-@app.route("/maintenance", methods=["GET"])
+@app.route("/maintenance", methods=["GET", "POST"])
 @login_required
 @admin_required
 @log_info
@@ -126,14 +125,6 @@ def maintenance():
 @log_info
 def export_books():
     return export_books_view_main(app)
-
-
-@app.route("/regist_book", methods=["POST"])
-@login_required
-@admin_required
-@log_info
-def regist_book():
-    return regist_book_main(app)
 
 
 @app.route("/get_book_with_isbn", methods=["POST"])

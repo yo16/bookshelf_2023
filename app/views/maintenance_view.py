@@ -9,6 +9,10 @@ from views.forms import RegistBookForm
 
 def main(app):
     form = RegistBookForm(request.form)
-
     org_mem = get_org_mem()
+
+    if form.validate_on_submit():
+        # 登録処理
+        print("----- validate OK")
+
     return render_template("maintenance.html", **org_mem, form=form)
