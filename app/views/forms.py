@@ -39,7 +39,7 @@ class RegistBookForm(flask_wtf.FlaskForm):
     isbn = wtforms.StringField(
         'isbn',
         validators=[
-            wtforms.validators.Regexp("^([0-9]{10}|[0-9]{13})$", message="ISBNは10桁または13桁の整数です"),
+            wtforms.validators.Regexp("^([0-9]{10}|[0-9]{13})$", message="ISBNは10桁または13桁の整数を入力してください。"),
             wtforms.validators.Length(min=10, max=13)
         ]
     )

@@ -1,13 +1,15 @@
 {#- baseテンプレート #}
 {# エラーメッセージ表示用のマクロ -#}
 {%- macro render_error(field) %}
-    <dt>{{ field.label }}</dt>
-    <dd>{{ field(**kwargs) | safe }}</dd>
+    {#- <dt>{{ field.label }}</dt>
+    <dd>{{ field(**kwargs) | safe }}</dd> -#}
+    {% if field.errors|length > 0 %}
     <ul class=errors>
         {% for error in field.errors %}
         <li class="error">{{ error }}</li>
         {% endfor %}
     </ul>
+    {% endif %}
 {% endmacro -%}
 
 <!DOCTYPE html>

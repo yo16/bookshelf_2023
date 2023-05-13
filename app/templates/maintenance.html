@@ -13,10 +13,10 @@ maintenance
 maintenance
 <h1>本の登録</h1>
 <form method="POST">
+    {{ render_error(form.isbn) }}
     {{ form.csrf_token }}
     <p>
-        <label for="isbn">isbn: </label>{{ form.isbn(placeholder="あいえす") }}
-        {{ render_error(form.isbn) }}
+        <label for="isbn">isbn: </label>{{ form.isbn(placeholder="ISBNコード(10桁 or 13桁)") }}
         <button type="button" id="search_book">検索</button>
     </p>
     <p>book_name: <input type="text" name="book_name" /></p>
