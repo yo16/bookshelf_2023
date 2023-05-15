@@ -5,6 +5,7 @@ maintenance
 {%- endblock %}
 
 {% block header_append -%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/maintenance.css') }}"></link>
 <script src="{{ url_for('static', filename='js/maintenance.js') }}"></script>
 {% endblock -%}
 
@@ -18,10 +19,25 @@ maintenance
     <p>
         <label for="isbn">isbn: </label>{{ form.isbn(placeholder="ISBNコード(10桁 or 13桁)") }}
         <button type="button" id="search_book">検索</button>
+        <span id="spnSearchISBNMessage"></span>
     </p>
-    <p>book_name: <input type="text" name="book_name" /></p>
-    <p>author: <input type="text" name="author0" /></p>
-    <p>publisher: <input type="text" name="publisher_name" /></p>
+    <p>book_name: <input type="text" id="book_name" name="book_name" /></p>
+    <p>image:
+        <span id="spnImageThumbnail" style="display:None" >
+            <img id="img_thumbnail" /><br />
+        </span>
+    </p>
+    <p>image_url: <input type="text" id="image_url" name="image_url" />
+    <p>author:<br />
+        {% for i in range(10) %}
+        <input type="text" id="author{{ i }}" name="author{{ i }}" /><br />
+        {% endfor %}
+    </p>
+    <p>num_of_authors: <input type="text" id="num_of_authors" name="num_of_authors" /></p>
+    <p>publisher_code: <input type="text" id="publisher_code" name="publisher_code" /></p>
+    <p>publisher_name: <input type="text" id="publisher_name" name="publisher_name" /></p>
+    <p>comment: <input type="text" id="comment" name="comment" /></p>
+    <p>genres: <input type="text" id="genres" name="genres" /></p>
     <p><button type="submit">本の登録</button></p>
 </form>
 
