@@ -16,11 +16,19 @@ class DbBook(Base):
 
     @staticmethod
     def get_new_book_id():
+        new_book_id = 0
+
         db = next(get_db())
-        result = db.execute(
+        exec_result = db.execute(
             select(
                 func.max(DbBook.book_id).label("max_book_id")
             )
-        ).scalars().first()
+        )
+        result = exec_result.scalars().first()
         
-        return result.max_book_id + 1
+        if not result:
+            new_book_id = 0
+        else:
+            new_book_id = result.max_book_id
+        
+        return new_book_id
