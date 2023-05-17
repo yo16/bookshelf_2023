@@ -1,7 +1,8 @@
-from sqlalchemy import String
+from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.sql.expression import func
 
-from .db_common import Base
+from .db_common import Base, get_db
 
 
 class DbPublisher(Base):
@@ -30,3 +31,15 @@ class DbPublisher(Base):
         else:
             keta = 7
         return isbn[4:4+keta]
+
+
+    @staticmethod
+    def get_new_publisher_id():
+        db = next(get_db())
+        result = db.execute(
+            select(
+                func.max(DbPublisher.publisher_id).label("max_pub_id")
+            )
+        ).scalars().first()
+
+        return result.max_pub_id
