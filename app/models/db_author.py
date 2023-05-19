@@ -12,7 +12,7 @@ class DbAuthor(Base):
     author_name: Mapped[str] = mapped_column(String(50), nullable=False)
 
     @staticmethod
-    def get_new_book_id():
+    def get_new_author_id():
         db = next(get_db())
         result = db.execute(
             select(
