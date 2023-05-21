@@ -44,7 +44,7 @@ class DbOrganization(Base):
             result = db.execute(
                 select(DbOrganization).where(DbOrganization.org_id == new_org_id)
             ).scalar()
-            if (not result):    # 中身は関係なく存在していなければよし
+            if result is None:    # 中身は関係なく存在していなければよし
                 already_exists = False
 
         # 新しい番号を返す

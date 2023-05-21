@@ -26,9 +26,9 @@ class DbBook(Base):
         )
         result = exec_result.scalars().first()
         
-        if not result:
+        if result is None:
             new_book_id = 0
         else:
-            new_book_id = result.max_book_id
+            new_book_id = result.max_book_id + 1
         
         return new_book_id

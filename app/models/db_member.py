@@ -85,7 +85,7 @@ class DbMember(Base, UserMixin):
                 DbMember.member_id == member_id
             )
         )).scalars().first()
-        if not member:
+        if member is None:
             return None
 
         member.id = f"{org_id}-{member_id}"
@@ -94,7 +94,8 @@ class DbMember(Base, UserMixin):
 
     @staticmethod
     def get_member_id_by_member_code(org_id, member_code):
-        ret_member_id = None
+        new_member_id = 0
+
         db = next(get_db())
         member = db.execute(select(DbMember).where(
             and_(
@@ -103,8 +104,10 @@ class DbMember(Base, UserMixin):
             )
         )).scalars().first()
 
-        if member:
-            ret_member_id = member.member_id
+        if member is None:
+            new_member_id = 0
+        else:
+            new_member_id = member.member_id + 1
         
-        return ret_member_id
+        return new_member_id
 

@@ -13,14 +13,18 @@ class DbAuthor(Base):
 
     @staticmethod
     def get_new_author_id():
+        new_author_id = 0
+
         db = next(get_db())
-        max_author_id = -1
         result = db.execute(
             select(
                 func.max(DbAuthor.author_id).label("max_author_id")
             )
         ).scalars().first()
-        if result:
-            max_author_id = result.max_author_id
+
+        if result is None:
+            new_author_id = 0
+        else:
+            new_author_id = result.max_author_id + 1
         
-        return max_author_id + 1
+        return new_author_id

@@ -35,6 +35,8 @@ class DbPublisher(Base):
 
     @staticmethod
     def get_new_publisher_id():
+        new_publisher_id = 0
+
         db = next(get_db())
         result = db.execute(
             select(
@@ -42,4 +44,9 @@ class DbPublisher(Base):
             )
         ).scalars().first()
 
-        return result.max_pub_id
+        if result is None:
+            new_publisher_id = 0
+        else:
+            new_publisher_id = result.max_pub_id
+
+        return new_publisher_id
