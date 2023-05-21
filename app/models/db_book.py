@@ -32,3 +32,17 @@ class DbBook(Base):
             new_book_id = result + 1
         
         return new_book_id
+
+    @staticmethod
+    def get_book(isbn):
+        """ISBNをキーに、本情報を取得する。ない場合はNoneを返す
+        """
+        db = next(get_db())
+        exec_result = db.execute(
+            select(DbBook).where(DbBook.isbn == isbn)
+        ).scalar()
+        if exec_result is None:
+            return None
+        
+        # 結果を返す
+        return exec_result

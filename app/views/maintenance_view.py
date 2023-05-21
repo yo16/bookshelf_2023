@@ -39,7 +39,7 @@ def regist_info():
         req["authors"].append(author)
     
     # 登録する情報
-    book = create_book(req)
+    book, is_new_book = create_book(req)
     authors = create_authors(req)
     writings = create_writings(req, book, authors)
     publisher = create_publisher(req)
@@ -47,20 +47,27 @@ def regist_info():
 
     # 登録
     db = next(get_db())
-    db.add(book)
-    for a in authors:
-        if a["is_new_author"]:
-            db.add(a["author"])
-    for w in writings:
-        db.add(w)
-    db.add(publisher)
+    if is_new_book:
+        db.add(book)
+
+        # 本が登録済の場合は、著者、writingsも登録されているはず
+        for a in authors:
+            if a["is_new_author"]:
+                db.add(a["author"])
+        for w in writings:
+            db.add(w)
+        db.add(publisher)
     db.commit()
-    db.refresh(book)
-    for a in authors:
-        if a["is_new_author"]:
-            db.refresh(a["author"])
-    for w in writings:
-        db.refresh(w)
+
+    # 片付け
+    if is_new_book:
+        db.refresh(book)
+        
+        for a in authors:
+            if a["is_new_author"]:
+                db.refresh(a["author"])
+        for w in writings:
+            db.refresh(w)
     
     return
     
@@ -72,16 +79,25 @@ def create_book(info):
     Args:
         info (dict): requestから集めた情報
     Returns
+        DbBook, Boolean
     """
-    new_book_id = DbBook.get_new_book_id()
-    
-    return DbBook(
-        book_id = new_book_id,
-        isbn = info["isbn"],
-        book_name = info["book_name"],
-        image_url = info["image_url"],
-        publisher_id = None
-    )
+    is_new_book = False
+    # DBから本情報を取得
+    cur_book = DbBook.get_book(info["isbn"])
+
+    if cur_book is None:
+        # なかったので、新しいIDを取得して作る
+        is_new_book = True
+        new_book_id = DbBook.get_new_book_id()
+        cur_book = DbBook(
+            book_id = new_book_id,
+            isbn = info["isbn"],
+            book_name = info["book_name"],
+            image_url = info["image_url"],
+            publisher_id = None
+        )
+
+    return cur_book, is_new_book
 
 
 def create_authors(info):
@@ -115,7 +131,7 @@ def create_authors(info):
         else:
             # 登録されている
             is_new_author = False
-            author = author.first()
+            author = author
         
         # 登録する/しないによらずappend
         ret.append({
