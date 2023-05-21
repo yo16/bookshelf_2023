@@ -1,5 +1,6 @@
 from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.sql.expression import func
 
 from .db_common import Base, get_db
 
@@ -66,7 +67,29 @@ class DbGenre(Base):
 
         ret_obj = {
             "genre": g,
-            "children": get_child_genres(g.org_id)
+            "children": get_child_genres(g.genre_id)
         }
 
         return ret_obj
+
+
+    @staticmethod
+    def get_new_genre_id(org_id):
+        new_genre_id = 0
+
+        db = next(get_db())
+        exec_result = db.execute(
+            select(
+                func.max(DbGenre.genre_id).label("max_book_id")
+            ).where(
+                DbGenre.org_id == org_id
+            )
+        )
+        result = exec_result.scalars().first()
+        
+        if result is None:
+            new_genre_id = 0
+        else:
+            new_genre_id = result + 1
+        
+        return new_genre_id
