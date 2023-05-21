@@ -6,5 +6,8 @@ main
 
 
 {% block body -%}
-main
+<h1>main</h1>
+{% for b in books -%}
+<img src="{{ b.image_url }}" />{{ b.book_name }}<br />
+{% endfor -%}
 {% endblock -%}

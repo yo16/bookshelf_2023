@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func
 
 from .db_common import Base, get_db
+from .db_collection import DbCollection
 
 
 class DbBook(Base):
@@ -45,4 +46,26 @@ class DbBook(Base):
             return None
         
         # 結果を返す
+        return exec_result
+
+    @staticmethod
+    def get_books_collection(org_id):
+        """組織が持つ本一覧を返す
+
+        Args:
+            org_id (int): 組織id
+        """
+        db = next(get_db())
+
+        subq = select(
+            DbCollection.book_id.label("book_id")
+        ).where(DbCollection.org_id==org_id).subquery()
+        stmt = select(DbBook).join(
+                target = subq,
+                onclause = DbBook.book_id == subq.c.book_id
+            )
+        exec_result = db.scalars(stmt).all()
+        if (exec_result is None) or (len(exec_result) == 0):
+            return []
+        
         return exec_result
