@@ -102,7 +102,7 @@ def create_authors(info):
         author = db.execute(
             select(DbAuthor).where(DbAuthor.author_name == a)
         ).scalar()
-        if not author:
+        if author is None:
             # 未登録なので登録
             is_new_author = True
             if not new_author_id:
