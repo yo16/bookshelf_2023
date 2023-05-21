@@ -13,6 +13,7 @@ from views import (
     maintenance_view_main,
     member_view_main,
     genre_view_main,
+    mypage_view_main,
     get_book_with_isbn_view_main,
     signup_view_main,
     login_view_main,
@@ -99,6 +100,13 @@ def book():
 @log_info
 def borrow():
     return borrow_view_main(app)
+
+
+@app.route("/mypage", methods=["GET", "POST"])
+@login_required
+@log_info
+def mypage():
+    return mypage_view_main(app)
 
 
 
