@@ -1,8 +1,9 @@
 from flask import render_template, request
 from flask_login import current_user
 from sqlalchemy import select
+from datetime import datetime
 
-from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher
+from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection
 from views.view_common import get_org_mem
 from views.forms import RegistBookForm
 
@@ -15,7 +16,7 @@ def main(app):
         # 登録処理
         regist_info()
 
-    return render_template("maintenance.html", **org_mem, form=form)
+    return render_template("maintenance.html", **org_mem, form=form, now=datetime.now())
 
 
 def regist_info():
@@ -30,7 +31,10 @@ def regist_info():
         "publisher_code": request.form["publisher_code"],
         "publisher_name": request.form["publisher_name"],
         "comment": request.form["comment"],
-        "genres": request.form["genres"]
+        "genres": request.form["genres"],
+        "org_id": int(request.form["org_id"]),
+        "num_of_same_books": int(request.form["num_of_same_books"]),
+        "added_dt": datetime.strptime(request.form["added_dt"], "%Y-%m-%d")
     }
     for i in range(req["num_of_authors"]):
         author = ""
@@ -40,10 +44,12 @@ def regist_info():
     
     # 登録する情報
     book, is_new_book = create_book(req)
-    authors = create_authors(req)
-    writings = create_writings(req, book, authors)
-    publisher = create_publisher(req)
-    book.publisher_id = publisher.publisher_id
+    if is_new_book:
+        authors = create_authors(req)
+        writings = create_writings(req, book, authors)
+        publisher = create_publisher(req)
+        book.publisher_id = publisher.publisher_id
+    collection, is_new_collection = create_collection(req, book)
 
     # 登録
     db = next(get_db())
@@ -57,12 +63,15 @@ def regist_info():
         for w in writings:
             db.add(w)
         db.add(publisher)
+    if is_new_collection:
+        db.add(collection)
+    
     db.commit()
 
     # 片付け
     if is_new_book:
         db.refresh(book)
-        
+
         for a in authors:
             if a["is_new_author"]:
                 db.refresh(a["author"])
@@ -179,3 +188,30 @@ def create_publisher(info):
         publisher_name = publisher_name,
         publisher_code = publisher_code
     )
+
+
+def create_collection(info, book):
+    """Collectionを作成
+
+    Args:
+        info (dict): requestから集めた情報
+        book (DbBook): 所有する本
+    """
+    is_new_collection = False
+    # 登録済みかどうか確認
+    cur_collection = DbCollection.get_collection(
+        org_id = info["org_id"],
+        book_id = book.book_id
+    )
+
+    if cur_collection is None:
+        # なかったので、作る
+        is_new_collection = True
+        cur_collection = DbCollection(
+            org_id = info["org_id"],
+            book_id = book.book_id,
+            num_of_same_books = info["num_of_same_books"],
+            added_dt = info["added_dt"]
+        )
+
+    return cur_collection, is_new_collection

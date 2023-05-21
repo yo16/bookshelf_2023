@@ -16,7 +16,7 @@ def main(app):
         # memberを取得してログイン
         member_id = DbMember.get_member_id_by_member_code(org_id, member_code)
         member = DbMember.get(org_id, member_id)
-        if member and member.verify_password(password):
+        if (member is not None) and member.verify_password(password):
             # 一致
             login_user(member)
             return redirect(url_for("main"))
