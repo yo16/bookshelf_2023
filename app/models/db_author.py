@@ -25,6 +25,6 @@ class DbAuthor(Base):
         if result is None:
             new_author_id = 0
         else:
-            new_author_id = result.max_author_id + 1
+            new_author_id = result + 1
         
         return new_author_id

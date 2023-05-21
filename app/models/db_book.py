@@ -29,6 +29,6 @@ class DbBook(Base):
         if result is None:
             new_book_id = 0
         else:
-            new_book_id = result.max_book_id + 1
+            new_book_id = result + 1
         
         return new_book_id

@@ -47,6 +47,6 @@ class DbPublisher(Base):
         if result is None:
             new_publisher_id = 0
         else:
-            new_publisher_id = result.max_pub_id
+            new_publisher_id = result + 1
 
         return new_publisher_id
