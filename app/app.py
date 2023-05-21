@@ -11,6 +11,7 @@ from views.book_view import main as book_view_main
 from views.borrow_view import main as borrow_view_main
 from views.maintenance_view import main as maintenance_view_main
 from views.member_view import main as member_view_main
+from views.genre_view import main as genre_view_main
 from views.get_book_with_isbn_view import main as get_book_with_isbn_view_main
 from views.signup_view import main as signup_view_main
 from views.login_view import main as login_view_main
@@ -141,6 +142,14 @@ def get_book_with_isbn():
 @log_info
 def member():
     return member_view_main(app)
+
+
+@app.route("/genre", methods=["GET", "POST"])
+@login_required
+@admin_required
+@log_info
+def genre():
+    return genre_view_main(app)
 
 
 @app.route("/regist_member_with_csv", methods=["POST"])
