@@ -9,18 +9,20 @@ genre
 {% endblock -%}
 
 {# 再帰的にジャンルを表示 #}
-{% macro create_genre_ol(cur_genre, is_top=True) -%}
+{% macro create_genre_li(cur_genre, is_top=True) -%}
 {% if is_top -%}
     <ul>
 {% endif -%}
-        <ol>{{ cur_genre.genre.genre_name }}({{ cur_genre.genre.genre_id }})</ol>
+        <li>
+            {{ cur_genre.genre.genre_name }}({{ cur_genre.genre.genre_id }})
 {% if cur_genre.children|length > 0 -%}
-        <ol><ul>
+            <ul>
     {% for g in cur_genre.children -%}
-        {{ create_genre_ol(g, False) -}}
+                {{ create_genre_li(g, False) -}}
     {% endfor -%}
-        </ul></ol>
+            </ul>
 {% endif -%}
+        </li>
 {% if is_top -%}
     </ul>
 {% endif -%}
@@ -38,7 +40,7 @@ genre
 <h1>ジャンルマスタメンテ！</h1>
 
 <h2>登録済みジャンル</h2>
-{{ create_genre_ol(genres) -}}
+{{ create_genre_li(genres) -}}
 <h2>登録</h2>
 <form method="POST">
     {{ form.csrf_token }}
