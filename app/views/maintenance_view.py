@@ -4,8 +4,8 @@ from sqlalchemy import select
 from datetime import datetime
 
 from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection
-from views.view_common import get_org_mem
-from views.forms import RegistBookForm
+from .view_common import get_org_mem
+from .forms import RegistBookForm
 
 
 def main(app):

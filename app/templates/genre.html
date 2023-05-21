@@ -2,9 +2,36 @@
 
 {% block title -%}
 genre
-{%- endblock %}
+{% endblock -%}
+
+{% block header_append -%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/genre.css') }}"></link>
+{% endblock -%}
+
+{# 再帰的にジャンルを表示 #}
+{% macro disp_genre(cur_genre, is_top=True) -%}
+{% if is_top -%}
+<ul>
+{% endif -%}
+    <ol>{{ cur_genre.genre.genre_name }}({{ cur_genre.genre.genre_id }})</ol>
+{% if cur_genre.children|length > 0 -%}
+    <ol><ul>
+    {% for g in cur_genre.children -%}
+        {{ dis_genre(g, False) -}}
+    {% endfor -%}
+    </ul></ol>
+{% endif -%}
+{% if is_top -%}
+</ul>
+{% endif -%}
+{% endmacro -%}
 
 {% block body -%}
-ジャンルマスタメンテ！
+<h1>ジャンルマスタメンテ！</h1>
 
-{% endblock %}
+<h2>登録済みジャンル</h2>
+{{ disp_genre(genres) -}}
+<h2>登録</h2>
+
+
+{% endblock -%}

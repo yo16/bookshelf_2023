@@ -6,19 +6,21 @@ from functools import wraps
 
 from app_logger import initialize_logger
 from models import create_sqlalchemy_engine, get_db, DbOrganization, DbMember, DbGenre
-from views.main_view import main as main_view_main
-from views.book_view import main as book_view_main
-from views.borrow_view import main as borrow_view_main
-from views.maintenance_view import main as maintenance_view_main
-from views.member_view import main as member_view_main
-from views.genre_view import main as genre_view_main
-from views.get_book_with_isbn_view import main as get_book_with_isbn_view_main
-from views.signup_view import main as signup_view_main
-from views.login_view import main as login_view_main
-from views.logout_view import main as logout_view_main
-from views.export_books_view import main as export_books_view_main
-from views.regist_member_with_csv_view import main as regist_member_with_csv_view_main
-from views.test_view import main as test_view_main
+from views import (
+    main_view_main,
+    book_view_main,
+    borrow_view_main,
+    maintenance_view_main,
+    member_view_main,
+    genre_view_main,
+    get_book_with_isbn_view_main,
+    signup_view_main,
+    login_view_main,
+    logout_view_main,
+    export_books_view_main,
+    regist_member_with_csv_view_main,
+    test_view_main
+)
 
 
 # アプリケーション

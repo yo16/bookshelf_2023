@@ -3,8 +3,8 @@ from flask import render_template, redirect, url_for, request
 from sqlalchemy import select
 
 from models import get_db, DbOrganization, DbMember, DbGenre
-from views.view_common import get_org_mem
-from views.forms import LoginForm, SignupForm
+from .view_common import get_org_mem
+from .forms import LoginForm, SignupForm
 
 
 def main(app):

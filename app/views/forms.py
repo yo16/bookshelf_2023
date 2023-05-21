@@ -43,3 +43,14 @@ class RegistBookForm(flask_wtf.FlaskForm):
             wtforms.validators.Length(min=10, max=13)
         ]
     )
+
+
+# ジャンルの登録
+class RegistGenreForm(flask_wtf.FlaskForm):
+    parent_genre_id = wtforms.StringField(
+        'parent_genre_id'
+    )
+    genre_name = wtforms.StringField(
+        'genre_name',
+        [wtforms.validators.InputRequired()]
+    )

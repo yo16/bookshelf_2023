@@ -3,8 +3,8 @@ from flask import redirect, url_for, request
 from sqlalchemy import select
 
 from models import get_db, DbOrganization
-from views.view_common import get_org_mem
-from views.forms import LoginForm
+from .view_common import get_org_mem
+from .forms import LoginForm
 
 def main(app):
     logout_user()

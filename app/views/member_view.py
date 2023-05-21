@@ -3,7 +3,7 @@ from flask import render_template
 from sqlalchemy import select
 
 from models import get_db, DbOrganization
-from views.view_common import get_org_mem
+from .view_common import get_org_mem
 
 
 def main(app):
