@@ -1,6 +1,6 @@
 from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, and_
 
 from .db_common import Base, get_db
 from .db_collection import DbCollection
@@ -34,8 +34,54 @@ class DbBook(Base):
         
         return new_book_id
 
+
     @staticmethod
-    def get_book(isbn):
+    def get_book(book_id, org_id):
+        """book_idをキーに、本情報を取得する。
+        ない場合はNoneを返す。
+        DBの構造上、org_idは指定しなくてもいいが、
+        ロジック上、org_idが一致しないbook_idを取得することはないため、必ず指定することとする。
+        """
+        books = None
+        num_of_same_books = 0
+        with get_db() as db:
+            subq = select(
+                DbCollection.book_id.label("book_id")
+            ).where(
+                DbCollection.org_id == org_id
+            ).subquery()
+            stmt = select(
+                    DbBook
+                ).join(
+                    target = subq,
+                    onclause = DbBook.book_id == subq.c.book_id
+                ).where(
+                    DbBook.book_id == book_id
+                )
+            books = db.scalars(stmt).all()
+            if (books is None) or (len(books) == 0):
+                return None, 0
+            # 見つかった場合は１件のはず
+            assert(len(books)==1)
+
+            # collectionをもう一度検索して、所有数を取得する
+            # 本当は１発で取りたい・・・！
+            stmt = select(
+                DbCollection.num_of_same_books
+            ).where(
+                and_(
+                    DbCollection.org_id == org_id,
+                    DbCollection.book_id == book_id
+                )
+            )
+            num_of_same_books = db.scalars(stmt).first()
+
+        # 結果を返す
+        return books[0], num_of_same_books
+
+
+    @staticmethod
+    def get_book_by_isbn(isbn):
         """ISBNをキーに、本情報を取得する。ない場合はNoneを返す
         """
         with get_db() as db:
@@ -47,6 +93,7 @@ class DbBook(Base):
         
         # 結果を返す
         return exec_result
+
 
     @staticmethod
     def get_books_collection(org_id):

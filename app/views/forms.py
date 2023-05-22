@@ -45,6 +45,14 @@ class RegistBookForm(flask_wtf.FlaskForm):
     )
 
 
+# 本の変更
+class EditBookForm(flask_wtf.FlaskForm):
+    num_of_same_books = wtforms.IntegerField(
+        'num_of_same_books',
+        [wtforms.validators.InputRequired()]
+    )
+
+
 # ジャンルの登録
 class RegistGenreForm(flask_wtf.FlaskForm):
     parent_genre_id = wtforms.StringField(

@@ -92,7 +92,7 @@ def create_book(info):
     """
     is_new_book = False
     # DBから本情報を取得
-    cur_book = DbBook.get_book(info["isbn"])
+    cur_book = DbBook.get_book_by_isbn(info["isbn"])
 
     if cur_book is None:
         # なかったので、新しいIDを取得して作る
@@ -199,12 +199,13 @@ def create_collection(info, book):
     """
     is_new_collection = False
     # 登録済みかどうか確認
-    cur_collection = DbCollection.get_collection(
+    collections = DbCollection.get_collection(
         org_id = info["org_id"],
         book_id = book.book_id
     )
 
-    if cur_collection is None:
+    cur_collection = None
+    if (collections is None) or (len(collections) == 0):
         # なかったので、作る
         is_new_collection = True
         cur_collection = DbCollection(
@@ -213,5 +214,7 @@ def create_collection(info, book):
             num_of_same_books = info["num_of_same_books"],
             added_dt = info["added_dt"]
         )
+    else:
+        cur_collection = collections[0]
 
     return cur_collection, is_new_collection

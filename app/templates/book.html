@@ -6,5 +6,14 @@ book
 
 
 {% block body -%}
-
+book_id: {{ book.book_id }}<br />
+isbn: {{ book.isbn }}<br />
+book_name: {{ book.book_name }}<br />
+img: <img src="{{ book.image_url }}" /><br />
+publisher_id: {{ book.publisher_id }}<br />
+<form method="POST">
+    {{ form.csrf_token }}
+num_of_same_books: {{ form.num_of_same_books }}<br />
+    <button type="submit">数の変更</button>
+</form>
 {% endblock -%}
