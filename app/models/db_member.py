@@ -78,13 +78,13 @@ class DbMember(Base, UserMixin):
         if ((org_id is None) or (member_id is None)):
             return None
 
-        db = next(get_db())
-        member = db.execute(select(DbMember).where(
-            and_(
-                DbMember.org_id == org_id,
-                DbMember.member_id == member_id
-            )
-        )).scalars().first()
+        with get_db() as db:
+            member = db.execute(select(DbMember).where(
+                and_(
+                    DbMember.org_id == org_id,
+                    DbMember.member_id == member_id
+                )
+            )).scalars().first()
         if member is None:
             return None
 
@@ -94,14 +94,13 @@ class DbMember(Base, UserMixin):
 
     @staticmethod
     def get_member_id_by_member_code(org_id, member_code):
-        db = next(get_db())
-        member = db.execute(select(DbMember).where(
-            and_(
-                DbMember.org_id == org_id,
-                DbMember.member_code == member_code
-            )
-        )).scalars().first()
-
+        with get_db() as db:
+            member = db.execute(select(DbMember).where(
+                and_(
+                    DbMember.org_id == org_id,
+                    DbMember.member_code == member_code
+                )
+            )).scalars().first()
         if member is None:
             return None
             

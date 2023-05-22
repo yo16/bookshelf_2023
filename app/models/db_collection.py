@@ -22,15 +22,15 @@ class DbCollection(Base):
             org_id (int): 組織ID
             book_id (int): 本ID
         """
-        db = next(get_db())
-        exec_result = db.execute(
-            select(DbCollection).where(
-                and_(
-                    DbCollection.org_id == org_id,
-                    DbCollection.book_id == book_id
+        with get_db() as db:
+            exec_result = db.execute(
+                select(DbCollection).where(
+                    and_(
+                        DbCollection.org_id == org_id,
+                        DbCollection.book_id == book_id
+                    )
                 )
-            )
-        ).scalar()
+            ).scalar()
         if exec_result is None:
             return None
         

@@ -37,12 +37,12 @@ class DbPublisher(Base):
     def get_new_publisher_id():
         new_publisher_id = 0
 
-        db = next(get_db())
-        result = db.execute(
-            select(
-                func.max(DbPublisher.publisher_id).label("max_pub_id")
-            )
-        ).scalars().first()
+        with get_db() as db:
+            result = db.execute(
+                select(
+                    func.max(DbPublisher.publisher_id).label("max_pub_id")
+                )
+            ).scalars().first()
 
         if result is None:
             new_publisher_id = 0

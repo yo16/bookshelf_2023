@@ -15,12 +15,12 @@ class DbAuthor(Base):
     def get_new_author_id():
         new_author_id = 0
 
-        db = next(get_db())
-        result = db.execute(
-            select(
-                func.max(DbAuthor.author_id).label("max_author_id")
-            )
-        ).scalars().first()
+        with get_db() as db:
+            result = db.execute(
+                select(
+                    func.max(DbAuthor.author_id).label("max_author_id")
+                )
+            ).scalars().first()
 
         if result is None:
             new_author_id = 0

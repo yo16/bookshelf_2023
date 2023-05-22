@@ -22,42 +22,42 @@ def main(app):
         parent_genre_id = None
 
         # 登録
-        db = next(get_db())
-        new_org_id = DbOrganization.get_free_org_id()
+        with get_db() as db:
+            new_org_id = DbOrganization.get_free_org_id()
 
-        # organization
-        new_organization = DbOrganization(
-            org_id = new_org_id,
-            org_name = org_name
-        )
-        db.add(new_organization)
+            # organization
+            new_organization = DbOrganization(
+                org_id = new_org_id,
+                org_name = org_name
+            )
+            db.add(new_organization)
 
-        # member
-        new_member = DbMember(
-            org_id = new_org_id,
-            member_id = member_id,
-            password_hashed = hashed_password,
-            member_name = member_name,
-            member_code = member_code,
-            is_admin = member_is_admin,
-            id = f"{new_org_id}-{member_id}"
-        )
-        db.add(new_member)
+            # member
+            new_member = DbMember(
+                org_id = new_org_id,
+                member_id = member_id,
+                password_hashed = hashed_password,
+                member_name = member_name,
+                member_code = member_code,
+                is_admin = member_is_admin,
+                id = f"{new_org_id}-{member_id}"
+            )
+            db.add(new_member)
 
-        # genre
-        new_genre = DbGenre(
-            org_id = new_org_id, 
-            genre_id = genre_id,
-            parent_genre_id = parent_genre_id,
-            genre_name = genre_name
-        )
-        db.add(new_genre)
+            # genre
+            new_genre = DbGenre(
+                org_id = new_org_id, 
+                genre_id = genre_id,
+                parent_genre_id = parent_genre_id,
+                genre_name = genre_name
+            )
+            db.add(new_genre)
 
-        db.commit()
-        db.refresh(new_organization)
-        db.refresh(new_member)
-        db.refresh(new_genre)
-        message = f"組織ID={new_org_id}、メンバーID={member_code}を登録しました"
+            db.commit()
+            db.refresh(new_organization)
+            db.refresh(new_member)
+            db.refresh(new_genre)
+            message = f"組織ID={new_org_id}、メンバーID={member_code}を登録しました"
 
         form = LoginForm(request.form)
         form.org_id.data = new_org_id

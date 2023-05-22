@@ -19,12 +19,12 @@ class DbBook(Base):
     def get_new_book_id():
         new_book_id = 0
 
-        db = next(get_db())
-        exec_result = db.execute(
-            select(
-                func.max(DbBook.book_id).label("max_book_id")
+        with get_db() as db:
+            exec_result = db.execute(
+                select(
+                    func.max(DbBook.book_id).label("max_book_id")
+                )
             )
-        )
         result = exec_result.scalars().first()
         
         if result is None:
@@ -38,10 +38,10 @@ class DbBook(Base):
     def get_book(isbn):
         """ISBNをキーに、本情報を取得する。ない場合はNoneを返す
         """
-        db = next(get_db())
-        exec_result = db.execute(
-            select(DbBook).where(DbBook.isbn == isbn)
-        ).scalar()
+        with get_db() as db:
+            exec_result = db.execute(
+                select(DbBook).where(DbBook.isbn == isbn)
+            ).scalar()
         if exec_result is None:
             return None
         
@@ -55,16 +55,15 @@ class DbBook(Base):
         Args:
             org_id (int): 組織id
         """
-        db = next(get_db())
-
-        subq = select(
-            DbCollection.book_id.label("book_id")
-        ).where(DbCollection.org_id==org_id).subquery()
-        stmt = select(DbBook).join(
-                target = subq,
-                onclause = DbBook.book_id == subq.c.book_id
-            )
-        exec_result = db.scalars(stmt).all()
+        with get_db() as db:
+            subq = select(
+                DbCollection.book_id.label("book_id")
+            ).where(DbCollection.org_id==org_id).subquery()
+            stmt = select(DbBook).join(
+                    target = subq,
+                    onclause = DbBook.book_id == subq.c.book_id
+                )
+            exec_result = db.scalars(stmt).all()
         if (exec_result is None) or (len(exec_result) == 0):
             return []
         

@@ -52,31 +52,31 @@ def regist_info():
     collection, is_new_collection = create_collection(req, book)
 
     # 登録
-    db = next(get_db())
-    if is_new_book:
-        db.add(book)
+    with get_db() as db:
+        if is_new_book:
+            db.add(book)
 
-        # 本が登録済の場合は、著者、writingsも登録されているはず
-        for a in authors:
-            if a["is_new_author"]:
-                db.add(a["author"])
-        for w in writings:
-            db.add(w)
-        db.add(publisher)
-    if is_new_collection:
-        db.add(collection)
-    
-    db.commit()
+            # 本が登録済の場合は、著者、writingsも登録されているはず
+            for a in authors:
+                if a["is_new_author"]:
+                    db.add(a["author"])
+            for w in writings:
+                db.add(w)
+            db.add(publisher)
+        if is_new_collection:
+            db.add(collection)
+        
+        db.commit()
 
-    # 片付け
-    if is_new_book:
-        db.refresh(book)
+        # 片付け
+        if is_new_book:
+            db.refresh(book)
 
-        for a in authors:
-            if a["is_new_author"]:
-                db.refresh(a["author"])
-        for w in writings:
-            db.refresh(w)
+            for a in authors:
+                if a["is_new_author"]:
+                    db.refresh(a["author"])
+            for w in writings:
+                db.refresh(w)
     
     return
     
@@ -123,10 +123,10 @@ def create_authors(info):
         is_new_author = False
 
         # 登録済のDbAuthorがないか確認（名前で！）
-        db = next(get_db())
-        author = db.execute(
-            select(DbAuthor).where(DbAuthor.author_name == a)
-        ).scalar()
+        with get_db() as db:
+            author = db.execute(
+                select(DbAuthor).where(DbAuthor.author_name == a)
+            ).scalar()
         if author is None:
             # 未登録なので登録
             is_new_author = True

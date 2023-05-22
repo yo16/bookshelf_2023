@@ -16,14 +16,14 @@ class DbGenre(Base):
 
     @staticmethod
     def get_genres(org_id):
-        db = next(get_db())
-        genres = db.execute(
-            select(
-                DbGenre
-            ).where(
-                DbGenre.org_id == org_id
-            )
-        ).scalars().all()
+        with get_db() as db:
+            genres = db.execute(
+                select(
+                    DbGenre
+                ).where(
+                    DbGenre.org_id == org_id
+                )
+            ).scalars().all()
         return genres
 
 
@@ -77,14 +77,14 @@ class DbGenre(Base):
     def get_new_genre_id(org_id):
         new_genre_id = 0
 
-        db = next(get_db())
-        exec_result = db.execute(
-            select(
-                func.max(DbGenre.genre_id).label("max_book_id")
-            ).where(
-                DbGenre.org_id == org_id
+        with get_db() as db:
+            exec_result = db.execute(
+                select(
+                    func.max(DbGenre.genre_id).label("max_book_id")
+                ).where(
+                    DbGenre.org_id == org_id
+                )
             )
-        )
         result = exec_result.scalars().first()
         
         if result is None:
