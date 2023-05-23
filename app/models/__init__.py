@@ -7,3 +7,4 @@ from .db_author import DbAuthor
 from .db_writing import DbWriting
 from .db_publisher import DbPublisher
 from .db_collection import DbCollection
+from .db_borrowed_history import DbBorrowedHistory

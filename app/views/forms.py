@@ -53,6 +53,14 @@ class EditBookForm(flask_wtf.FlaskForm):
     )
 
 
+# 本を借りる
+class BorrowBookForm(flask_wtf.FlaskForm):
+    book_id = wtforms.HiddenField(
+        'book_id',
+        [wtforms.validators.DataRequired()]
+    )
+
+
 # ジャンルの登録
 class RegistGenreForm(flask_wtf.FlaskForm):
     parent_genre_id = wtforms.StringField(

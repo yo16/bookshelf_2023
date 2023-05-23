@@ -12,8 +12,14 @@ book_name: {{ book.book_name }}<br />
 img: <img src="{{ book.image_url }}" /><br />
 publisher_id: {{ book.publisher_id }}<br />
 <form method="POST">
-    {{ form.csrf_token }}
-num_of_same_books: {{ form.num_of_same_books }}<br />
+    {{ edit_form.csrf_token }}
+num_of_same_books: {{ edit_form.num_of_same_books }}<br />
+<hr />
     <button type="submit">数の変更</button>
+</form>
+<form method="POST" action="{{ url_for('borrow') }}">
+    {{ borrow_form.csrf_token }}
+    {{ borrow_form.book_id }}
+    <button type="submit">本を借りる</button>
 </form>
 {% endblock -%}

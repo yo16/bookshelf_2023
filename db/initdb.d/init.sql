@@ -69,13 +69,14 @@ CREATE TABLE IF NOT EXISTS `member` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `borrowed_history` (
+    `org_id`            INT             NOT NULL,
     `book_id`           INT             NOT NULL,
     `member_id`         INT             NOT NULL,
     `borrow_times`      INT             NOT NULL,
     `borrow_dt`         DATETIME        NOT NULL,
     `returned_dt`       DATETIME,
     `note`              VARCHAR(500),
-    PRIMARY KEY (book_id, member_id, borrow_times)
+    PRIMARY KEY (org_id, book_id, member_id, borrow_times)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 

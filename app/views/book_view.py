@@ -4,11 +4,12 @@ from sqlalchemy import select
 
 from models import get_db, DbBook, DbCollection
 from .view_common import get_org_mem
-from .forms import EditBookForm
+from .forms import EditBookForm, BorrowBookForm
 
 
 def main(app):
-    form = EditBookForm(request.form)
+    edit_form = EditBookForm(request.form)
+    borrow_form = BorrowBookForm(request.form)
 
     org_mem = get_org_mem()
     org_id = org_mem["organization"].org_id
@@ -19,7 +20,13 @@ def main(app):
     if book is None:
         # なかったらmainに飛ばす
         redirect(url_for("main"))
-    form.num_of_same_books.data = num_of_same_books
+    edit_form.num_of_same_books.data = num_of_same_books
+    borrow_form.book_id.data = book_id
 
-    return render_template("book.html", **org_mem, book=book, form=form)
+    return render_template(
+        "book.html", **org_mem,
+        book=book,
+        edit_form=edit_form,
+        borrow_form=borrow_form
+    )
 
