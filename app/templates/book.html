@@ -6,11 +6,16 @@ book
 
 
 {% block body -%}
-book_id: {{ book.book_id }}<br />
-isbn: {{ book.isbn }}<br />
-book_name: {{ book.book_name }}<br />
-img: <img src="{{ book.image_url }}" /><br />
-publisher_id: {{ book.publisher_id }}<br />
+<h1>book</h1>
+book_id: {{ book_info.book.book_id }}<br />
+isbn: {{ book_info.book.isbn }}<br />
+book_name: {{ book_info.book.book_name }}<br />
+img: <img src="{{ book_info.book.image_url }}" /><br />
+publisher_id: {{ book_info.book.publisher_id }}<br />
+publisher_name: {{ book_info.publisher }}<br />
+authors: {% for a in book_info.authors -%}
+- {{ a }}<br />
+{% endfor -%}
 <form method="POST">
     {{ edit_form.csrf_token }}
 num_of_same_books: {{ edit_form.num_of_same_books }}<br />

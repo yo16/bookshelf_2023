@@ -1,9 +1,15 @@
 from sqlalchemy import String, select
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, aliased
 from sqlalchemy.sql.expression import func, and_
 
 from .db_common import Base, get_db
 from .db_collection import DbCollection
+from .db_author import DbAuthor
+from .db_writing import DbWriting
+from .db_publisher import DbPublisher
+from .db_genre import DbGenre
+from .db_borrowed_history import DbBorrowedHistory
+from .db_member import DbMember
 
 
 class DbBook(Base):
@@ -115,3 +121,69 @@ class DbBook(Base):
             return []
         
         return exec_result
+
+
+    @staticmethod
+    def get_book_info(book_id, org_id):
+        """bookとその周辺のテーブルも全部取得してdictにして返す
+        ない場合はNoneを返す。
+
+        Args:
+            book_id (_type_): book_id
+            org_id (_type_): org_id
+        """
+        with get_db() as db:
+            # book, publisher, collection
+            subq_collection = select(
+                DbCollection.book_id.label("book_id"),
+                DbCollection.num_of_same_books.label("num_of_same_books")
+            ).where(
+                and_(
+                    DbCollection.org_id == org_id,
+                    DbCollection.book_id == book_id
+                )
+            ).subquery()
+            result = db.execute(
+                select(
+                    DbBook,
+                    DbPublisher.publisher_name,
+                    subq_collection.c.num_of_same_books
+                ).where(
+                    DbBook.book_id == book_id
+                ).join(
+                    target = DbPublisher,
+                    onclause = DbBook.publisher_id == DbPublisher.publisher_id
+                ).join(
+                    target = subq_collection,
+                    onclause = DbBook.book_id == subq_collection.c.book_id
+                )
+            ).first()
+            if (result is None) or (len(result) == 0):
+                return None
+            book = result[0]
+            publisher_name = result[1]
+            num_of_same_books = result[2]
+
+            # authors
+            subq_writing = select(
+                DbWriting.author_id.label("author_id")
+            ).where(
+                DbWriting.book_id == book_id
+            ).subquery()
+            stmt_authors = select(
+                DbAuthor.author_name.label("author_name")
+            ).join(
+                target = subq_writing,
+                onclause = DbAuthor.author_id == subq_writing.c.author_id
+            )
+            authors = db.scalars(stmt_authors).all()
+            if (authors is None) or (len(authors) == 0):
+                return None
+
+        return {
+            "book": book,
+            "num_of_same_books": num_of_same_books,
+            "publisher": publisher_name,
+            "authors": authors
+        }
+
