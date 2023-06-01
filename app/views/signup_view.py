@@ -49,7 +49,8 @@ def main(app):
                 org_id = new_org_id, 
                 genre_id = genre_id,
                 parent_genre_id = parent_genre_id,
-                genre_name = genre_name
+                genre_name = genre_name,
+                sort_key = "1_"
             )
             db.add(new_genre)
 

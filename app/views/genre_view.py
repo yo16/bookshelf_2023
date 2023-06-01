@@ -12,8 +12,12 @@ def main(app):
     org_id = org_mem["organization"].org_id
 
     if form.validate_on_submit():
+        # 親のgenre情報から、今回のsort_keyを取得
+        parent_genre = DbGenre.get_genre(org_id, int(request.form["parent_genre_id"]))
+        new_sort_key = DbGenre.get_next_sort_key(parent_genre)
+
         # 登録
-        regist_genre(org_id)
+        regist_genre(org_id, new_sort_key)
 
         # フォームを初期化
         form = RegistGenreForm()
@@ -36,7 +40,7 @@ def get_genre_info(org_id):
     return p_genres
 
 
-def regist_genre(org_id):
+def regist_genre(org_id, new_sort_key):
     """登録情報からgenreを作成する
     """
     with get_db() as db:
@@ -44,7 +48,8 @@ def regist_genre(org_id):
             org_id = org_id,
             genre_id = DbGenre.get_new_genre_id(org_id),
             parent_genre_id = int(request.form["parent_genre_id"]),
-            genre_name = request.form["genre_name"]
+            genre_name = request.form["genre_name"],
+            sort_key = new_sort_key
         )
 
         db.add(genre)

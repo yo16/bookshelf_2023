@@ -1,7 +1,7 @@
 from flask import render_template, request
 from sqlalchemy import select
 
-from models import get_db, DbGenre
+from models import get_db
 from .view_common import get_org_mem
 #from .forms import RegistMypageForm
 from .forms import RegistGenreForm
