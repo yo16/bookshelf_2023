@@ -1,4 +1,4 @@
-from sqlalchemy import String, select
+from sqlalchemy import String, select, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func, and_
 
@@ -7,12 +7,13 @@ from .db_common import Base, get_db
 
 class DbGenre(Base):
     __tablename__ = "genre"
+    __table_args__ = (UniqueConstraint("org_id", "sort_key"),)
 
     org_id: Mapped[int] = mapped_column(primary_key=True)
     genre_id: Mapped[int] = mapped_column(primary_key=True)
     parent_genre_id: Mapped[int] = mapped_column()
     genre_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    sort_key: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    sort_key: Mapped[str] = mapped_column(String(100), nullable=False)
 
 
     @staticmethod
