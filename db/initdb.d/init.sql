@@ -44,8 +44,6 @@ CREATE TABLE IF NOT EXISTS `classification` (
     `org_id`            INT             NOT NULL,
     `genre_id`          INT             NOT NULL,
     `book_id`           INT             NOT NULL,
-    `parent_genre_id`   INT,
-    `genre_name`        VARCHAR(100)    NOT NULL,
     PRIMARY KEY (org_id, genre_id, book_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
