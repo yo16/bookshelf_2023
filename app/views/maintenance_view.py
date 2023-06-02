@@ -3,7 +3,7 @@ from flask_login import current_user
 from sqlalchemy import select
 from datetime import datetime
 
-from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection
+from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection, DbGenre, DbClassification
 from .view_common import get_org_mem
 from .forms import RegistBookForm
 
@@ -15,8 +15,16 @@ def main(app):
     if form.validate_on_submit():
         # 登録処理
         regist_info()
+    
+    # ジャンル一覧を取得
+    genres = DbGenre.get_genres(org_mem["organization"].org_id)
 
-    return render_template("maintenance.html", **org_mem, form=form, now=datetime.now())
+    return render_template(
+        "maintenance.html", **org_mem,
+        form = form,
+        genres = genres,
+        now = datetime.now()
+    )
 
 
 def regist_info():
@@ -44,11 +52,16 @@ def regist_info():
     
     # 登録する情報
     book, is_new_book = create_book(req)
+    authors = None
+    writings = None
+    publisher = None
+    classifications = None
     if is_new_book:
         authors = create_authors(req)
         writings = create_writings(req, book, authors)
         publisher = create_publisher(req)
         book.publisher_id = publisher.publisher_id
+        classifications = create_classifications(req, book)
     collection, is_new_collection = create_collection(req, book)
 
     # 登録
@@ -56,13 +69,16 @@ def regist_info():
         if is_new_book:
             db.add(book)
 
-            # 本が登録済の場合は、著者、writingsも登録されているはず
+            # 本が登録済の場合は、著者、writings、classificationも登録されているはず
             for a in authors:
                 if a["is_new_author"]:
                     db.add(a["author"])
             for w in writings:
                 db.add(w)
             db.add(publisher)
+            for c in classifications:
+                db.add(c)
+
         if is_new_collection:
             db.add(collection)
         
@@ -77,6 +93,9 @@ def regist_info():
                     db.refresh(a["author"])
             for w in writings:
                 db.refresh(w)
+            db.refresh(publisher)
+            for c in classifications:
+                db.refresh(c)
     
     return
     
@@ -218,3 +237,31 @@ def create_collection(info, book):
         cur_collection = collections[0]
 
     return cur_collection, is_new_collection
+
+
+def create_classifications(info, book):
+    """classicifation（複数）を作成する
+
+    Args:
+        info (dict): requestから集めた情報
+        book (DbBook): 所有する本
+    """
+    genres_str = info["genres"]
+
+    # 指定がない場合は、分類なしの0が設定されたとみなす
+    if (len(genres_str) == 0):
+        genres_str = "0"
+    
+    genre_id_ary = genres_str.split(",")
+
+    ret_genres = []
+    for g_id in genre_id_ary:
+        ret_genres.append(
+            DbClassification(
+                org_id = info["org_id"],
+                genre_id = g_id,
+                book_id = book.book_id
+            )
+        )
+    
+    return ret_genres

@@ -2,9 +2,27 @@
 
 $(function(){
     $("#search_book").click(function(){
-        var isbn = $("#isbn").val();
+        let isbn = $("#isbn").val();
         console.log("isbn:" + isbn);
         get_book(isbn);
+    });
+    $("#btn_add_genre").click(function(){
+        // 今の入力状態
+        let cur_genres_str = $("#genres").val();
+        let cur_genres = [];
+        if (cur_genres_str.length > 0){
+            cur_genres = cur_genres_str.split(",");
+        }
+        // 今選択されているgenre
+        let added_genre = $("#sel_genre").val();
+        // 入力されている場合は、何もせず抜ける
+        if (cur_genres.includes(added_genre)){
+            return;
+        }
+        // 入力されていない場合は、追加する
+        cur_genres.push(added_genre);
+        // 入力
+        $("#genres").val(cur_genres.join(","))
     });
 
     initialize();
@@ -93,6 +111,7 @@ function initialize(){
     $("#book_name").val("");
     $("#author0").val("");
     $("#publisher_name").val("");
+    $("#genres").val("");
 };
 
 /*

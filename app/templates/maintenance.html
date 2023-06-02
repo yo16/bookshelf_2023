@@ -37,7 +37,14 @@ maintenance
     <p>publisher_code: <input type="text" id="publisher_code" name="publisher_code" /></p>
     <p>publisher_name: <input type="text" id="publisher_name" name="publisher_name" /></p>
     <p>comment: <input type="text" id="comment" name="comment" /></p>
-    <p>genres: <input type="text" id="genres" name="genres" /></p>
+    <p>genres:<br />
+        <select id="sel_genre">
+        {% for g in genres -%}
+            <option value="{{ g.genre_id }}">{{ g.genre_name }}</option>
+        {% endfor -%}
+        </select>
+        <button type="button" id="btn_add_genre">add genre →</button>
+        <input type="text" id="genres" name="genres" /></p>
     <p>num_of_same_books: <input type="text" id="num_of_same_books" name="num_of_same_books" value="1" /></p>
     <p>org_id: <input type="text" id="org_id" name="org_id" value="{{ organization.org_id }}" /></p>
     <p>added_dt: <input type="date" id="added_dt" name="added_dt" value="{{ now.strftime('%Y-%m-%d') }}" /></p>

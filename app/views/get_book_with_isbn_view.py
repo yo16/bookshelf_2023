@@ -20,7 +20,7 @@ def main(app):
         "publisher_code": "",
         "image_url": "",
         "comment": "",
-        "genres": "to be implemented!!"
+        "genres": ""
     }
 
     #print(10)
