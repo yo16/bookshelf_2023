@@ -7,6 +7,9 @@ book
 
 {% block body -%}
 <h1>book</h1>
+{% if message -%}
+<p>message:{{ message }}</p>
+{% endif -%}
 book_id: {{ book_info.book.book_id }}<br />
 isbn: {{ book_info.book.isbn }}<br />
 book_name: {{ book_info.book.book_name }}<br />
@@ -28,21 +31,29 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
         <th>member</th>
         <th>borrow_dt</th>
         <th>returned_dt</th>
+        <th>note</th>
     </tr>
     {% for h in book_info.histories -%}
     <tr>
         <td>{{ h.member.member_name }}</td>
         <td>{{ h.borrow_history.borrow_dt }}</td>
         <td>{{ h.borrow_history.returned_dt }}</td>
+        <td>{{ h.borrow_history.note }}</td>
     </tr>
     {% endfor -%}
 </table>
 <hr />
     <button type="submit">数の変更</button>
 </form>
-<form method="POST" action="{{ url_for('borrow') }}">
+<form method="POST" action="{{ url_for('borrow_book') }}">
     {{ borrow_form.csrf_token }}
     {{ borrow_form.book_id }}
     <button type="submit">本を借りる</button>
+</form>
+<form method="POST" action="{{ url_for('return_book') }}">
+    {{ return_form.csrf_token }}
+    {{ return_form.book_id }}
+    ノート：{{ return_form.note }}<br />
+    <button type="submit">本を返す</button>
 </form>
 {% endblock -%}

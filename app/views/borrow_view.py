@@ -36,5 +36,5 @@ def main(app):
         db.commit()
         db.refresh(his)
 
-    return redirect(url_for("main"))
+    return redirect(url_for("book", book_id=borrow_form.book_id.data))
 
