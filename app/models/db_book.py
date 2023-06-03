@@ -207,11 +207,43 @@ class DbBook(Base):
                 # 正常であれば存在するはず
                 return None
 
+            # borrowed_his
+            subq_his = select(
+                DbBorrowedHistory
+            ).where(
+                and_(
+                    DbBorrowedHistory.org_id == org_id,
+                    DbBorrowedHistory.book_id == book_id
+                )
+            ).subquery()
+            subq_his_alias = aliased(DbBorrowedHistory, subq_his, "his")
+            stmt_members = select(
+                DbMember,
+                subq_his_alias
+            ).join(
+                target = subq_his_alias,
+                onclause = and_(
+                    DbMember.org_id == subq_his_alias.org_id,
+                    DbMember.member_id == subq_his_alias.member_id
+                )
+            ).order_by(
+                subq_his_alias.borrow_dt
+            )
+            hiss_result = db.execute(stmt_members).all()
+            hiss = []
+            if (hiss_result is not None):
+                for rslt in hiss_result:
+                    hiss.append({
+                        "member": rslt[0],
+                        "borrow_history": rslt[1],
+                    })
+
         return {
             "book": book,
             "num_of_same_books": num_of_same_books,
             "publisher": publisher_name,
             "authors": authors,
-            "genres": genres
+            "genres": genres,
+            "histories": hiss
         }
 

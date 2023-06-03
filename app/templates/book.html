@@ -22,6 +22,21 @@ genres: {% for g in book_info.genres -%}
 <form method="POST">
     {{ edit_form.csrf_token }}
 num_of_same_books: {{ edit_form.num_of_same_books }}<br />
+-- his --<br />
+<table border="1">
+    <tr>
+        <th>member</th>
+        <th>borrow_dt</th>
+        <th>returned_dt</th>
+    </tr>
+    {% for h in book_info.histories -%}
+    <tr>
+        <td>{{ h.member.member_name }}</td>
+        <td>{{ h.borrow_history.borrow_dt }}</td>
+        <td>{{ h.borrow_history.returned_dt }}</td>
+    </tr>
+    {% endfor -%}
+</table>
 <hr />
     <button type="submit">数の変更</button>
 </form>
