@@ -1,9 +1,8 @@
-from sqlalchemy import String, DateTime, select
-from sqlalchemy.orm import Mapped, mapped_column, aliased
-from sqlalchemy.sql.expression import and_
+from sqlalchemy import String, DateTime
+from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
-from .db_common import Base, get_db
+from .db_common import Base
 
 
 class DbBorrowedHistory(Base):
