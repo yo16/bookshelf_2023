@@ -36,9 +36,9 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
     {% for h in book_info.histories -%}
     <tr>
         <td>{{ h.member.member_name }}</td>
-        <td>{{ h.borrow_history.borrow_dt }}</td>
-        <td>{{ h.borrow_history.returned_dt }}</td>
-        <td>{{ h.borrow_history.note }}</td>
+        <td>{{ h.borrowed_history.borrow_dt }}</td>
+        <td>{{ h.borrowed_history.returned_dt }}</td>
+        <td>{{ h.borrowed_history.note }}</td>
     </tr>
     {% endfor -%}
 </table>

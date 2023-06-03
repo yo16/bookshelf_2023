@@ -235,7 +235,7 @@ class DbBook(Base):
                 for rslt in hiss_result:
                     hiss.append({
                         "member": rslt[0],
-                        "borrow_history": rslt[1],
+                        "borrowed_history": rslt[1],
                     })
 
         return {
