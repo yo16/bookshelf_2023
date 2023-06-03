@@ -9,6 +9,8 @@ from .db_writing import DbWriting
 from .db_publisher import DbPublisher
 from .db_borrowed_history import DbBorrowedHistory
 from .db_member import DbMember
+from .db_genre import DbGenre
+from .db_classification import DbClassification
 
 
 class DbBook(Base):
@@ -158,6 +160,7 @@ class DbBook(Base):
                 )
             ).first()
             if (result is None) or (len(result) == 0):
+                # 正常であれば存在するはず
                 return None
             book = result[0]
             publisher_name = result[1]
@@ -170,19 +173,45 @@ class DbBook(Base):
                 DbWriting.book_id == book_id
             ).subquery()
             stmt_authors = select(
-                DbAuthor.author_name.label("author_name")
+                DbAuthor
             ).join(
                 target = subq_writing,
                 onclause = DbAuthor.author_id == subq_writing.c.author_id
             )
             authors = db.scalars(stmt_authors).all()
             if (authors is None) or (len(authors) == 0):
+                # 正常であれば存在するはず
+                return None
+            
+            # genres
+            subq_cls = select(
+                DbClassification.org_id.label("org_id"),
+                DbClassification.genre_id.label("genre_id")
+            ).where(
+                and_(
+                    DbClassification.org_id == org_id,
+                    DbClassification.book_id == book_id
+                )
+            ).subquery()
+            stmt_genres = select(
+                DbGenre
+            ).join(
+                target = subq_cls,
+                onclause = and_(
+                    DbGenre.org_id == subq_cls.c.org_id,
+                    DbGenre.genre_id == subq_cls.c.genre_id
+                )
+            )
+            genres = db.scalars(stmt_genres).all()
+            if (genres is None) or (len(genres) == 0):
+                # 正常であれば存在するはず
                 return None
 
         return {
             "book": book,
             "num_of_same_books": num_of_same_books,
             "publisher": publisher_name,
-            "authors": authors
+            "authors": authors,
+            "genres": genres
         }
 

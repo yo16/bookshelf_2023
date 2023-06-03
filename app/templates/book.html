@@ -14,7 +14,10 @@ img: <img src="{{ book_info.book.image_url }}" /><br />
 publisher_id: {{ book_info.book.publisher_id }}<br />
 publisher_name: {{ book_info.publisher }}<br />
 authors: {% for a in book_info.authors -%}
-- {{ a }}<br />
+- {{ a.author_name }}<br />
+{% endfor -%}
+genres: {% for g in book_info.genres -%}
+- {{ g.genre_name }}<br />
 {% endfor -%}
 <form method="POST">
     {{ edit_form.csrf_token }}

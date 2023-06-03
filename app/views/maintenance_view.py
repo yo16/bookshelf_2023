@@ -61,11 +61,13 @@ def regist_info():
         writings = create_writings(req, book, authors)
         publisher = create_publisher(req)
         book.publisher_id = publisher.publisher_id
-        classifications = create_classifications(req, book)
+    classifications = create_classifications(req, book)
     collection, is_new_collection = create_collection(req, book)
 
     # 登録
     with get_db() as db:
+        # 他のorg_idが登録済のbookの場合があり、
+        # 完全に未登録の場合のみ、bookやauthors等を登録する
         if is_new_book:
             db.add(book)
 
@@ -76,8 +78,9 @@ def regist_info():
             for w in writings:
                 db.add(w)
             db.add(publisher)
-            for c in classifications:
-                db.add(c)
+        
+        for c in classifications:
+            db.add(c)
 
         if is_new_collection:
             db.add(collection)
@@ -249,10 +252,14 @@ def create_classifications(info, book):
     genres_str = info["genres"]
 
     # 指定がない場合は、分類なしの0が設定されたとみなす
+    print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+    print(f">{genres_str}<")
     if (len(genres_str) == 0):
+        print("LEN=0")
         genres_str = "0"
     
     genre_id_ary = genres_str.split(",")
+    print(genre_id_ary)
 
     ret_genres = []
     for g_id in genre_id_ary:
