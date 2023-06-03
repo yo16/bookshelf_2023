@@ -247,3 +247,35 @@ class DbBook(Base):
             "histories": hiss
         }
 
+
+    @staticmethod
+    def get_bookhis_by_member(org_id, member_id):
+        with get_db() as db:
+            subq_his = select(
+                DbBorrowedHistory
+            ).where(
+                and_(
+                    DbBorrowedHistory.org_id == org_id,
+                    DbBorrowedHistory.member_id == member_id
+                )
+            ).subquery()
+            subq_his_alias = aliased(DbBorrowedHistory, subq_his, "his")
+            stmt_book_his = select(
+                DbBook,
+                subq_his_alias
+            ).join(
+                target = subq_his_alias,
+                onclause = DbBook.book_id == subq_his_alias.book_id
+            ).order_by(
+                subq_his_alias.borrow_dt
+            )
+            book_his_result = db.execute(stmt_book_his).all()
+            hiss = []
+            if (book_his_result is not None):
+                for rslt in book_his_result:
+                    hiss.append({
+                        "book": rslt[0],
+                        "borrowed_history": rslt[1],
+                    })
+
+        return hiss
