@@ -50,3 +50,21 @@ class DbPublisher(Base):
             new_publisher_id = result + 1
 
         return new_publisher_id
+
+
+    @staticmethod
+    def get_publisher_by_pubcode(publisher_code):
+        with get_db() as db:
+            result = db.execute(
+                select(
+                    DbPublisher
+                ).where(
+                    DbPublisher.publisher_code == publisher_code
+                )
+            ).scalars().first()
+        
+        if result is None:
+            return None
+
+        return result
+

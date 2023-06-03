@@ -55,11 +55,12 @@ def regist_info():
     authors = None
     writings = None
     publisher = None
+    is_new_pub = False
     classifications = None
     if is_new_book:
         authors = create_authors(req)
         writings = create_writings(req, book, authors)
-        publisher = create_publisher(req)
+        publisher, is_new_pub = create_publisher(req)
         book.publisher_id = publisher.publisher_id
     classifications = create_classifications(req, book)
     collection, is_new_collection = create_collection(req, book)
@@ -69,19 +70,27 @@ def regist_info():
         # 他のorg_idが登録済のbookの場合があり、
         # 完全に未登録の場合のみ、bookやauthors等を登録する
         if is_new_book:
+            # book
             db.add(book)
 
-            # 本が登録済の場合は、著者、writings、classificationも登録されているはず
+            # author
             for a in authors:
                 if a["is_new_author"]:
                     db.add(a["author"])
+            
+            # writing
             for w in writings:
                 db.add(w)
-            db.add(publisher)
+
+            # publisher
+            if is_new_pub:
+                db.add(publisher)
         
+        # classification
         for c in classifications:
             db.add(c)
 
+        # collection
         if is_new_collection:
             db.add(collection)
         
@@ -96,9 +105,12 @@ def regist_info():
                     db.refresh(a["author"])
             for w in writings:
                 db.refresh(w)
-            db.refresh(publisher)
-            for c in classifications:
-                db.refresh(c)
+            if is_new_pub:
+                db.refresh(publisher)
+        for c in classifications:
+            db.refresh(c)
+        if is_new_collection:
+            db.refresh(collection)
     
     return
     
@@ -199,17 +211,26 @@ def create_publisher(info):
 
     Args:
         info (dict): requestから集めた情報
+    Returns:
+        DbPubliser: isbnから検索または作成したpublisher
+        bool: True:新規作成, False:検索(既存)
     """
-    new_pub_id = DbPublisher.get_new_publisher_id()
+    # publisher_codeが指定されている場合は、すでに存在していないか確認し
+    # 存在している場合は作成しない
     publisher_code = DbPublisher.get_publisher_code_from_isbn(info["isbn"])
-    publisher_name = f"code[{publisher_code}]"
+    if (len(info["isbn"]) > 0):
+        registed_pub = DbPublisher.get_publisher_by_pubcode(publisher_code)
+        if registed_pub:
+            return registed_pub, False
 
+    new_pub_id = DbPublisher.get_new_publisher_id()
+    publisher_name = f"code[{publisher_code}]"
 
     return DbPublisher(
         publisher_id = new_pub_id,
         publisher_name = publisher_name,
         publisher_code = publisher_code
-    )
+    ), True
 
 
 def create_collection(info, book):
