@@ -18,7 +18,7 @@ class DbMember(Base, UserMixin):
     member_name: Mapped[str] = mapped_column(String(100), nullable=False)
     member_code: Mapped[str] = mapped_column(String(20), nullable=False)
     is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    enable_flug: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    is_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     
     id = None
 
@@ -33,7 +33,7 @@ class DbMember(Base, UserMixin):
         self.member_name = member_name
         self.member_code = member_code
         self.is_admin = is_admin
-        self.enable_flug = enable_flug
+        self.is_enabled = is_enabled
     """
 
     def to_string(self):
@@ -44,7 +44,7 @@ class DbMember(Base, UserMixin):
             f"member_name:{self.member_name}\n" + \
             f"member_code:{self.member_code}\n" + \
             f"is_admin:{self.is_admin}\n" + \
-            f"enable_flug:{self.enable_flug}\n"
+            f"is_enabled:{self.is_enabled}\n"
         
         return s
 
@@ -94,6 +94,24 @@ class DbMember(Base, UserMixin):
         member.id = f"{org_id}-{member_id}"
 
         return member
+
+
+    @staticmethod
+    def get_members_in_org(org_id):
+        members = None
+        with get_db() as db:
+            members = db.scalars(
+                select(
+                    DbMember
+                ).where(
+                    DbMember.org_id == org_id
+                )
+            )
+            # 今この要求を出しているユーザーが必ず１人はいるはず
+            assert(members is not None, "メンバーが見つからない")
+
+        return members
+
 
     @staticmethod
     def get_member_id_by_member_code(org_id, member_code):

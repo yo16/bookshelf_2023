@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `member` (
     `member_name`       VARCHAR(100)    NOT NULL,
     `member_code`       VARCHAR(20)     NOT NULL,
     `is_admin`          BOOLEAN         NOT NULL DEFAULT FALSE,
-    `enable_flug`       BOOLEAN         NOT NULL DEFAULT TRUE,
+    `is_enabled`        BOOLEAN         NOT NULL DEFAULT TRUE,
     PRIMARY KEY (org_id, member_id),
     UNIQUE (org_id, member_code)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
