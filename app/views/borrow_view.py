@@ -30,7 +30,7 @@ def main(app):
             member_id = current_user.member_id,
             book_id = borrow_form.book_id.data,
             borrow_times = borrow_times_past + 1,
-            borrow_dt = datetime.now()
+            borrowed_dt = datetime.now()
         )
         db.add(his)
         db.commit()

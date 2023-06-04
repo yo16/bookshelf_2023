@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `borrowed_history` (
     `book_id`           INT             NOT NULL,
     `member_id`         INT             NOT NULL,
     `borrow_times`      INT             NOT NULL,
-    `borrow_dt`         DATETIME        NOT NULL,
+    `borrowed_dt`       DATETIME        NOT NULL,
     `returned_dt`       DATETIME,
     `note`              VARCHAR(500),
     PRIMARY KEY (org_id, book_id, member_id, borrow_times)

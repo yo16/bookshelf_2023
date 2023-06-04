@@ -12,6 +12,6 @@ class DbBorrowedHistory(Base):
     member_id: Mapped[int] = mapped_column(primary_key=True)
     book_id: Mapped[int] = mapped_column(primary_key=True)
     borrow_times: Mapped[int] = mapped_column(primary_key=True)
-    borrow_dt: Mapped[datetime]  = mapped_column(DateTime, nullable=False)
+    borrowed_dt: Mapped[datetime]  = mapped_column(DateTime, nullable=False)
     returned_dt: Mapped[datetime]  = mapped_column(DateTime, nullable=True)
     note: Mapped[str] = mapped_column(String)

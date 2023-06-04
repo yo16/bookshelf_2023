@@ -227,7 +227,7 @@ class DbBook(Base):
                     DbMember.member_id == subq_his_alias.member_id
                 )
             ).order_by(
-                subq_his_alias.borrow_dt
+                subq_his_alias.borrowed_dt
             )
             hiss_result = db.execute(stmt_members).all()
             hiss = []
@@ -267,7 +267,7 @@ class DbBook(Base):
                 target = subq_his_alias,
                 onclause = DbBook.book_id == subq_his_alias.book_id
             ).order_by(
-                subq_his_alias.borrow_dt
+                subq_his_alias.borrowed_dt
             )
             book_his_result = db.execute(stmt_book_his).all()
             hiss = []

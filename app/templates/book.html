@@ -29,14 +29,14 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
 <table border="1">
     <tr>
         <th>member</th>
-        <th>borrow_dt</th>
+        <th>borrowed_dt</th>
         <th>returned_dt</th>
         <th>note</th>
     </tr>
     {% for h in book_info.histories -%}
     <tr>
         <td><a href="{{ url_for('mypage', mem_id=h.member.member_id) }}">{{ h.member.member_name }}</a></td>
-        <td>{{ h.borrowed_history.borrow_dt }}</td>
+        <td>{{ h.borrowed_history.borrowed_dt }}</td>
         <td>{{ h.borrowed_history.returned_dt }}</td>
         <td>{{ h.borrowed_history.note }}</td>
     </tr>

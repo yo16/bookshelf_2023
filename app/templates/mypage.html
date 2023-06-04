@@ -14,14 +14,14 @@ is_admin: {{ disp_member.is_admin }}<br />
 <table border="1">
     <tr>
         <th>book_name</th>
-        <th>borrow_dt</th>
+        <th>borrowed_dt</th>
         <th>returned_dt</th>
         <th>note</th>
     </tr>
     {% for h in histories -%}
     <tr>
         <td><a href="{{ url_for('book', book_id=h.book.book_id) }}">{{ h.book.book_name }}</a></td>
-        <td>{{ h.borrowed_history.borrow_dt }}</td>
+        <td>{{ h.borrowed_history.borrowed_dt }}</td>
         <td>{{ h.borrowed_history.returned_dt }}</td>
         <td>{{ h.borrowed_history.note }}</td>
     </tr>
