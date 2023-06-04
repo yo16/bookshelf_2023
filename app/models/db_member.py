@@ -18,6 +18,7 @@ class DbMember(Base, UserMixin):
     member_name: Mapped[str] = mapped_column(String(100), nullable=False)
     member_code: Mapped[str] = mapped_column(String(20), nullable=False)
     is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    enable_flug: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     
     id = None
 
@@ -32,6 +33,7 @@ class DbMember(Base, UserMixin):
         self.member_name = member_name
         self.member_code = member_code
         self.is_admin = is_admin
+        self.enable_flug = enable_flug
     """
 
     def to_string(self):
@@ -41,7 +43,8 @@ class DbMember(Base, UserMixin):
             f"password_hashed:{self.password_hashed}\n" + \
             f"member_name:{self.member_name}\n" + \
             f"member_code:{self.member_code}\n" + \
-            f"is_admin:{self.is_admin}\n"
+            f"is_admin:{self.is_admin}\n" + \
+            f"enable_flug:{self.enable_flug}\n"
         
         return s
 

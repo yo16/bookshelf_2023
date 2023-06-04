@@ -40,6 +40,7 @@ def main(app):
                 member_name = member_name,
                 member_code = member_code,
                 is_admin = member_is_admin,
+                enable_flug = True,
                 id = f"{new_org_id}-{member_id}"
             )
             db.add(new_member)
