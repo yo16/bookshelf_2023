@@ -106,7 +106,7 @@ class DbMember(Base, UserMixin):
                 ).where(
                     DbMember.org_id == org_id
                 )
-            )
+            ).all()
             # 今この要求を出しているユーザーが必ず１人はいるはず
             assert(members is not None, "メンバーが見つからない")
 

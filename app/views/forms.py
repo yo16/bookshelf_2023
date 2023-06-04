@@ -81,3 +81,61 @@ class RegistGenreForm(flask_wtf.FlaskForm):
         'genre_name',
         [wtforms.validators.InputRequired()]
     )
+
+
+# メンバーの追加
+class RegistMemberForm(flask_wtf.FlaskForm):
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
+    )
+    reg_member_name = wtforms.StringField(
+        'reg_member_name',
+        [wtforms.validators.InputRequired()]
+    )
+    reg_password = wtforms.StringField(
+        'reg_password',
+        [wtforms.validators.InputRequired()]
+    )
+    reg_is_admin = wtforms.HiddenField(
+        'reg_is_admin'
+    )
+
+
+# メンバーの変更
+class EditMemberForm(flask_wtf.FlaskForm):
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_member_id = wtforms.IntegerField(
+        'edit_member_id',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_member_name = wtforms.StringField(
+        'edit_member_name',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_password = wtforms.StringField(
+        'edit_password',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_is_admin = wtforms.HiddenField(
+        'edit_is_admin'
+    )
+    edit_is_enabled = wtforms.HiddenField(
+        'edit_is_enabled'
+    )
+
+
+# メンバーの削除
+class DeleteMemberForm(flask_wtf.FlaskForm):
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
+    )
+    del_member_id = wtforms.IntegerField(
+        'del_member_id',
+        [wtforms.validators.InputRequired()]
+    )
+

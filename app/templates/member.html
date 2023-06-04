@@ -2,9 +2,69 @@
 
 {% block title -%}
 member
-{%- endblock %}
+{% endblock -%}
 
+{% block header_append -%}
+<script src="{{ url_for('static', filename='js/member.js') }}"></script>
+{% endblock -%}
 
 {% block body -%}
-member
+<h1>member</h1>
+<table border="1">
+    <tr>
+        <th />
+        <th>member_id</th>
+        <th>member_name</th>
+        <th>is_admin</th>
+        <th>is_enabled</th>
+    </tr>
+    {% for m in members -%}
+    <tr>
+        <td><input type="radio"
+            name="rdo_member_select"
+            value="{{ m.member_id }}"
+            member_name="{{ m.member_name }}"
+            is_admin="{{ m.is_admin }}"
+            is_enabled="{{ m.is_enabled }}" /></td>
+        <td>{{ m.member_id }}</td>
+        <td>{{ m.member_name }}</td>
+        <td>{{ m.is_admin }}</td>
+        <td>{{ m.is_enabled }}</td>
+    </tr>
+    {% endfor -%}
+</table>
+<hr />
+<h3>追加</h3>
+<form method="POST" name="frm_regist">
+    {{ regist_form.csrf_token }}
+    menber_name: {{ regist_form.reg_member_name }}<br />
+    password: {{ regist_form.reg_password }}<br />
+    is_admin: <input type="checkbox" id="registform_is_admin" /><br />
+    {{ regist_form.reg_is_admin }}
+    {{ regist_form.method }}
+    <button type="submit">追加</button>
+</form>
+<hr />
+<h3>編集</h3>
+<form method="POST" name="frm_edit">
+    {{ edit_form.csrf_token }}
+    member_id: {{ edit_form.edit_member_id }}<br />
+    member_name: {{ edit_form.edit_member_name }}<br />
+    password: {{ edit_form.edit_password }}<br />
+    is_admin: <input type="checkbox" id="editform_is_admin" /><br />
+    {{ edit_form.edit_is_admin }}
+    is_enabled: <input type="checkbox" id="editform_is_enabled" /><br />
+    {{ edit_form.edit_is_enabled }}
+    {{ edit_form.method }}
+    <button type="submit">編集</button>
+</form>
+<hr />
+<h3>削除</h3>
+<form method="POST" name="frm_delete">
+    {{ delete_form.csrf_token }}
+    member_id: {{ delete_form.del_member_id }}<br />
+    {{ delete_form.method }}
+    <button type="submit">削除</button>
+</form>
+
 {% endblock -%}
