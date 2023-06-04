@@ -89,6 +89,10 @@ class RegistMemberForm(flask_wtf.FlaskForm):
         'method',
         [wtforms.validators.InputRequired()]
     )
+    reg_member_code = wtforms.StringField(
+        'reg_member_code',
+        [wtforms.validators.InputRequired()]
+    )
     reg_member_name = wtforms.StringField(
         'reg_member_name',
         [wtforms.validators.InputRequired()]

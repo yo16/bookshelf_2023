@@ -14,6 +14,7 @@ member
     <tr>
         <th />
         <th>member_id</th>
+        <th>member_code</th>
         <th>member_name</th>
         <th>is_admin</th>
         <th>is_enabled</th>
@@ -23,10 +24,12 @@ member
         <td><input type="radio"
             name="rdo_member_select"
             value="{{ m.member_id }}"
+            member_code="{{ m.member_code }}"
             member_name="{{ m.member_name }}"
             is_admin="{{ m.is_admin }}"
             is_enabled="{{ m.is_enabled }}" /></td>
         <td>{{ m.member_id }}</td>
+        <td>{{ m.member_code }}</td>
         <td>{{ m.member_name }}</td>
         <td>{{ m.is_admin }}</td>
         <td>{{ m.is_enabled }}</td>
@@ -37,6 +40,7 @@ member
 <h3>追加</h3>
 <form method="POST" name="frm_regist">
     {{ regist_form.csrf_token }}
+    member_code: {{ regist_form.reg_member_code }}<br />
     menber_name: {{ regist_form.reg_member_name }}<br />
     password: {{ regist_form.reg_password }}<br />
     is_admin: <input type="checkbox" id="registform_is_admin" /><br />

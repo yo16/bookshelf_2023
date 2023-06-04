@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask import render_template, request
 
-from models import DbMember
+from models import get_db, DbMember
 from .view_common import get_org_mem
 from .forms import RegistMemberForm, EditMemberForm, DeleteMemberForm
 
@@ -21,7 +21,10 @@ def main(app):
         method = request.form.get("method")
         if (method=="POST"):
             # 追加
-            print("regist!!!!!!!!!!")
+            regist_member(
+                org_mem["organization"],
+                request.form
+            )
 
         elif (method=="PUT"):
             # 編集
@@ -41,3 +44,32 @@ def main(app):
         delete_form = delete_form,
         members = members
     )
+
+
+def regist_member(organization, form):
+    """登録
+
+    Args:
+        organization (DbOrganization): 組織情報
+        form (request.form): 登録情報
+    """
+    with get_db() as db:
+        # 次のID
+        next_member_id = DbMember.get_new_member_id(organization.org_id)
+
+        # パスワードをハッシュ化
+        hashed_pass = DbMember.hash_password(form.get("reg_password"))
+
+        mem = DbMember(
+            org_id = organization.org_id,
+            member_id = next_member_id,
+            password_hashed = hashed_pass,
+            member_name = form.get("reg_member_name"),
+            member_code = form.get("reg_member_code"),
+            is_admin = True if form.get("reg_is_admin")=="1" else False,
+            is_enabled = True if form.get("reg_is_enabled")=="1" else False
+        )
+        db.add(mem)
+        db.commit()
+        db.refresh(mem)
+

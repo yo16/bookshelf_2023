@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from sqlalchemy import String, Boolean, UniqueConstraint, select, and_
 from sqlalchemy.orm import Mapped, Session, mapped_column
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.sql.expression import func, and_
 import hashlib
 
 from .db_common import Base, get_db
@@ -129,3 +130,24 @@ class DbMember(Base, UserMixin):
         
         return ret_member_id
 
+
+    @staticmethod
+    def get_new_member_id(org_id):
+        new_member_id = 0
+
+        with get_db() as db:
+            exec_result = db.execute(
+                select(
+                    func.max(DbMember.member_id).label("max_member_id")
+                ).where(
+                    DbMember.org_id == org_id
+                )
+            )
+        result = exec_result.scalars().first()
+        
+        if result is None:
+            new_member_id = 0
+        else:
+            new_member_id = result + 1
+        
+        return new_member_id
