@@ -120,6 +120,10 @@ class EditMemberForm(flask_wtf.FlaskForm):
         'edit_member_name',
         [wtforms.validators.InputRequired()]
     )
+    edit_member_code = wtforms.StringField(
+        'edit_member_code',
+        [wtforms.validators.InputRequired()]
+    )
     edit_password = wtforms.StringField(
         'edit_password',
         [wtforms.validators.InputRequired()]

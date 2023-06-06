@@ -53,6 +53,7 @@ member
 <form method="POST" name="frm_edit">
     {{ edit_form.csrf_token }}
     member_id: {{ edit_form.edit_member_id }}<br />
+    member_code: {{ edit_form.edit_member_code }}<br />
     member_name: {{ edit_form.edit_member_name }}<br />
     password: {{ edit_form.edit_password }}<br />
     is_admin: <input type="checkbox" id="editform_is_admin" /><br />

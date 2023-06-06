@@ -1,5 +1,7 @@
 from flask_login import current_user
 from flask import render_template, request
+from sqlalchemy import update
+from sqlalchemy.sql.expression import and_
 
 from models import get_db, DbMember
 from .view_common import get_org_mem
@@ -28,7 +30,10 @@ def main(app):
 
         elif (method=="PUT"):
             # 編集
-            print("edit!!!!!!!!!!")
+            edit_member(
+                org_mem["organization"],
+                request.form
+            )
 
         elif (method=="DELETE"):
             # 削除
@@ -72,4 +77,33 @@ def regist_member(organization, form):
         db.add(mem)
         db.commit()
         db.refresh(mem)
+
+
+def edit_member(organization, form):
+    """編集
+
+    Args:
+        organization (DbOrganization): 組織情報
+        form (request.form): 編集情報
+    """
+    # パスワードをハッシュ化
+    hashed_pass = DbMember.hash_password(form.get("edit_password"))
+
+    with get_db() as db:
+        stmt = update(
+            DbMember
+        ).values(
+            member_name = form.get("edit_member_name"),
+            member_code = form.get("edit_member_code"),
+            password_hashed = hashed_pass,
+            is_admin = True if (form.get("edit_is_admin")=="1") else False,
+            is_enabled = True if (form.get("edit_is_enabled")=="1") else False
+        ).where(
+            and_(
+                DbMember.org_id == organization.org_id,
+                DbMember.member_id == int(form.get("edit_member_id"))
+            )
+        )
+        db.execute(stmt)
+        db.commit()
 
