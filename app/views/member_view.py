@@ -89,24 +89,44 @@ def edit_member(organization, form):
         organization (DbOrganization): 組織情報
         form (request.form): 編集情報
     """
-    # パスワードをハッシュ化
-    hashed_pass = DbMember.hash_password(form.get("edit_password"))
-
     with get_db() as db:
-        stmt = update(
-            DbMember
-        ).values(
-            member_name = form.get("edit_member_name"),
-            member_code = form.get("edit_member_code"),
-            password_hashed = hashed_pass,
-            is_admin = True if (form.get("edit_is_admin")=="1") else False,
-            is_enabled = True if (form.get("edit_is_enabled")=="1") else False
-        ).where(
-            and_(
-                DbMember.org_id == organization.org_id,
-                DbMember.member_id == int(form.get("edit_member_id"))
+        editform_password = form.get("edit_password")
+        
+        if (len(editform_password) > 0):
+            # パスワードがある（変更する）場合
+            # パスワードをハッシュ化
+            hashed_pass = DbMember.hash_password(editform_password)
+
+            stmt = update(
+                DbMember
+            ).values(
+                member_name = form.get("edit_member_name"),
+                member_code = form.get("edit_member_code"),
+                password_hashed = hashed_pass,
+                is_admin = True if (form.get("edit_is_admin")=="1") else False,
+                is_enabled = True if (form.get("edit_is_enabled")=="1") else False
+            ).where(
+                and_(
+                    DbMember.org_id == organization.org_id,
+                    DbMember.member_id == int(form.get("edit_member_id"))
+                )
             )
-        )
+        else:
+            # パスワードがない（変更しない）場合
+            stmt = update(
+                DbMember
+            ).values(
+                member_name = form.get("edit_member_name"),
+                member_code = form.get("edit_member_code"),
+                is_admin = True if (form.get("edit_is_admin")=="1") else False,
+                is_enabled = True if (form.get("edit_is_enabled")=="1") else False
+            ).where(
+                and_(
+                    DbMember.org_id == organization.org_id,
+                    DbMember.member_id == int(form.get("edit_member_id"))
+                )
+            )
+
         db.execute(stmt)
         db.commit()
 

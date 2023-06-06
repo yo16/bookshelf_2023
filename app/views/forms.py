@@ -125,8 +125,7 @@ class EditMemberForm(flask_wtf.FlaskForm):
         [wtforms.validators.InputRequired()]
     )
     edit_password = wtforms.StringField(
-        'edit_password',
-        [wtforms.validators.InputRequired()]
+        'edit_password'
     )
     edit_is_admin = wtforms.HiddenField(
         'edit_is_admin'
