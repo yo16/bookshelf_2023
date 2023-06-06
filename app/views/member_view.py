@@ -1,6 +1,6 @@
 from flask_login import current_user
 from flask import render_template, request
-from sqlalchemy import update
+from sqlalchemy import update, delete
 from sqlalchemy.sql.expression import and_
 
 from models import get_db, DbMember
@@ -37,7 +37,10 @@ def main(app):
 
         elif (method=="DELETE"):
             # 削除
-            print("delete!!!!!!!!!!")
+            delete_member(
+                org_mem["organization"],
+                request.form
+            )
 
     # 組織内のメンバーを取得
     members = DbMember.get_members_in_org(org_mem["organization"].org_id)
@@ -72,7 +75,7 @@ def regist_member(organization, form):
             member_name = form.get("reg_member_name"),
             member_code = form.get("reg_member_code"),
             is_admin = True if form.get("reg_is_admin")=="1" else False,
-            is_enabled = True if form.get("reg_is_enabled")=="1" else False
+            is_enabled = True
         )
         db.add(mem)
         db.commit()
@@ -107,3 +110,22 @@ def edit_member(organization, form):
         db.execute(stmt)
         db.commit()
 
+
+def delete_member(organization, form):
+    """削除
+
+    Args:
+        organization (DbOrganization): 組織情報
+        form (request.form): 削除情報
+    """
+    with get_db() as db:
+        stmt = delete(
+            DbMember
+        ).where(
+            and_(
+                DbMember.org_id == organization.org_id,
+                DbMember.member_id == int(form.get("del_member_id"))
+            )
+        )
+        db.execute(stmt)
+        db.commit()
