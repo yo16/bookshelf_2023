@@ -17,7 +17,7 @@
 <p><a href="{{ url_for('maintenance') }}">maintenance</a></p>
 <p><a href="{{ url_for('members') }}">members</a></p>
 <p><a href="{{ url_for('genre') }}">genre</a></p>
-<p><a href="{{ url_for('mypage') }}">mypage</a></p>
+<p><a href="{{ url_for('members', member_id=member.member_id) }}">mypage</a></p>
 <hr />
 {% endif -%}
 <p><a href="{{ url_for('logout') }}">logout</a></p>

@@ -3,12 +3,52 @@ from flask import render_template, request
 from sqlalchemy import update, delete
 from sqlalchemy.sql.expression import and_
 
-from models import get_db, DbMember
+from models import get_db, DbMember, DbBook
 from .view_common import get_org_mem
 from .forms import RegistMemberForm, EditMemberForm, DeleteMemberForm
 
 
-def main(app):
+def main(app, member_id):
+    ret = None
+
+    if member_id is not None:
+        # member_idが指定されている時は、memberページを表示
+        ret = show_member_page(app, member_id)
+        
+    else:
+        org_mem = get_org_mem()
+        if (not current_user.is_admin):
+            # 管理者ではない場合、自分のページを表示する
+            member_id = current_user.member_id
+            ret = show_member_page(app, member_id)
+            
+        else:
+            # adminの場合は、memberの管理ページ(members)を表示
+            ret = show_members_page(app)
+    
+    return ret
+
+
+def show_member_page(app, member_id):
+    org_mem = get_org_mem()
+    org_id = org_mem["organization"].org_id
+    
+    # member
+    member = DbMember.get(org_id, member_id)
+
+    # borrowed_his
+    hiss = DbBook.get_bookhis_by_member(org_id, member_id)
+
+    # 描画
+    return render_template(
+        "member.html",      # membersではなく、member固有のページ
+        **org_mem,
+        disp_member = member,
+        histories = hiss
+    )
+
+
+def show_members_page(app):
     org_mem = get_org_mem()
     regist_form = RegistMemberForm(request.form)
     regist_form.method.data = "POST"

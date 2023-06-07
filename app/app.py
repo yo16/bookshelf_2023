@@ -110,11 +110,12 @@ def return_book():
     return return_view_main(app)
 
 
-@app.route("/mypage", methods=["GET", "POST"])
+@app.route("/members/", methods=["GET", "POST"])
+@app.route("/members/<int:member_id>", methods=["GET", "POST"])
 @login_required
 @log_info
-def mypage():
-    return mypage_view_main(app)
+def members(member_id=None):
+    return members_view_main(app, member_id)
 
 
 
@@ -128,7 +129,7 @@ def admin_required(func):
         return func(*args, **keywords)
     
     return admin_wrapper
-    
+
 
 @app.route("/maintenance", methods=["GET", "POST"])
 @login_required
@@ -154,12 +155,12 @@ def get_book_with_isbn():
     return get_book_with_isbn_view_main(app)
 
 
-@app.route("/members", methods=["GET", "POST"])
-@login_required
-@admin_required
-@log_info
-def members():
-    return members_view_main(app)
+#@app.route("/members", methods=["GET", "POST"])
+#@login_required
+#@admin_required
+#@log_info
+#def members():
+#    return members_view_main(app)
 
 
 @app.route("/genre", methods=["GET", "POST"])
