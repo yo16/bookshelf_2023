@@ -46,7 +46,7 @@ def main(app):
     members = DbMember.get_members_in_org(org_mem["organization"].org_id)
 
     return render_template(
-        "member.html", **org_mem,
+        "members.html", **org_mem,
         regist_form = regist_form,
         edit_form = edit_form,
         delete_form = delete_form,

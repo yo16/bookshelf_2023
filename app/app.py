@@ -12,7 +12,7 @@ from views import (
     borrow_view_main,
     return_view_main,
     maintenance_view_main,
-    member_view_main,
+    members_view_main,
     genre_view_main,
     mypage_view_main,
     get_book_with_isbn_view_main,
@@ -154,12 +154,12 @@ def get_book_with_isbn():
     return get_book_with_isbn_view_main(app)
 
 
-@app.route("/member", methods=["GET", "POST"])
+@app.route("/members", methods=["GET", "POST"])
 @login_required
 @admin_required
 @log_info
-def member():
-    return member_view_main(app)
+def members():
+    return members_view_main(app)
 
 
 @app.route("/genre", methods=["GET", "POST"])
