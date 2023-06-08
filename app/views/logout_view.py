@@ -1,14 +1,11 @@
-from flask_login import logout_user
+from flask_login import logout_user, current_user
 from flask import redirect, url_for, request
-from sqlalchemy import select
-
-from models import get_db, DbOrganization
-from .view_common import get_org_mem
 from .forms import LoginForm
 
 def main(app):
+    org_id = current_user.org_id
     logout_user()
 
     form = LoginForm(request.form)
-    message = "ログアウトしました"
+    message = f"ログアウトしました.(org_id={org_id})"
     return redirect(url_for("login", message=message))

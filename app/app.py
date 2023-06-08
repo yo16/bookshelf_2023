@@ -14,7 +14,6 @@ from views import (
     maintenance_view_main,
     members_view_main,
     genre_view_main,
-    mypage_view_main,
     get_book_with_isbn_view_main,
     signup_view_main,
     login_view_main,
