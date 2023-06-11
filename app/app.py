@@ -88,11 +88,12 @@ def logout():
     return logout_view_main(app)
 
 
-@app.route("/book", methods=["GET", "POST"])
+@app.route("/books/", methods=["GET", "POST"])
+@app.route("/books/<int:book_id>", methods=["GET", "POST"])
 @login_required
 @log_info
-def book():
-    return book_view_main(app)
+def books(book_id=None):
+    return book_view_main(app, book_id)
 
 
 @app.route("/borrow_book", methods=["POST"])

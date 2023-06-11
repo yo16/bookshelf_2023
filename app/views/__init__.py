@@ -1,5 +1,5 @@
 from .main_view import main as main_view_main
-from .book_view import main as book_view_main
+from .books_view import main as book_view_main
 from .borrow_view import main as borrow_view_main
 from .return_view import main as return_view_main
 from .maintenance_view import main as maintenance_view_main

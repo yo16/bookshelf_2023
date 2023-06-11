@@ -8,6 +8,6 @@ main
 {% block body -%}
 <h1>main</h1>
 {% for b in books -%}
-<a href="{{ url_for('book', book_id=b.book_id) }}"><img src="{{ b.image_url }}" />{{ b.book_name }}</a><br />
+<a href="{{ url_for('books', book_id=b.book_id) }}"><img src="{{ b.image_url }}" />{{ b.book_name }}</a><br />
 {% endfor -%}
 {% endblock -%}

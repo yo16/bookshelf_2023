@@ -20,7 +20,7 @@ is_admin: {{ disp_member.is_admin }}<br />
     </tr>
     {% for h in histories -%}
     <tr>
-        <td><a href="{{ url_for('book', book_id=h.book.book_id) }}">{{ h.book.book_name }}</a></td>
+        <td><a href="{{ url_for('books', book_id=h.book.book_id) }}">{{ h.book.book_name }}</a></td>
         <td>{{ h.borrowed_history.borrowed_dt }}</td>
         <td>{{ h.borrowed_history.returned_dt }}</td>
         <td>{{ h.borrowed_history.note }}</td>

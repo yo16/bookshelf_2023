@@ -7,14 +7,17 @@ from .view_common import get_org_mem
 from .forms import EditBookForm, BorrowBookForm, ReturnBookForm
 
 
-def main(app):
+def main(app, book_id):
     edit_form = EditBookForm(request.form)
     borrow_form = BorrowBookForm(request.form)
     return_form = ReturnBookForm(request.form)
 
+    if book_id is None:
+        # book_idが指定されていなかったらmainに飛ばす
+        return redirect(url_for("main"))
+
     org_mem = get_org_mem()
     org_id = org_mem["organization"].org_id
-    book_id = request.args.get("book_id")
     message = request.args.get("msg")
 
     # 数の変更のための編集のPOSTがsubmitされた場合
@@ -25,13 +28,13 @@ def main(app):
     book_info = DbBook.get_book_info(book_id, org_id)
     if book_info is None:
         # なかったらmainに飛ばす
-        redirect(url_for("main"))
+        return redirect(url_for("main"))
     edit_form.num_of_same_books.data = book_info["num_of_same_books"]
     borrow_form.book_id.data = book_id
     return_form.book_id.data = book_id
 
     return render_template(
-        "book.html", **org_mem,
+        "books.html", **org_mem,
         book_info=book_info,
         message=message,
         edit_form=edit_form,
