@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-06-06T13:14:13.342Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="y9n1gyFHoGyeTIk0UVRG" version="21.2.8" type="device">
+<mxfile host="Electron" modified="2023-06-11T13:09:27.114Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="roibmTkE-3mDeDm4OEHy" version="21.3.7" type="device">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
-    <mxGraphModel dx="2478" dy="1741" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
+    <mxGraphModel dx="2478" dy="1672" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -591,7 +591,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="xDDhtr_fr9PukAQvOOPF-65" value="複数回借りた場合は、borrow_timesを加算していく" style="shape=note;size=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#1A1A1A;" parent="1" vertex="1">
-          <mxGeometry x="-425" y="380" width="240" height="70" as="geometry" />
+          <mxGeometry x="-430" y="440" width="240" height="70" as="geometry" />
         </mxCell>
         <mxCell id="xDDhtr_fr9PukAQvOOPF-66" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#fff2cc;strokeColor=#d6b656;curved=1;" parent="1" source="xDDhtr_fr9PukAQvOOPF-67" target="8r9nM0pTr3V1312v1vQE-21" edge="1">
           <mxGeometry relative="1" as="geometry">

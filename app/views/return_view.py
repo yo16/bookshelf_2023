@@ -14,7 +14,7 @@ def main(app):
     note = return_form.note.data
 
     with get_db() as db:
-        # 過去に借りた件数を取得
+        # 過去に借りた情報を取得
         stmt = select(
             DbBorrowedHistory
         ).where(
@@ -24,9 +24,19 @@ def main(app):
                 DbBorrowedHistory.book_id == book_id,
                 DbBorrowedHistory.returned_dt.is_(None)
             )
+        ).order_by(
+            DbBorrowedHistory.borrow_times
         )
         borrow_times_past = db.scalars(stmt)
-        if ((borrow_times_past is None) or (borrow_times_past.first() is None)):
+        oldest_his = None   # 借りている中で一番古い情報
+        no_borrow = False
+        if (borrow_times_past is None):
+            no_borrow = True
+        else:
+            oldest_his = borrow_times_past.first()
+            if (oldest_his is None):
+                no_borrow = True
+        if no_borrow:
             # 借りていない！
             message = "借りた履歴がありません"
             return redirect(url_for("books", book_id=book_id, msg=message))
@@ -41,7 +51,8 @@ def main(app):
                 DbBorrowedHistory.org_id == current_user.org_id,
                 DbBorrowedHistory.member_id == current_user.member_id,
                 DbBorrowedHistory.book_id == book_id,
-                DbBorrowedHistory.returned_dt.is_(None)
+                DbBorrowedHistory.returned_dt.is_(None),
+                DbBorrowedHistory.borrow_times == oldest_his.borrow_times
             )
         )
         db.execute(stmt)

@@ -51,12 +51,16 @@ def main(app):
 
             # 過去に借りた件数を取得
             borrow_times_past = db.scalars(
-                select(DbBorrowedHistory.borrow_times).where(
+                select(
+                    DbBorrowedHistory.borrow_times
+                ).where(
                     and_(
                         DbBorrowedHistory.org_id == current_user.org_id,
                         DbBorrowedHistory.member_id == current_user.member_id,
                         DbBorrowedHistory.book_id == book_id
                     )
+                ).order_by(
+                    DbBorrowedHistory.borrow_times.desc()
                 )
             ).first()
             if borrow_times_past is None:
