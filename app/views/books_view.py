@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for
-from sqlalchemy import update
+from sqlalchemy import select, update, func
 from sqlalchemy.sql.expression import and_
 
-from models import get_db, DbBook, DbCollection
+from models import get_db, DbBook, DbCollection, DbBorrowedHistory
 from .view_common import get_org_mem
 from .forms import EditBookForm, BorrowBookForm, ReturnBookForm
 
@@ -22,7 +22,12 @@ def main(app, book_id):
 
     # 数の変更のための編集のPOSTがsubmitされた場合
     if edit_form.is_submitted():
-        edit_book(org_id, book_id, int(request.form.get("num_of_same_books")))
+        try:
+            edit_book(org_id, book_id, int(request.form.get("num_of_same_books")))
+        except Exception:
+            # num_of_book < count_borrowedのケース
+            # DB更新はされていない
+            message = "借りられている数より小さな値にすることはできません"
 
     # 指定された本が組織に登録されているか確認しつつ本情報を取得
     book_info = DbBook.get_book_info(book_id, org_id)
@@ -53,6 +58,28 @@ def edit_book(org_id, book_id, num_of_book):
         num_of_book (int): 本の数
     """
     with get_db() as db:
+        # 現在借りられている数
+        stmt = select(
+            func.count(
+                DbBorrowedHistory.book_id
+            )
+        ).select_from(
+            DbBorrowedHistory
+        ).where(
+            and_(
+                DbBorrowedHistory.org_id == org_id,
+                DbBorrowedHistory.book_id == book_id,
+                DbBorrowedHistory.returned_dt.is_(None)
+            )
+        )
+        count_borrowed = db.scalars(stmt).first()
+        if count_borrowed is None:
+            count_borrowed = 0
+
+        # この数より小さい値にしようとしている場合はエラー
+        if (num_of_book < count_borrowed):
+            raise Exception("num_of_book < count_borrowed")
+
         stmt = update(
             DbCollection
         ).values(
