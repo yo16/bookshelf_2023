@@ -60,6 +60,7 @@ body {
     padding-left: 10px;
     margin: 0px;
     list-style: none;
+    font-size: 0.95rem;
 }
 
 #contents_menu a, #contents_menu a:visited,
