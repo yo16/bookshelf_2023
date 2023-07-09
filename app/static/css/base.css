@@ -77,8 +77,8 @@ body {
     opacity: 0.1;
 }
 
-
 #body_header_debug {
     display: none;
     background-color: var(--debug-color);
 }
+
