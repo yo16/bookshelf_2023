@@ -2,9 +2,9 @@
     --base-color: #eeebe2;
     --accent1-color: #336c6d;
     --accent2-color: #8e9379;
+    --accent2-color-20pct: #8e937940;
     --accent3-color: #4891c1;
     --debug-color: #e39cb9;
-
 }
 
 body {

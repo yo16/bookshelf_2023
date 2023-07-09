@@ -1,0 +1,67 @@
+:root {
+    --one-box-width: 200px;
+    --book_image_height: 200px;
+}
+
+
+#main_books {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0px;
+    margin: 10px;
+    flex-wrap: wrap;
+}
+
+.one_book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    margin: 20px 0 0 0;
+    width: var(--one-box-width);
+}
+
+.book_image {
+    display: flex;
+    width: 100%;
+    height: calc(var(--book_image_height) + 10px);
+    align-items: flex-end;
+    justify-content: center;
+    background: linear-gradient(180deg, var(--base-color) 70%, var(--accent2-color-20pct) 100%);
+}
+.book_image img {
+    max-height: var(--book_image_height);
+}
+
+.book_title {
+    text-align: center;
+    height: 50px;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #f6f6f6;
+    border-radius: 10px;
+}
+
+.book_title a, .book_title a:visited {
+    color: var(--accent3-color);
+    text-decoration: none;
+}
+.book_title a, .book_title a:visited {
+    color: var(--accent3-color);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+.book_title a:hover {
+    opacity: 0.5;
+}
+.book_title a:active {
+    opacity: 0.1;
+}

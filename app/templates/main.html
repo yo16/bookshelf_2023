@@ -1,13 +1,30 @@
 {% extends "base_internal.html" %}
 
 {% block title -%}
-main
+蔵書一覧
 {%- endblock %}
 
+{% block header_append %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+{%- endblock %}
 
 {% block body -%}
-<h1>main</h1>
+<!-- h1>main</h1 -->
+<div id="main_books">
 {% for b in books -%}
-<a href="{{ url_for('books', book_id=b.book_id) }}"><img src="{{ b.image_url }}" />{{ b.book_name }}</a><br />
+<div class="one_book">
+    <div class="book_image">
+        <a href="{{ url_for('books', book_id=b.book_id) }}">
+            <img src="{{ b.image_url }}" />
+        </a>
+    </div>
+    <div class="book_title">
+        <a href="{{ url_for('books', book_id=b.book_id) }}">
+            {{ b.book_name }}
+        </a>
+    </div>
+    </a>
+</div>
 {% endfor -%}
+</div>
 {% endblock -%}
