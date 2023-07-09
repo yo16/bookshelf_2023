@@ -1,14 +1,62 @@
+:root {
+    --base-color: #eeebe2;
+    --accent1-color: #336c6d;
+    --accent2-color: #8e9379;
+    --accent3-color: #4891c1;
+    --debug-color: #e39cb9;
+
+}
+
 body {
-    background-color: #f3f3e0;
+    background-color: var(--base-color);
+    color: var(--accent1-color);
     margin: 0;
 }
 
+/* header周りの構造と色 */
 #body_header {
-    background-color: #bbb985;
-    position: relative;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    top: 0px;
+    left: 0px;
     height: auto;
+    padding: 10px 20px 5px 20px;
+
+    background-color: var(--base-color);
+    border-bottom: solid 2px var(--accent2-color);
 }
+
 #body_header h1 {
     margin: 0;
+}
+
+#body_title_menu {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#self_menu {
+    display: inline-block;
+    vertical-align: middle;
+}
+#self_menu svg {
+    fill: var(--accent1-color);
+}
+
+#contents_menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    padding-left: 10px;
+}
+
+#body_header_debug {
+    display:"";
+    background-color: var(--debug-color);
 }

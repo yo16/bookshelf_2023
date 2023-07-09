@@ -22,10 +22,15 @@
         {% block header_append %}{% endblock %}
     </head>
     <body>
+        {% block body_header %}
         <div id="body_header">
-            <h1>{% block org_name2 %}うち{% endblock %}の図書館</h1>
+            <div id="body_title_menu">
+                <span id="body_title">
+                    <h1>うちの図書館</h1>
+                </span>
+            </div>
         </div>
-        {% block body_header %}{% endblock %}
+        {% endblock %}
         {% block body %}{% endblock -%}
     </body>
 </html>
