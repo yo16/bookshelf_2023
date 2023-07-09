@@ -13,7 +13,7 @@ body {
     margin: 0;
 }
 
-/* header周りの構造と色 */
+/* header周辺 */
 #body_header {
     display: flex;
     flex-direction: column;
@@ -41,9 +41,12 @@ body {
 }
 
 #self_menu {
-    display: inline-block;
-    vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 5px;
 }
+
 #self_menu svg {
     fill: var(--accent1-color);
 }
@@ -54,7 +57,23 @@ body {
     align-items: center;
     gap: 30px;
     padding-left: 10px;
+    list-style: none;
 }
+
+#contents_menu a, #contents_menu a:visited,
+#self_menu a, #self_menu a:visited {
+    color: var(--accent3-color);
+    transition: opacity 0.3s ease;
+}
+#contents_menu a:hover,
+#self_menu a:hover {
+    opacity: 0.5;
+}
+#contents_menu a:active,
+#self_menu a:active {
+    opacity: 0.1;
+}
+
 
 #body_header_debug {
     display:"";
