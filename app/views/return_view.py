@@ -11,7 +11,6 @@ from .forms import ReturnBookForm
 def main(app):
     return_form = ReturnBookForm(request.form)
     book_id = return_form.book_id.data
-    note = return_form.note.data
 
     with get_db() as db:
         # 過去に借りた情報を取得
@@ -44,8 +43,7 @@ def main(app):
         stmt = update(
             DbBorrowedHistory
         ).values(
-            returned_dt = datetime.now(),
-            note = note
+            returned_dt = datetime.now()
         ).where(
             and_(
                 DbBorrowedHistory.org_id == current_user.org_id,

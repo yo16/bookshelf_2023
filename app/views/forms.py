@@ -67,9 +67,6 @@ class ReturnBookForm(flask_wtf.FlaskForm):
         'book_id',
         [wtforms.validators.DataRequired()]
     )
-    note = wtforms.TextAreaField(
-        'note'
-    )
 
 
 # ジャンルの登録

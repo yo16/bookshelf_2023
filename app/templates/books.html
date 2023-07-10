@@ -31,14 +31,12 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
         <th>member</th>
         <th>borrowed_dt</th>
         <th>returned_dt</th>
-        <th>note</th>
     </tr>
     {% for h in book_info.histories -%}
     <tr>
         <td><a href="{{ url_for('members', member_id=h.member.member_id) }}">{{ h.member.member_name }}</a></td>
         <td>{{ h.borrowed_history.borrowed_dt }}</td>
         <td>{{ h.borrowed_history.returned_dt }}</td>
-        <td>{{ h.borrowed_history.note }}</td>
     </tr>
     {% endfor -%}
 </table>
@@ -53,7 +51,6 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
 <form method="POST" action="{{ url_for('return_book') }}">
     {{ return_form.csrf_token }}
     {{ return_form.book_id }}
-    ノート：{{ return_form.note }}<br />
     <button type="submit">本を返す</button>
 </form>
 {% endblock -%}
