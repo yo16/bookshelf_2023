@@ -11,6 +11,7 @@ from views import (
     book_view_main,
     borrow_view_main,
     return_view_main,
+    note_book_view_main,
     maintenance_view_main,
     members_view_main,
     genre_view_main,
@@ -108,6 +109,13 @@ def borrow_book():
 @log_info
 def return_book():
     return return_view_main(app)
+
+
+@app.route("/note_book", methods=["POST"])
+@login_required
+@log_info
+def note_book():
+    return note_book_view_main(app)
 
 
 @app.route("/members/", methods=["GET", "POST"])

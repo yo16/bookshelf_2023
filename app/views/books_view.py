@@ -4,13 +4,14 @@ from sqlalchemy.sql.expression import and_
 
 from models import get_db, DbBook, DbCollection, DbBorrowedHistory, DbBookNote
 from .view_common import get_org_mem
-from .forms import EditBookForm, BorrowBookForm, ReturnBookForm
+from .forms import EditBookForm, BorrowBookForm, ReturnBookForm, NoteBookForm
 
 
 def main(app, book_id):
     edit_form = EditBookForm(request.form)
     borrow_form = BorrowBookForm(request.form)
     return_form = ReturnBookForm(request.form)
+    note_form = NoteBookForm(request.form)
 
     if book_id is None:
         # book_idが指定されていなかったらmainに飛ばす
@@ -37,6 +38,7 @@ def main(app, book_id):
     edit_form.num_of_same_books.data = book_info["num_of_same_books"]
     borrow_form.book_id.data = book_id
     return_form.book_id.data = book_id
+    note_form.book_id.data = book_id
 
     return render_template(
         "books.html", **org_mem,
@@ -44,7 +46,8 @@ def main(app, book_id):
         message=message,
         edit_form=edit_form,
         borrow_form=borrow_form,
-        return_form=return_form
+        return_form=return_form,
+        note_form=note_form,
     )
 
 

@@ -44,6 +44,7 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
 -- notes --<br />
 <table border="1">
     <tr>
+        <th>member</th>
         <th>noted_dt</th>
         <th>note</th>
     </tr>
@@ -69,5 +70,11 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
     {{ return_form.csrf_token }}
     {{ return_form.book_id }}
     <button type="submit">本を返す</button>
+</form>
+<form method="POST" action="{{ url_for('note_book') }}">
+    {{ note_form.csrf_token }}
+    {{ note_form.book_id }}
+    {{ note_form.note }}
+    <button type="submit">ノート</button>
 </form>
 {% endblock -%}

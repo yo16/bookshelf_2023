@@ -69,6 +69,18 @@ class ReturnBookForm(flask_wtf.FlaskForm):
     )
 
 
+# 本を返す
+class NoteBookForm(flask_wtf.FlaskForm):
+    book_id = wtforms.HiddenField(
+        'book_id',
+        [wtforms.validators.DataRequired()]
+    )
+    note = wtforms.TextAreaField(
+        'note',
+        [wtforms.validators.InputRequired()]
+    )
+
+
 # ジャンルの登録
 class RegistGenreForm(flask_wtf.FlaskForm):
     parent_genre_id = wtforms.StringField(

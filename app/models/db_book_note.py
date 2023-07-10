@@ -15,7 +15,6 @@ class DbBookNote(Base):
     org_id: Mapped[int] = mapped_column(nullable=False)
     member_id: Mapped[int] = mapped_column(nullable=False)
     book_id: Mapped[int] = mapped_column(nullable=False)
-    borrow_times: Mapped[int] = mapped_column(nullable=False)
     noted_dt: Mapped[datetime]  = mapped_column(DateTime, nullable=False)
     note: Mapped[str]  = mapped_column(String(2000), nullable=False)
 

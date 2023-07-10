@@ -84,7 +84,6 @@ CREATE TABLE IF NOT EXISTS `book_note` (
     `org_id`            INT             NOT NULL,
     `book_id`           INT             NOT NULL,
     `member_id`         INT             NOT NULL,
-    `borrow_times`      INT             NOT NULL,
     `noted_dt`          DATETIME        NOT NULL,
     `note`              VARCHAR(2000)   NOT NULL,
     PRIMARY KEY (note_id)
