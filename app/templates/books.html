@@ -40,6 +40,23 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
     </tr>
     {% endfor -%}
 </table>
+
+-- notes --<br />
+<table border="1">
+    <tr>
+        <th>noted_dt</th>
+        <th>note</th>
+    </tr>
+    {% for n in book_info.book_notes -%}
+    <tr>
+        <td><a href="{{ url_for('members', member_id=n.member.member_id) }}">{{ n.member.member_name }}</a></td>
+        <td>{{ n.book_note.noted_dt }}</td>
+        <td>{{ n.book_note.note }}</td>
+    </tr>
+    {% endfor -%}
+</table>
+
+
 <hr />
     <button type="submit">数の変更</button>
 </form>

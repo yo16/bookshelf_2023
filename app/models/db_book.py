@@ -8,6 +8,7 @@ from .db_author import DbAuthor
 from .db_writing import DbWriting
 from .db_publisher import DbPublisher
 from .db_borrowed_history import DbBorrowedHistory
+from .db_book_note import DbBookNote
 from .db_member import DbMember
 from .db_genre import DbGenre
 from .db_classification import DbClassification
@@ -238,13 +239,46 @@ class DbBook(Base):
                         "borrowed_history": rslt[1],
                     })
 
+            # book_note
+            
+            subq_note = select(
+                DbBookNote
+            ).where(
+                and_(
+                    DbBookNote.org_id == org_id,
+                    DbBookNote.book_id == book_id
+                )
+            ).subquery()
+            subq_note_alias = aliased(DbBookNote, subq_note, "note")
+            stmt_note_members = select(
+                DbMember,
+                subq_note_alias
+            ).join(
+                target = subq_note_alias,
+                onclause = and_(
+                    DbMember.org_id == subq_note_alias.org_id,
+                    DbMember.member_id == subq_note_alias.member_id
+                )
+            ).order_by(
+                subq_note_alias.noted_dt
+            )
+            notes_result = db.execute(stmt_note_members).all()
+            notes = []
+            if (notes_result is not None):
+                for rslt in notes_result:
+                    notes.append({
+                        "member": rslt[0],
+                        "book_note": rslt[1],
+                    })
+
         return {
             "book": book,
             "num_of_same_books": num_of_same_books,
             "publisher": publisher_name,
             "authors": authors,
             "genres": genres,
-            "histories": hiss
+            "histories": hiss,
+            "book_notes": notes,
         }
 
 

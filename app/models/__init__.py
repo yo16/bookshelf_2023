@@ -8,4 +8,5 @@ from .db_writing import DbWriting
 from .db_publisher import DbPublisher
 from .db_collection import DbCollection
 from .db_borrowed_history import DbBorrowedHistory
+from .db_book_note import DbBookNote
 from .db_classification import DbClassification

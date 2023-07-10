@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for
 from sqlalchemy import select, update, func
 from sqlalchemy.sql.expression import and_
 
-from models import get_db, DbBook, DbCollection, DbBorrowedHistory
+from models import get_db, DbBook, DbCollection, DbBorrowedHistory, DbBookNote
 from .view_common import get_org_mem
 from .forms import EditBookForm, BorrowBookForm, ReturnBookForm
 
