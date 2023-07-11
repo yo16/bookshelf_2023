@@ -83,3 +83,23 @@ body {
     background-color: var(--debug-color);
 }
 
+#self_submenu_myname {
+    font-size: 0.95rem;
+}
+#self_submenu_myname a, #self_submenu_myname a:visited {
+    color: var(--accent1-color);
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+}
+#self_submenu_myname a:hover {
+    opacity: 0.5;
+}
+#self_submenu_myname a:active {
+    opacity: 0.1;
+}
+#self_submenu_myname svg {
+    vertical-align: middle;
+}
+#self_submenu_logout {
+    font-size: 0.9rem;
+}
