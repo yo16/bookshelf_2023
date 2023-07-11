@@ -2,8 +2,9 @@
     --base-color: #eeebe2;
     --accent1-color: #336c6d;
     --accent2-color: #8e9379;
-    --accent2-color-20pct: #8e937940;
+    --accent2-color-pale: #8e937940;
     --accent3-color: #4891c1;
+    --accent3-color-pale: #4891c140;
     --debug-color: #e39cb9;
 }
 
@@ -22,7 +23,7 @@ body {
     top: 0px;
     left: 0px;
     height: auto;
-    padding: 10px 20px 5px 20px;
+    padding: 10px 20px 0px 20px;
 
     background-color: var(--base-color);
     border-bottom: solid 2px var(--accent2-color);
@@ -55,38 +56,52 @@ body {
 #contents_menu {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 30px;
+    align-items: flex-end;
+    gap: 7px;
     padding-left: 10px;
     margin: 0px;
     list-style: none;
     font-size: 0.95rem;
+    flex-wrap: wrap;
 }
 
-#contents_menu a, #contents_menu a:visited,
-#self_menu a, #self_menu a:visited {
-    color: var(--accent3-color);
-    transition: opacity 0.3s ease;
+.menu_tab {
+    background-color: var(--accent3-color-pale);
+    padding: 10px 20px 5px 20px;
+    border-radius: 7px 7px 0 0;
+}
+.admin_menu_tab {
+    background-color: var(--accent2-color-pale);
+}
+
+.menu_tab a, .menu_tab a:visited {
+    color: var(--accent1-color);
+    transition: opacity 0.2s ease;
     text-decoration: none;
 }
-#contents_menu a:hover,
-#self_menu a:hover {
+.menu_tab a:hover {
     opacity: 0.5;
 }
-#contents_menu a:active,
-#self_menu a:active {
+.menu_tab a:active {
     opacity: 0.1;
 }
+.menu_tab svg {
+    vertical-align: middle;
+    opacity: 0.6;
+}
+
 
 #body_header_debug {
     display: none;
     background-color: var(--debug-color);
 }
 
+/* self submenu */
 #self_submenu_myname {
     font-size: 0.95rem;
 }
-#self_submenu_myname a, #self_submenu_myname a:visited {
+#self_submenu_myname a,
+#self_submenu_myname a:visited {
     color: var(--accent1-color);
     transition: opacity 0.3s ease;
     text-decoration: none;
