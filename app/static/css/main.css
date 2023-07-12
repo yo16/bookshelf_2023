@@ -2,6 +2,12 @@
     --one-box-width: 200px;
     --book_image_height: 200px;
 }
+@media screen and (max-width: 600px) {
+    :root {
+        --one-box-width: 120px;
+        --book_image_height: 150px;
+    }
+}
 
 
 #main_books {
@@ -48,6 +54,11 @@
     padding: 5px 10px 10px 10px;
     background-color: #f6f6f6;
     border-radius: 10px;
+}
+@media screen and (max-width: 600px) {
+    .book_title {
+        margin: 0 5px;
+    }
 }
 
 .book_title a, .book_title a:visited {

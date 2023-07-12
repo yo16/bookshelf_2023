@@ -16,7 +16,7 @@ function make_breadcrumbs(pages_list){
         let url = pages_list[i][1];
 
         let a = document.createElement("a");
-        a.setAttribute("href", "url");
+        a.setAttribute("href", url);
         a.textContent = name;
 
         let li = document.createElement("li");

@@ -8,11 +8,6 @@
     --debug-color: #e39cb9;
 }
 
-@media screen and (max-width:480px) {
-    /* mobile phone style */
-
-}
-
 body {
     background-color: var(--base-color);
     color: var(--accent1-color);
@@ -130,11 +125,17 @@ body {
     flex-wrap: wrap;
     list-style: none;
     font-size: 0.9rem;
+    margin: 14px 0;
+}
+@media screen and (max-width:480px) {
+    #breadcrumbs ol {
+        margin: 10px 0;
+    }
 }
 
 #breadcrumbs li:not(:last-of-type)::after {
     content: "›";
-    margin: 0 .6em;
+    margin: 0 5px;
     color: #999;
 }
 
