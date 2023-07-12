@@ -5,7 +5,9 @@
 {%- endblock %}
 
 {% block header_append %}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {%- endblock %}
 
 {% block body -%}
@@ -27,4 +29,9 @@
 </div>
 {% endfor -%}
 </div>
+<script language="JavaScript">
+    make_breadcrumbs([
+        ["蔵書一覧","{{ url_for('main') }}"]
+    ]);
+</script>
 {% endblock -%}

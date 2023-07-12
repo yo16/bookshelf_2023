@@ -5,6 +5,7 @@ genre
 {% endblock -%}
 
 {% block header_append -%}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/genre.css') }}"></link>
 {% endblock -%}
 

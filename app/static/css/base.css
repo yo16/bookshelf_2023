@@ -124,6 +124,21 @@ body {
 }
 
 
+/* breadcrumbs */
+#breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    font-size: 0.9rem;
+}
+
+#breadcrumbs li:not(:last-of-type)::after {
+    content: "›";
+    margin: 0 .6em;
+    color: #999;
+}
+
+
 /* else */
 #body_header_debug {
     display: none;

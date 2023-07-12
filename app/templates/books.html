@@ -6,7 +6,6 @@ books
 
 
 {% block body -%}
-<h1>books</h1>
 {% if message -%}
 <p>message:{{ message }}</p>
 {% endif -%}
@@ -77,4 +76,16 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
     {{ note_form.note }}
     <button type="submit">ノート</button>
 </form>
+<script language="JavaScript">
+    make_breadcrumbs([
+        [
+            "蔵書一覧",
+            "{{ url_for('main') }}"
+        ],
+        [
+            "{{ book_info.book.book_name }}",
+            "{{ url_for('books', book_id=book_info.book.book_id) }}"
+        ]
+    ]);
+</script>
 {% endblock -%}

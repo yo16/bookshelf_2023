@@ -5,6 +5,7 @@ member
 {% endblock -%}
 
 {% block header_append -%}
+{{ super() }}
 <script src="{{ url_for('static', filename='js/member.js') }}"></script>
 {% endblock -%}
 

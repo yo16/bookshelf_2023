@@ -5,6 +5,7 @@ maintenance
 {%- endblock %}
 
 {% block header_append -%}
+{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/maintenance.css') }}"></link>
 <script src="{{ url_for('static', filename='js/maintenance.js') }}"></script>
 {% endblock -%}

@@ -29,7 +29,7 @@
     height: calc(var(--book_image_height) + 10px);
     align-items: flex-end;
     justify-content: center;
-    background: linear-gradient(180deg, var(--base-color) 70%, var(--accent2-color-20pct) 100%);
+    background: linear-gradient(180deg, var(--base-color) 70%, var(--accent2-color-pale) 100%);
 }
 .book_image img {
     max-height: var(--book_image_height);
