@@ -124,8 +124,9 @@ body {
     display: flex;
     flex-wrap: wrap;
     list-style: none;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin: 14px 0;
+    padding-inline-start: 20px;
 }
 @media screen and (max-width:480px) {
     #breadcrumbs ol {
@@ -137,6 +138,15 @@ body {
     content: "›";
     margin: 0 5px;
     color: #999;
+}
+
+#breadcrumbs a, #breadcrumbs a:visited {
+    color: #999;
+    text-decoration: none;
+}
+
+#breadcrumbs a:hover {
+    text-decoration: underline;
 }
 
 
