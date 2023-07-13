@@ -1,0 +1,112 @@
+/* main menu */
+#contents_menu {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 7px;
+    padding-left: 10px;
+    margin: 0px;
+    list-style: none;
+    font-size: 0.95rem;
+    flex-wrap: wrap;
+}
+
+.menu_tab {
+    background-color: var(--accent3-color-pale);
+    padding: 10px 20px 5px 20px;
+    border-radius: 7px 7px 0 0;
+}
+.admin_menu_tab {
+    background-color: var(--accent2-color-pale);
+}
+
+.menu_tab a, .menu_tab a:visited {
+    color: var(--accent1-color);
+    transition: opacity 0.2s ease;
+    text-decoration: none;
+}
+.menu_tab a:hover {
+    opacity: 0.5;
+}
+.menu_tab a:active {
+    opacity: 0.1;
+}
+.menu_tab svg {
+    vertical-align: middle;
+    opacity: 0.6;
+}
+
+
+/* self submenu */
+#self_menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+#self_menu svg {
+    fill: var(--accent1-color);
+}
+
+#self_submenu_myname {
+    font-size: 0.95rem;
+    text-align: center;
+}
+#self_submenu_myname a,
+#self_submenu_myname a:visited {
+    color: var(--accent1-color);
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+}
+#self_submenu_myname a:hover {
+    opacity: 0.5;
+}
+#self_submenu_myname a:active {
+    opacity: 0.1;
+}
+#self_submenu_myname svg {
+    vertical-align: middle;
+}
+#self_submenu_logout {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+
+/* breadcrumbs */
+#breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    font-size: 0.8rem;
+    margin: 14px 0;
+    padding-inline-start: 20px;
+}
+@media screen and (max-width:480px) {
+    #breadcrumbs ol {
+        margin: 10px 0;
+    }
+}
+
+#breadcrumbs li:not(:last-of-type)::after {
+    content: "›";
+    margin: 0 5px;
+    color: #999;
+}
+
+#breadcrumbs a, #breadcrumbs a:visited {
+    color: #999;
+    text-decoration: none;
+}
+
+#breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+
+/* else */
+#body_header_debug {
+    display: none;
+    background-color: var(--debug-color);
+}

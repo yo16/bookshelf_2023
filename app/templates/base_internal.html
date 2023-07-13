@@ -9,6 +9,7 @@
 
 {% block header_append %}
 {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_internal.css') }}" />
 <script src="{{ url_for('static', filename='js/base_internal.js') }}"></script>
 {% endblock %}
 
