@@ -5,7 +5,45 @@ books
 {%- endblock %}
 
 
+{% block header_append %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/books.css') }}" />
+{%- endblock %}
+
+
 {% block body -%}
+<div id="col_windows">
+    <div id="book_window">
+        <div id="book_img_window">
+            <img src="{{ book_info.book.image_url }}" />
+        </div>
+        <div id="book_details_borrowed">
+            <div id="book_details">
+                book_name: {{ book_info.book.book_name }}<br />
+                authors: {% for a in book_info.authors -%}
+                - {{ a.author_name }}<br />
+                {% endfor -%}
+                publisher_name: {{ book_info.publisher }}<br />
+            </div>
+            <div id="borrowed_his">
+                貸出履歴
+            </div>
+        </div>
+        <div id="buttons">
+            [ 借りる ]<br />
+            [ 返す ]<br />
+            <hr />
+            [ 編集保存 ]<br />
+        </div>
+    </div>
+    <div id="comments_window">
+        コメント
+    </div>
+</div>
+
+<hr />
+<hr />
+<hr />
 {% if message -%}
 <p>message:{{ message }}</p>
 {% endif -%}

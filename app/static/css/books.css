@@ -1,0 +1,23 @@
+/* books.css */
+
+#col_windows {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#book_window {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+#book_img_window {
+
+}
+
+#book_details_borrowed {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
