@@ -6,24 +6,23 @@ $(function(){
 
 /* パンくずリストを作る */
 function make_breadcrumbs(pages_list){
+    let bc_elm = $("#breadcrumbs");
 
-    let bc_elm = document.getElementById("breadcrumbs");
-
-    let ol = document.createElement("ol");
-
+    let ol = $("<ol />");
     for(let i=0; i<pages_list.length; i++){
         let name = pages_list[i][0];
         let url = pages_list[i][1];
 
-        let a = document.createElement("a");
-        a.setAttribute("href", url);
-        a.textContent = name;
+        let a = $("<a />")
+            .attr("href", url)
+            .text(name)
+        ;
 
-        let li = document.createElement("li");
-        li.appendChild(a);
+        let li = $("<li />")
+            .append(a);
         
-        ol.appendChild(li);
+        ol.append(li);
     }
-    bc_elm.appendChild(ol);
+    bc_elm.append(ol);
 }
 
