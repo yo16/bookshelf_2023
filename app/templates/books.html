@@ -27,25 +27,17 @@ books
                     </tr>
                     <tr>
                         <td class="book_detail_header">著者</td>
-                        <td>{% for a in book_info.authors -%}
-                        {% if loop.index0 > 0 %}、{% endif -%}
-                        {{ a.author_name -}}
-                        {% endfor -%}</td>
+                        <td>
+                            {%- for a in book_info.authors -%}
+                            {% if loop.index0 > 0 %}、{% endif -%}
+                            {{ a.author_name -}}
+                            {% endfor -%}
+                        </td>
                     </tr>
                     <tr>
                         <td class="book_detail_header">概要</td>
                         <td>
-                            {% if member.is_admin -%}
-                            <form method="POST">
-                                <div id="edit_form_container">
-                                    {{ edit_form.csrf_token }}
-                                    {{ edit_form.description }}
-                                    <button type="submit" class="btn_edit_submit">更新</button>
-                                </div>
-                            </form>
-                            {% else -%}
-                            {{ book_info.book.description }}
-                            {% endif -%}
+                            {{ book_info.collection.description }}
                         </td>
                     </tr>
                     {% if book_info.book.published_dt -%}
@@ -61,17 +53,18 @@ books
                     </tr>
                     {% endif -%}
                     <tr>
+                        <td class="book_detail_header">ジャンル</td>
+                        <td>
+                            {%- for g in book_info.genres -%}
+                            {% if loop.index0 > 0 %}&nbsp;/&nbsp;{% endif -%}
+                            {{ g.genre_name -}}
+                            {% endfor -%}
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="book_detail_header">所有数</td>
                         <td>
-                            {% if member.is_admin -%}
-                            <form method="POST">
-                                {{ edit_form.csrf_token }}
-                                {{ edit_form.num_of_same_books }}冊
-                                <button type="submit" class="btn_edit_submit">更新</button>
-                            </form>
-                            {% else -%}
-                            {{ book_info.num_of_same_books }}冊
-                            {% endif -%}
+                            {{ book_info.collection.num_of_same_books }}冊
                         </td>
                     </tr>
                 </table>
@@ -87,7 +80,7 @@ books
             [ 借りる ]<br />
             [ 返す ]<br />
             <hr />
-            [ 編集保存 ]<br />
+            [ 編集 ]<br />
         </div>
     </div>
 </div>

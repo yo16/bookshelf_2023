@@ -45,13 +45,14 @@ def main(app, book_id):
     note_form.book_id.data = book_id
 
     return render_template(
-        "books.html", **org_mem,
-        book_info=book_info,
-        message=message,
-        edit_form=edit_form,
-        borrow_form=borrow_form,
-        return_form=return_form,
-        note_form=note_form,
+        "books.html",
+        **org_mem,
+        book_info   = book_info,
+        message     = message,
+        edit_form   = edit_form,
+        borrow_form = borrow_form,
+        return_form = return_form,
+        note_form   = note_form,
     )
 
 
