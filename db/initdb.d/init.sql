@@ -8,11 +8,17 @@ CREATE TABLE IF NOT EXISTS `organization` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `book` (
-    `book_id`       INT             NOT NULL,
-    `isbn`          VARCHAR(50),
-    `book_name`     VARCHAR(100)    NOT NULL,
-    `image_url`     VARCHAR(150)    UNIQUE,
-    `publisher_id`  INT,
+    `book_id`               INT             NOT NULL,
+    `isbn`                  VARCHAR(50),
+    `book_name`             VARCHAR(100)    NOT NULL,
+    `image_url`             VARCHAR(150)    UNIQUE,
+    `publisher_id`          INT,
+    `published_dt`          DATETIME,
+    `description`           VARCHAR(1000),
+    `page_count`            INT,
+    `dimensions_height`     INT,
+    `dimensions_width`      INT,
+    `dimensions_thickness`  INT,
     PRIMARY KEY (book_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 

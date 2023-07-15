@@ -87,7 +87,12 @@ function get_book(isbn){
             $("#spnImageThumbnail").css("display", "");
             $("#image_url").val(js_data["image_url"]);
         }
-        $("#comment").val(js_data["comment"]);
+        $("#published_dt").val(js_data["published_dt"]);
+        $("#description").val(js_data["description"]);
+        $("#page_count").val(js_data["page_count"]);
+        $("#dimensions_height").val(js_data["dimensions_height"]);
+        $("#dimensions_width").val(js_data["dimensions_width"]);
+        $("#dimensions_thickness").val(js_data["dimensions_thickness"]);
         $("#genres").val(js_data["genres"]);
     })
     .fail((data)=>{

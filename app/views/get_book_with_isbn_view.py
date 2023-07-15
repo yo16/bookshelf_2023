@@ -4,6 +4,7 @@ from sqlalchemy import select
 import json
 import requests
 import urllib
+import datetime
 
 from models import get_db, DbBook, DbWriting, DbAuthor, DbPublisher
 
@@ -15,12 +16,16 @@ def main(app):
     ret_dic = {
         "isbn": isbn,
         "book_name": "",
-        "authors": [],
-        "publisher": "",
-        "publisher_code": "",
         "image_url": "",
-        "comment": "",
-        "genres": ""
+        "published_dt": None,
+        "description": None,
+        "page_count": None,
+        "dimensions_height": None,
+        "dimensions_width": None,
+        "dimensions_thickness": None,
+        "authors": [],
+        "publisher_name": "",
+        "publisher_code": "",
     }
 
     #print(10)
@@ -37,6 +42,11 @@ def main(app):
             ret_dic["book_name"] = cur_book.book_name
             ret_dic["publisher_id"] = cur_book.publisher_id
             ret_dic["image_url"] = cur_book.image_url
+            ret_dic["published_dt"] = cur_book.published_dt
+            ret_dic["page_count"] = cur_book.page_count
+            ret_dic["dimensions_height"] = cur_book.dimensions_height
+            ret_dic["dimensions_width"] = cur_book.dimensions_width
+            ret_dic["dimensions_thickness"] = cur_book.dimensions_thickness
 
             # 著者
             writings = db.execute(
@@ -51,7 +61,7 @@ def main(app):
                     "author_name": author.author_name
                 })
             
-            # 出版社
+            # 出版者
             publisher = db.execute(
                 select(DbPublisher).where(DbPublisher.publisher_id == cur_book.publisher_id)
             ).scalars().first()
@@ -81,18 +91,35 @@ def main(app):
             item = res_data["items"][0]
             volume_info = item["volumeInfo"]
             print(volume_info)
-            ret_dic["book_name"] = item["volumeInfo"]["title"]
-            if "authors" in item["volumeInfo"]:
-                for a in item["volumeInfo"]["authors"]:
+            
+            # volume_infoを得ることができたので、順に設定していく
+            ret_dic["book_name"] = volume_info.get("title","")
+            if "imageLinks" in volume_info:
+                if "thumbnail" in volume_info["imageLinks"]:
+                    thumbnail = volume_info["imageLinks"]["thumbnail"]
+                    ret_dic["image_url"] = "https" + thumbnail[len("http"):]
+            if "publishedDate" in volume_info:
+                # APIで得る文字列のまま、設定する
+                # (最後にjsonifyするため)
+                ret_dic["published_dt"] = volume_info["publishedDate"]
+            else:
+                ret_dic["published_dt"] = None
+            ret_dic["description"] = volume_info.get("description", None)
+            ret_dic["page_count"] = volume_info.get("pageCount", None)
+            if "dimensions" in volume_info:
+                ret_dic["dimensions_height"] = volume_info["dimensions"].get("height", None)
+                ret_dic["dimensions_width"] = volume_info["dimensions"].get("width", None)
+                ret_dic["dimensions_thickness"] = volume_info["dimensions"].get("thickness", None)
+
+            # 著者
+            if "authors" in volume_info:
+                for a in volume_info["authors"]:
                     ret_dic["authors"].append({
                         "author_id": "",
                         "author_name": a
                     })
-            if "imageLinks" in item["volumeInfo"]:
-                if "thumbnail" in item["volumeInfo"]["imageLinks"]:
-                    thumbnail = item["volumeInfo"]["imageLinks"]["thumbnail"]
-                    ret_dic["image_url"] = "https" + thumbnail[len("http"):]
             
+            # 出版者
             ret_dic["publisher_code"] = DbPublisher.get_publisher_code_from_isbn(isbn)
             ret_dic["publisher_name"] = "to be implemented!"
 

@@ -1,4 +1,5 @@
-from sqlalchemy import String, select
+import datetime
+from sqlalchemy import String, DateTime, select
 from sqlalchemy.orm import Mapped, mapped_column, aliased
 from sqlalchemy.sql.expression import func, and_
 
@@ -22,6 +23,12 @@ class DbBook(Base):
     book_name: Mapped[str] = mapped_column(String(100), nullable=False)
     image_url: Mapped[str] = mapped_column(String(150))
     publisher_id: Mapped[int] = mapped_column()
+    published_dt: Mapped[datetime.datetime] = mapped_column(DateTime)
+    description: Mapped[str] = mapped_column(String(1000))
+    page_count: Mapped[int] = mapped_column()
+    dimensions_height: Mapped[int] = mapped_column()
+    dimensions_width: Mapped[int] = mapped_column()
+    dimensions_thickness: Mapped[int] = mapped_column()
 
     @staticmethod
     def get_new_book_id():

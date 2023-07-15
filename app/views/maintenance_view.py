@@ -38,17 +38,36 @@ def regist_info():
         "num_of_authors": int(request.form["num_of_authors"]),
         "publisher_code": request.form["publisher_code"],
         "publisher_name": request.form["publisher_name"],
-        "comment": request.form["comment"],
+        "published_dt": None,
+        "description": request.form["description"],
+        "page_count": None,
+        "dimensions_height": None,
+        "dimensions_width": None,
+        "dimensions_thickness": None,
         "genres": request.form["genres"],
         "org_id": int(request.form["org_id"]),
         "num_of_same_books": int(request.form["num_of_same_books"]),
         "added_dt": datetime.strptime(request.form["added_dt"], "%Y-%m-%d")
     }
+    # published_dt
+    try:
+        req["published_dt"] = datetime.strptime(request.form["published_dt"], "%Y-%m-%d")
+    except:
+        req["published_dt"] = None
+    # authors
     for i in range(req["num_of_authors"]):
         author = ""
         if f"author{i}" in request.form:
             author = request.form[f"author{i}"]
         req["authors"].append(author)
+    # 任意項目でintのもの
+    optional_int_items = ["page_count", "dimensions_height", "dimensions_width", "dimensions_thickness"]
+    for item in optional_int_items:
+        # 空や数値でない場合はNone(NULL)とする
+        try:
+            req[item] = int(request.form[item])
+        except Exception as e:
+            req[item] = None
     
     # 登録する情報
     book, is_new_book = create_book(req)
@@ -137,7 +156,13 @@ def create_book(info):
             isbn = info["isbn"],
             book_name = info["book_name"],
             image_url = info["image_url"],
-            publisher_id = None
+            publisher_id = None,
+            published_dt = info["published_dt"],
+            description = info["description"],
+            page_count = info["page_count"],
+            dimensions_height = info ["dimensions_height"],
+            dimensions_width = info ["dimensions_width"],
+            dimensions_thickness = info ["dimensions_thickness"],
         )
 
     return cur_book, is_new_book
