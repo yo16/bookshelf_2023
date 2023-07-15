@@ -32,10 +32,26 @@ books
                         {{ a.author_name -}}
                         {% endfor -%}</td>
                     </tr>
+                    {% if book_info.book.description|length > 0 -%}
                     <tr>
-                        <td class="book_detail_header">出版</td>
+                        <td class="book_detail_header">概要</td>
+                        <td>
+                            {{ book_info.book.description }}
+                        </td>
+                    </tr>
+                    {% endif -%}
+                    {% if book_info.book.published_dt -%}
+                    <tr>
+                        <td class="book_detail_header">出版日</td>
+                        <td>{{ book_info.book.published_dt.strftime('%Y/%m/%d') }}</td>
+                    </tr>
+                    {% endif -%}
+                    {% if book_info.publisher|length > 0 -%}
+                    <tr>
+                        <td class="book_detail_header">出版社</td>
                         <td>{{ book_info.publisher }}</td>
                     </tr>
+                    {% endif -%}
                 </table>
             </div>
             <div id="borrowed_his">
