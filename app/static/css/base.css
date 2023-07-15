@@ -6,6 +6,7 @@
     --accent3-color: #4891c1;
     --accent3-color-pale: #4891c140;
     --debug-color: #e39cb9;
+    --text-bg-white: #f6f6f6;
 }
 
 body {
@@ -29,9 +30,10 @@ body {
     border-bottom: solid 2px var(--accent2-color);
 }
 
-#body_header h1 {
+#body_header #body_title {
     margin: 0;
     font-weight: normal;
+    font-size: 22px;
 }
 
 #body_title_menu {

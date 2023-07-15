@@ -1,21 +1,46 @@
 /* books.css */
 
-#col_windows {
+#main_body {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 20px;
+    margin-left: 30px;
 }
-
 #book_window {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 20px;
 }
 
-#book_img_window {
-
+/* image */
+#book_img_window img {
+    width: 188px;
 }
 
+/* details */
+#book_details #book_name {
+    font-size: 28px;
+}
+#book_details_table {
+    background-color: var(--accent2-color-pale);
+    border-spacing: 5px;
+    border-radius: 6px;
+}
+#book_details_table td {
+    background-color: var(--text-bg-white);
+    padding: 5px 15px;
+    border-radius: 4px;
+}
+.book_detail_header {
+    font-size: 0.8rem;
+    width: 40px;
+    text-align: right;
+}
+
+/* histroies */
+
+
+/* buttons */
 #book_details_borrowed {
     display: flex;
     flex-direction: column;

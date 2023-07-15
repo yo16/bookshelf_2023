@@ -12,21 +12,37 @@ books
 
 
 {% block body -%}
-<div id="col_windows">
+<div id="main_body">
     <div id="book_window">
         <div id="book_img_window">
             <img src="{{ book_info.book.image_url }}" />
         </div>
         <div id="book_details_borrowed">
             <div id="book_details">
-                book_name: {{ book_info.book.book_name }}<br />
-                authors: {% for a in book_info.authors -%}
-                - {{ a.author_name }}<br />
-                {% endfor -%}
-                publisher_name: {{ book_info.publisher }}<br />
+                <table id="book_details_table">
+                    <tr>
+                        <td colspan="2">
+                            <span id="book_name">{{ book_info.book.book_name }}</span><br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="book_detail_header">著者</td>
+                        <td>{% for a in book_info.authors -%}
+                        {% if loop.index0 > 0 %}、{% endif -%}
+                        {{ a.author_name -}}
+                        {% endfor -%}</td>
+                    </tr>
+                    <tr>
+                        <td class="book_detail_header">出版</td>
+                        <td>{{ book_info.publisher }}</td>
+                    </tr>
+                </table>
             </div>
             <div id="borrowed_his">
                 貸出履歴
+            </div>
+            <div id="comments_window">
+                コメント
             </div>
         </div>
         <div id="buttons">
@@ -35,9 +51,6 @@ books
             <hr />
             [ 編集保存 ]<br />
         </div>
-    </div>
-    <div id="comments_window">
-        コメント
     </div>
 </div>
 

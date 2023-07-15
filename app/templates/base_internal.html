@@ -27,9 +27,7 @@
 </svg>
 <div id="body_header">
     <div id="body_title_menu">
-        <span id="body_title">
-            <h1>{{ organization.org_name }}の図書館</h1>
-        </span>
+        <span id="body_title">{{ organization.org_name }}の図書館</span>
         <span id="self_menu">
             <span id="self_submenu_myname">
                 <a href="{{ url_for('members', member_id=member.member_id) }}">

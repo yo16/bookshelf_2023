@@ -79,6 +79,8 @@ def main(app):
             res_data = json.loads(res.text)
 
             item = res_data["items"][0]
+            volume_info = item["volumeInfo"]
+            print(volume_info)
             ret_dic["book_name"] = item["volumeInfo"]["title"]
             if "authors" in item["volumeInfo"]:
                 for a in item["volumeInfo"]["authors"]:
