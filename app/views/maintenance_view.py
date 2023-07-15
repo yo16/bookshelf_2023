@@ -2,6 +2,7 @@ from flask import render_template, request
 from flask_login import current_user
 from sqlalchemy import select
 from datetime import datetime
+import re
 
 from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection, DbGenre, DbClassification
 from .view_common import get_org_mem
@@ -51,7 +52,11 @@ def regist_info():
     }
     # published_dt
     try:
-        req["published_dt"] = datetime.strptime(request.form["published_dt"], "%Y-%m-%d")
+        dt_str = request.form["published_dt"]
+        # %dが入っていない時があるので、"-"が1つしかない場合は"-01"をつける
+        if re.match(r"\d+-\d+$", dt_str):
+            dt_str += "-01"
+        req["published_dt"] = datetime.strptime(dt_str, "%Y-%m-%d")
     except:
         req["published_dt"] = None
     # authors
