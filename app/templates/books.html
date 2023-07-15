@@ -54,10 +54,10 @@ books
                         <td>{{ book_info.book.published_dt.strftime('%Y/%m/%d') }}</td>
                     </tr>
                     {% endif -%}
-                    {% if book_info.publisher|length > 0 -%}
+                    {% if book_info.publisher -%}
                     <tr>
                         <td class="book_detail_header">出版社</td>
-                        <td>{{ book_info.publisher }}</td>
+                        <td>{{ book_info.publisher.publisher_name }}</td>
                     </tr>
                     {% endif -%}
                     <tr>

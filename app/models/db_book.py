@@ -28,6 +28,7 @@ class DbBook(Base):
     dimensions_height: Mapped[int] = mapped_column()
     dimensions_width: Mapped[int] = mapped_column()
     dimensions_thickness: Mapped[int] = mapped_column()
+    original_description: Mapped[str] = mapped_column(String(1000))
 
     @staticmethod
     def get_new_book_id():
@@ -49,49 +50,50 @@ class DbBook(Base):
         return new_book_id
 
 
-    @staticmethod
-    def get_book(book_id, org_id):
-        """book_idをキーに、本情報を取得する。
-        ない場合はNoneを返す。
-        DBの構造上、org_idは指定しなくてもいいが、
-        ロジック上、org_idが一致しないbook_idを取得することはないため、必ず指定することとする。
-        """
-        books = None
-        num_of_same_books = 0
-        with get_db() as db:
-            subq = select(
-                DbCollection.book_id.label("book_id")
-            ).where(
-                DbCollection.org_id == org_id
-            ).subquery()
-            stmt = select(
-                    DbBook
-                ).join(
-                    target = subq,
-                    onclause = DbBook.book_id == subq.c.book_id
-                ).where(
-                    DbBook.book_id == book_id
-                )
-            books = db.scalars(stmt).all()
-            if (books is None) or (len(books) == 0):
-                return None, 0
-            # 見つかった場合は１件のはず
-            assert(len(books)==1)
-
-            # collectionをもう一度検索して、所有数を取得する
-            # 本当は１発で取りたい・・・！
-            stmt = select(
-                DbCollection.num_of_same_books
-            ).where(
-                and_(
-                    DbCollection.org_id == org_id,
-                    DbCollection.book_id == book_id
-                )
-            )
-            num_of_same_books = db.scalars(stmt).first()
-
-        # 結果を返す
-        return books[0], num_of_same_books
+    # たぶん使ってないので削除！
+    # @staticmethod
+    # def get_book(book_id, org_id):
+    #     """book_idをキーに、本情報を取得する。
+    #     ない場合はNoneを返す。
+    #     DBの構造上、org_idは指定しなくてもいいが、
+    #     ロジック上、org_idが一致しないbook_idを取得することはないため、必ず指定することとする。
+    #     """
+    #     books = None
+    #     num_of_same_books = 0
+    #     with get_db() as db:
+    #         subq = select(
+    #             DbCollection.book_id.label("book_id")
+    #         ).where(
+    #             DbCollection.org_id == org_id
+    #         ).subquery()
+    #         stmt = select(
+    #                 DbBook
+    #             ).join(
+    #                 target = subq,
+    #                 onclause = DbBook.book_id == subq.c.book_id
+    #             ).where(
+    #                 DbBook.book_id == book_id
+    #             )
+    #         books = db.scalars(stmt).all()
+    #         if (books is None) or (len(books) == 0):
+    #             return None, 0
+    #         # 見つかった場合は１件のはず
+    #         assert(len(books)==1)
+    # 
+    #         # collectionをもう一度検索して、所有数を取得する
+    #         # 本当は１発で取りたい・・・！
+    #         stmt = select(
+    #             DbCollection.num_of_same_books
+    #         ).where(
+    #             and_(
+    #                 DbCollection.org_id == org_id,
+    #                 DbCollection.book_id == book_id
+    #             )
+    #         )
+    #         num_of_same_books = db.scalars(stmt).first()
+    # 
+    #     # 結果を返す
+    #     return books[0], num_of_same_books
 
 
     @staticmethod
@@ -134,44 +136,34 @@ class DbBook(Base):
     @staticmethod
     def get_book_info(book_id, org_id):
         """bookとその周辺のテーブルも全部取得してdictにして返す
-        ない場合はNoneを返す。
+        book, publisher, authorsは org_idに依存しない。
+        collection, genres, histories, book_notesは依存する。
+        book_idに対応するbookがない場合は、Noneを返す。
+        org_idに依存するテーブルがない場合は、
+        単一データのものはNone、複数データのものは空配列を返す。
 
         Args:
             book_id (_type_): book_id
             org_id (_type_): org_id
         """
         with get_db() as db:
-            # book, publisher, collection
-            subq_collection = select(
-                DbCollection
-            ).where(
-                and_(
-                    DbCollection.org_id == org_id,
-                    DbCollection.book_id == book_id
-                )
-            ).subquery()
-            # subqueryの結果が項目の羅列になっているので、DbCollection型に変換
-            subq_collection_alias = aliased(DbCollection, subq_collection, "col")
+            # ---- org_id に依存しない ----
+            # book, publisher
             result = db.execute(
                 select(
                     DbBook,
-                    DbPublisher,
-                    subq_collection_alias
+                    DbPublisher
                 ).where(
                     DbBook.book_id == book_id
                 ).join(
                     target = DbPublisher,
                     onclause = DbBook.publisher_id == DbPublisher.publisher_id
-                ).join(
-                    target = subq_collection_alias,
-                    onclause = DbBook.book_id == subq_collection_alias.book_id
                 )
             ).first()
             if (result is None) or (len(result) == 0):
                 # 正常であれば存在するはず
                 return None
-            book, publisher, collection = result
-            publisher_name = publisher.publisher_name
+            book, publisher = result
 
             # authors
             subq_writing = select(
@@ -189,6 +181,23 @@ class DbBook(Base):
             if (authors is None) or (len(authors) == 0):
                 # 正常であれば存在するはず
                 return None
+            
+            # ---- org_id に依存する ----
+            # collection
+            stmt = select(
+                DbCollection
+            ).where(
+                and_(
+                    DbCollection.org_id == org_id,
+                    DbCollection.book_id == book_id
+                )
+            )
+            collections = db.execute(stmt).first()
+            if (collections is None) or (len(collections) == 0):
+                # 組織に登録していない本の場合はNone
+                collection = None
+            else:
+                collection = collections[0]
             
             # genres
             subq_cls = select(
@@ -211,8 +220,8 @@ class DbBook(Base):
             )
             genres = db.scalars(stmt_genres).all()
             if (genres is None) or (len(genres) == 0):
-                # 正常であれば存在するはず
-                return None
+                # 組織に登録していない本の場合は空配列
+                genres = []
 
             # borrowed_his
             subq_his = select(
@@ -246,7 +255,6 @@ class DbBook(Base):
                     })
 
             # book_note
-            
             subq_note = select(
                 DbBookNote
             ).where(
@@ -279,9 +287,9 @@ class DbBook(Base):
 
         return {
             "book": book,
-            "collection": collection,
-            "publisher": publisher_name,
+            "publisher": publisher,
             "authors": authors,
+            "collection": collection,
             "genres": genres,
             "histories": hiss,
             "book_notes": notes,

@@ -40,6 +40,7 @@ def regist_info():
         "publisher_code": request.form["publisher_code"],
         "publisher_name": request.form["publisher_name"],
         "published_dt": None,
+        "original_description": request.form["original_description"],
         "description": request.form["description"],
         "page_count": None,
         "dimensions_height": None,
@@ -164,9 +165,10 @@ def create_book(info):
             publisher_id = None,
             published_dt = info["published_dt"],
             page_count = info["page_count"],
-            dimensions_height = info ["dimensions_height"],
-            dimensions_width = info ["dimensions_width"],
-            dimensions_thickness = info ["dimensions_thickness"],
+            dimensions_height = info["dimensions_height"],
+            dimensions_width = info["dimensions_width"],
+            dimensions_thickness = info["dimensions_thickness"],
+            original_description = info["original_description"],
         )
 
     return cur_book, is_new_book
