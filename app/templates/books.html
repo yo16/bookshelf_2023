@@ -32,14 +32,22 @@ books
                         {{ a.author_name -}}
                         {% endfor -%}</td>
                     </tr>
-                    {% if book_info.book.description|length > 0 -%}
                     <tr>
                         <td class="book_detail_header">概要</td>
                         <td>
+                            {% if member.is_admin -%}
+                            <form method="POST">
+                                <div id="edit_form_container">
+                                    {{ edit_form.csrf_token }}
+                                    {{ edit_form.description }}
+                                    <button type="submit" class="btn_edit_submit">更新</button>
+                                </div>
+                            </form>
+                            {% else -%}
                             {{ book_info.book.description }}
+                            {% endif -%}
                         </td>
                     </tr>
-                    {% endif -%}
                     {% if book_info.book.published_dt -%}
                     <tr>
                         <td class="book_detail_header">出版日</td>
@@ -52,13 +60,27 @@ books
                         <td>{{ book_info.publisher }}</td>
                     </tr>
                     {% endif -%}
+                    <tr>
+                        <td class="book_detail_header">所有数</td>
+                        <td>
+                            {% if member.is_admin -%}
+                            <form method="POST">
+                                {{ edit_form.csrf_token }}
+                                {{ edit_form.num_of_same_books }}冊
+                                <button type="submit" class="btn_edit_submit">更新</button>
+                            </form>
+                            {% else -%}
+                            {{ book_info.num_of_same_books }}冊
+                            {% endif -%}
+                        </td>
+                    </tr>
                 </table>
-            </div>
-            <div id="borrowed_his">
-                貸出履歴
             </div>
             <div id="comments_window">
                 コメント
+            </div>
+            <div id="borrowed_his">
+                貸出履歴
             </div>
         </div>
         <div id="buttons">

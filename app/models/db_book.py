@@ -24,7 +24,6 @@ class DbBook(Base):
     image_url: Mapped[str] = mapped_column(String(150))
     publisher_id: Mapped[int] = mapped_column()
     published_dt: Mapped[datetime.datetime] = mapped_column(DateTime)
-    description: Mapped[str] = mapped_column(String(1000))
     page_count: Mapped[int] = mapped_column()
     dimensions_height: Mapped[int] = mapped_column()
     dimensions_width: Mapped[int] = mapped_column()
@@ -144,35 +143,35 @@ class DbBook(Base):
         with get_db() as db:
             # book, publisher, collection
             subq_collection = select(
-                DbCollection.book_id.label("book_id"),
-                DbCollection.num_of_same_books.label("num_of_same_books")
+                DbCollection
             ).where(
                 and_(
                     DbCollection.org_id == org_id,
                     DbCollection.book_id == book_id
                 )
             ).subquery()
+            # subqueryの結果が項目の羅列になっているので、DbCollection型に変換
+            subq_collection_alias = aliased(DbCollection, subq_collection, "col")
             result = db.execute(
                 select(
                     DbBook,
-                    DbPublisher.publisher_name,
-                    subq_collection.c.num_of_same_books
+                    DbPublisher,
+                    subq_collection_alias
                 ).where(
                     DbBook.book_id == book_id
                 ).join(
                     target = DbPublisher,
                     onclause = DbBook.publisher_id == DbPublisher.publisher_id
                 ).join(
-                    target = subq_collection,
-                    onclause = DbBook.book_id == subq_collection.c.book_id
+                    target = subq_collection_alias,
+                    onclause = DbBook.book_id == subq_collection_alias.book_id
                 )
             ).first()
             if (result is None) or (len(result) == 0):
                 # 正常であれば存在するはず
                 return None
-            book = result[0]
-            publisher_name = result[1]
-            num_of_same_books = result[2]
+            book, publisher, collection = result
+            publisher_name = publisher.publisher_name
 
             # authors
             subq_writing = select(
@@ -280,7 +279,7 @@ class DbBook(Base):
 
         return {
             "book": book,
-            "num_of_same_books": num_of_same_books,
+            "collection": collection,
             "publisher": publisher_name,
             "authors": authors,
             "genres": genres,

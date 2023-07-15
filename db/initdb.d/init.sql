@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS `book` (
     `image_url`             VARCHAR(150)    UNIQUE,
     `publisher_id`          INT,
     `published_dt`          DATETIME,
-    `description`           VARCHAR(1000),
     `page_count`            INT,
     `dimensions_height`     INT,
     `dimensions_width`      INT,
@@ -58,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `collection` (
     `org_id`            INT             NOT NULL,
     `book_id`           INT             NOT NULL,
     `num_of_same_books` INT             NOT NULL,
+    `description`       VARCHAR(1000),
     `added_dt`          DATETIME        NOT NULL,
     PRIMARY KEY (org_id, book_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;

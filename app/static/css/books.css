@@ -36,6 +36,16 @@
     width: 40px;
     text-align: right;
 }
+#edit_form_container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 8px;
+}
+#edit_form_container textarea{
+    width: 300px;
+    height: 4.0em;
+}
 
 /* histroies */
 
@@ -44,5 +54,28 @@
 #book_details_borrowed {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 30px;
+}
+
+.btn_edit_submit {
+    height: 24px;
+    padding: 2px 10px;
+    background-color: var(--accent2-color-pale);
+    box-shadow: 1px 2px 0 var(--accent2-color);
+    border: 0;
+    border-radius: 10px;
+    color: var(--accent1-color);
+    cursor: pointer;
+    transition: 0.2s all;
+}
+/* ホバー時 */
+.btn_edit_submit:hover {
+    box-shadow: none;
+    transform: translate(1px, 2px);
+}
+  
+/* クリック時 */
+.btn_edit_submit:active {
+    box-shadow: none;
+    transform: translate(2px, 3px);
 }

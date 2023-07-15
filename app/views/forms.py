@@ -47,9 +47,11 @@ class RegistBookForm(flask_wtf.FlaskForm):
 
 # 本の変更
 class EditBookForm(flask_wtf.FlaskForm):
+    description = wtforms.TextAreaField(
+        'description'
+    )
     num_of_same_books = wtforms.IntegerField(
-        'num_of_same_books',
-        [wtforms.validators.InputRequired()]
+        'num_of_same_books'
     )
 
 

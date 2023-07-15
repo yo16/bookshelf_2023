@@ -163,7 +163,6 @@ def create_book(info):
             image_url = info["image_url"],
             publisher_id = None,
             published_dt = info["published_dt"],
-            description = info["description"],
             page_count = info["page_count"],
             dimensions_height = info ["dimensions_height"],
             dimensions_width = info ["dimensions_width"],
@@ -285,6 +284,7 @@ def create_collection(info, book):
             org_id = info["org_id"],
             book_id = book.book_id,
             num_of_same_books = info["num_of_same_books"],
+            description = info["description"],
             added_dt = info["added_dt"]
         )
     else:
@@ -303,14 +303,11 @@ def create_classifications(info, book):
     genres_str = info["genres"]
 
     # 指定がない場合は、分類なしの0が設定されたとみなす
-    print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-    print(f">{genres_str}<")
     if (len(genres_str) == 0):
         print("LEN=0")
         genres_str = "0"
     
     genre_id_ary = genres_str.split(",")
-    print(genre_id_ary)
 
     ret_genres = []
     for g_id in genre_id_ary:
