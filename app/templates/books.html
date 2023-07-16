@@ -77,6 +77,7 @@ books
                         <td class="book_detail_header">所有数</td>
                         <td>
                             {{ book_info.collection.num_of_same_books }}冊
+                            <span id="borrowing_num">(うち貸出中:{{ borrowing_num }}冊、残:{{ remained_num }}冊)</span>
                         </td>
                     </tr>
                 </table>

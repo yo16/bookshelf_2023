@@ -46,16 +46,25 @@ def main(app, book_id):
     # コメント
     notes = DbBookNote.get_notes(org_id, book_id)
 
+    # 貸出中の数
+    borrowing_num = 0
+    for his_and_member in book_info["histories"]:
+        his = his_and_member["borrowed_history"]
+        if his.returned_dt is None:
+            borrowing_num += 1
+
     return render_template(
         "books.html",
         **org_mem,
-        book_info   = book_info,
-        notes       = notes,
-        message     = message,
-        edit_form   = edit_form,
-        borrow_form = borrow_form,
-        return_form = return_form,
-        note_form   = note_form,
+        book_info       = book_info,
+        notes           = notes,
+        borrowing_num   = borrowing_num,
+        remained_num    = book_info["collection"].num_of_same_books - borrowing_num,
+        message         = message,
+        edit_form       = edit_form,
+        borrow_form     = borrow_form,
+        return_form     = return_form,
+        note_form       = note_form,
     )
 
 
