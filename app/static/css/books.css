@@ -1,23 +1,62 @@
 /* books.css */
 
-#main_body {
+#book_main {
     display: flex;
     flex-direction: column;
     gap: 20px;
     margin-left: 30px;
+    margin-right: 20px;
 }
-#book_window {
+@media screen and (max-width: 600px) {
+    #book_main {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+#container_top {
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
-
-/* image */
-#book_img_window img {
-    width: 188px;
+@media screen and (max-width: 600px) {
+    #container_top {
+        min-width: 200px;
+        flex-wrap: wrap;
+    }
+    .book_contents:nth-child(1) {
+        order: 1;
+        width: calc(50% - 20px);
+    }
+    .book_contents:nth-child(2) {
+        order: 3;
+    }
+    .book_contents:nth-child(3) {
+        order: 2;
+        width: calc(50% - 20px);
+    }
+}
+#container_bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
+
+/* image */
+#content_book_img img {
+    width: 188px;
+}
+@media screen and (max-width: 600px) {
+    #content_book_img img {
+        width: initial;
+    }
+}
+
+
 /* details */
+#book_details {
+    width: 100%;
+}
 #book_details #book_name {
     font-size: 28px;
 }
@@ -47,35 +86,136 @@
     height: 4.0em;
 }
 
-/* histroies */
-
 
 /* buttons */
-#book_details_borrowed {
+#content_buttons {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 10px;
+    align-items: flex-end;
 }
 
-.btn_edit_submit {
-    height: 24px;
-    padding: 2px 10px;
-    background-color: var(--accent2-color-pale);
-    box-shadow: 1px 2px 0 var(--accent2-color);
+.btn_submit {
+    height: 40px;
+    width: 90px;
+    background-color: var(--accent3-color-pale);
+    box-shadow: 1px 2px 0 var(--accent3-color);
     border: 0;
     border-radius: 10px;
     color: var(--accent1-color);
     cursor: pointer;
     transition: 0.2s all;
 }
-/* ホバー時 */
-.btn_edit_submit:hover {
+.btn_submit_admin {
+    background-color: var(--accent2-color-pale);
+    box-shadow: 1px 2px 0 var(--accent2-color);
+}
+.btn_submit:hover {
     box-shadow: none;
     transform: translate(1px, 2px);
 }
-  
-/* クリック時 */
-.btn_edit_submit:active {
+.btn_submit:active {
     box-shadow: none;
     transform: translate(2px, 3px);
 }
+.btn_submit_admin svg {
+    vertical-align: middle;
+    opacity: 0.6;
+}
+
+
+/* comment & histories */
+.contents_title {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+
+    background-color: var(--accent2-color-pale);
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+.contents_title svg {
+    fill: var(--accent1-color);
+    transition: opacity 0.3s ease;
+    height: 15px;
+}
+.contents_title svg:hover {
+    opacity: 0.5;
+}
+.contents_title svg:active {
+    opacity: 0.5;
+}
+
+/* comment */
+.one_comment {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#div_note_regist_form {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+#div_note_regist_form {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 10px;
+}
+#div_note_regist_form textarea {
+    width: 50%;
+    min-width: 200px;
+    height: 3em;
+}
+#div_note_regist_form button {
+    height: 25px;
+    width: 5rem;
+    font-size: 0.7rem;
+}
+
+.comment_area {
+    display: flex;
+    flex-direction: column;
+}
+.member_name_comment_dt {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: space-between;
+
+    font-size: 0.8em;
+}
+.one_comment > svg {
+    fill: var(--accent1-color);
+}
+.member_name_comment_dt > a {
+    color: var(--accent1-color);
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+}
+.member_name_comment_dt > a:hover {
+    opacity: 0.5;
+}
+.member_name_comment_dt > a:active {
+    opacity: 0.1;
+}
+.comment_str {
+    background-color: var(--text-bg-white);
+    position: relative;
+    border-radius: 30px;
+    padding: 15px 30px;
+}
+.comment_str svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    fill: var(--text-bg-white);
+}
+
+/* histroies */

@@ -71,8 +71,8 @@ class ReturnBookForm(flask_wtf.FlaskForm):
     )
 
 
-# 本を返す
-class NoteBookForm(flask_wtf.FlaskForm):
+# ノートを取る
+class TakeANoteForm(flask_wtf.FlaskForm):
     book_id = wtforms.HiddenField(
         'book_id',
         [wtforms.validators.DataRequired()]

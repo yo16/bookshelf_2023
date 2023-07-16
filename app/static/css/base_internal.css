@@ -45,28 +45,25 @@
     gap: 5px;
 }
 
-#self_menu svg {
-    fill: var(--accent1-color);
-}
-
-#self_submenu_myname {
+.user_mark {
     font-size: 0.95rem;
-    text-align: center;
+    text-align: left;
 }
-#self_submenu_myname a,
-#self_submenu_myname a:visited {
+.user_mark a,
+.user_mark a:visited {
     color: var(--accent1-color);
     transition: opacity 0.3s ease;
     text-decoration: none;
 }
-#self_submenu_myname a:hover {
+.user_mark a:hover {
     opacity: 0.5;
 }
-#self_submenu_myname a:active {
+.user_mark a:active {
     opacity: 0.1;
 }
-#self_submenu_myname svg {
+.user_mark svg {
     vertical-align: middle;
+    fill: var(--accent1-color);
 }
 #self_submenu_logout {
     font-size: 0.8rem;
