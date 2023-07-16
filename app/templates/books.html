@@ -112,7 +112,7 @@ books
         <div id="content_comment">
             <div class="contents_title">
                 コメント
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" id="angle_down">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" id="comment_angle_down">
                     <use xlink:href="#angle-down-solid"></use>
                 </svg>
             </div>
@@ -163,8 +163,31 @@ books
             </div>
         </div>
         <div id="content_borrowed_his">
-            <div class="contents_title">貸出履歴</div>
+            <div class="contents_title">
+                貸出履歴
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" id="his_angle_down">
+                    <use xlink:href="#angle-down-solid"></use>
+                </svg>
+            </div>
             <div id="borrowed_his">
+                <table>
+                    <tr>
+                        <th>貸出</th>
+                        <th>返却</th>
+                        <th>貸出者</th>
+                    </tr>
+                    {% for his in book_info.histories -%}
+                    <tr>
+                        <td>{{ his.borrowed_history.borrowed_dt.strftime("%Y/%m/%d %H:%M") }}</td>
+                        <td>
+                        {% if his.borrowed_history.returned_dt is not none -%}
+                        {{ his.borrowed_history.returned_dt.strftime("%Y/%m/%d %H:%M") -}}
+                        {% endif -%}
+                        </td>
+                        <td>{{ his.member.member_name -}}</td>
+                    </tr>
+                    {% endfor -%}
+                </table>
             </div>
         </div>
     </div>
