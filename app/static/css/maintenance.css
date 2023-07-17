@@ -1,3 +1,5 @@
+/* maintenance.css */
+
 #loading {
     display: table;
     width: 100%;
@@ -8,11 +10,18 @@
     background-color: #fff;
     opacity: 0.8;
 }
-
 #loading .loadingMsg {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
     padding-top: 140px;
     background: url("/static/img/gif-load.gif") center center no-repeat;
+}
+
+#book_name {
+    width: 300px;
+}
+#description {
+    width: 300px;
+    height: 4.0em;
 }

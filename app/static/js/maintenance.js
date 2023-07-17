@@ -1,6 +1,152 @@
 /* maintenance.js */
 
 $(function(){
+    // ISBNフィールド
+    $("#isbn").keypress(function(e){
+        if (e.keyCode == 13){
+            // パンくずリストを空にする
+            initialize_breadcrumbs();
+
+            // 検索
+            let isbn = $("#isbn").val();
+            search_book(isbn);
+        }
+    });
+
+    // 本検索ボタン
+    $("#btn_search_book").click(function(){
+        // パンくずリストを空にする
+        initialize_breadcrumbs();
+
+        // 検索
+        let isbn = $("#isbn").val();
+        search_book(isbn);
+    });
+
+    // 最初からISBNが入っている場合は、検索する
+    if ($("#isbn").val().length > 0) {
+        search_book($("#isbn").val());
+    }
+});
+
+// ISBNから本情報を検索して設定
+function search_book(isbn_input){
+    console.log(isbn_input);
+    let book_info = {};
+
+    // ハイフンが入っていたら除く
+    isbn = isbn_input.replace(/\-/g, "");
+    $("#isbn").val(isbn);
+
+    // isbnコードをチェックする
+    $("#spnSearchISBNMessage").empty();
+    if (!validate_isbn_code(isbn)) {
+        console.log('illigal ISBN code.');
+        $("#spnSearchISBNMessage")
+            .append($("<br></br>"))
+            .append($("<span></span>")
+                .addClass("warning_message")
+                .text("ISBNコードが不正です。")
+            );
+        return;
+    }
+    
+    dispLoading("検索中...");
+
+    // 本を検索 using Ajax
+    $.ajax({
+        url: "./get_book_with_isbn",
+        type: "POST",
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            "isbn": isbn
+        })
+    })
+    .done((data) => {
+        js_data = JSON.parse(data.ResultSet);
+        console.log(js_data);
+        
+        book_info["isbn"] = isbn;
+        book_info["book_name"] = js_data["book_name"];
+        book_info["authors"] = [];
+        for(let i=0; i<js_data["authors"].length; i++ ){
+            book_info["authors"].push(
+                js_data["authors"][i]["author_name"]
+            );
+        }
+        book_info["publisher_code"] = js_data["publisher_code"];
+        book_info["publisher_name"] = js_data["publisher_name"];
+        book_info["image_url"] = "";
+        if ("image_url" in js_data) {
+            book_info["image_url"] = js_data["image_url"];
+        }
+        book_info["published_dt"] = js_data["published_dt"];
+        book_info["original_description"] = js_data["original_description"];
+        book_info["description"] = js_data["description"];
+        book_info["page_count"] = js_data["page_count"];
+        book_info["dimensions_height"] = js_data["dimensions_height"];
+        book_info["dimensions_width"] = js_data["dimensions_width"];
+        book_info["dimensions_thickness"] = js_data["dimensions_thickness"];
+        for(let i=0; i<js_data["genres"].length; i++){
+            book_info["genres"].push(js_data["genres"][i]);
+        }
+        book_info["added_dt"] = js_data["added_dt"];
+        book_info["num_of_same_books"] = js_data["num_of_same_books"];
+
+        // できたbook_infoを使って画面を更新
+        set_book_info(book_info);
+    })
+    .fail((data)=>{
+        console.log("Could not found book info by isbn["+isbn+"].");
+        console.log(data);
+    })
+    .always((data)=>{
+        removeLoading();
+    });
+
+    return;
+}
+
+// 本情報から、画面項目へ設定
+function set_book_info(book_info){
+    //console.log({book_info});
+
+    // book_infoの登録
+    $("#image_url").attr("src", book_info["image_url"]);
+    let val_pattern_items = [
+        "book_name",
+        "description_original",
+        "description",
+        "publisher_code",
+        "publisher_name",
+        "published_dt",
+        "page_count",
+        "dimensions_height",
+        "dimensions_width",
+        "dimensions_thickness",
+        "added_dt",
+        "num_of_same_books"
+    ];
+    for(let i=0; i<val_pattern_items.length; i++){
+        let item = val_pattern_items[i];
+        $("#"+item).val(book_info[item]);
+    }
+
+    // 登録日
+    $("#added_dt").val()
+}
+
+function initialize_breadcrumbs(){
+    // パンくずリストの再作成
+    // まだ作ってないとき用に空にする
+    make_breadcrumbs(
+        [["本メンテ","{{ url_for('maintenance') }}"]]
+    )
+}
+
+/*
+$(function(){
     $("#search_book").click(function(){
         let isbn = $("#isbn").val();
         console.log("isbn:" + isbn);
@@ -30,7 +176,8 @@ $(function(){
     // for debug
     //$("#isbn").val(9784768705261);
 })
-
+*/
+/*
 function get_book(isbn){
     ret = {};
     if (isbn == "") {
@@ -108,12 +255,14 @@ function get_book(isbn){
     });
 }
 
+*/
+
 
 /*
 initialize
 */
 function initialize(){
-    $("#isbn").val("");
+    //$("#isbn").val("");
     $("#book_name").val("");
     $("#author0").val("");
     $("#publisher_name").val("");

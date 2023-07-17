@@ -31,7 +31,7 @@ books
         </div>
         <div id="content_book_detail" class="book_contents">
             <div id="book_details">
-                <table id="book_details_table">
+                <table class="book_details_table">
                     <tr>
                         <td colspan="2">
                             <span id="book_name">{{ book_info.book.book_name }}</span><br />
@@ -98,6 +98,7 @@ books
             <hr />
             <form method="GET" action="{{ url_for('maintenance') }}">
                 <input type="hidden" name="isbn" value="{{ book_info.book.isbn }}" />
+                <input type="hidden" name="book_name" value="{{ book_info.book.book_name }}" />
                 <button type="submit" class="btn_submit btn_submit_admin">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
                         <use xlink:href="#wrench"></use>

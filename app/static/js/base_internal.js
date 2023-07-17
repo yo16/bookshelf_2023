@@ -7,6 +7,7 @@ $(function(){
 /* パンくずリストを作る */
 function make_breadcrumbs(pages_list){
     let bc_elm = $("#breadcrumbs");
+    bc_elm.empty();
 
     let ol = $("<ol />");
     for(let i=0; i<pages_list.length; i++){

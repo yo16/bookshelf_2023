@@ -5,6 +5,7 @@ import json
 import requests
 import urllib
 from datetime import datetime
+import re
 
 from .view_common import get_org_mem
 from models import DbBook, DbWriting, DbAuthor, DbPublisher
@@ -15,20 +16,7 @@ def main(app):
     org_mem = get_org_mem()
     isbn = request.json["isbn"]
 
-    ret_dic = {
-        "isbn": isbn,
-        "book_name": "",
-        "image_url": "",
-        "published_dt": None,
-        "description": None,
-        "page_count": None,
-        "dimensions_height": None,
-        "dimensions_width": None,
-        "dimensions_thickness": None,
-        "authors": [],
-        "publisher_name": "",
-        "publisher_code": "",
-    }
+    ret_dic = {"isbn": isbn}
 
     #print(10)
     # 組織と無関係にbook情報があるか確認
@@ -44,7 +32,6 @@ def main(app):
         )
 
         ret_dic["book_name"] = cur_book.book_name
-        ret_dic["publisher_id"] = cur_book.publisher_id
         ret_dic["image_url"] = cur_book.image_url
         ret_dic["published_dt"] = cur_book.published_dt.strftime("%Y-%m-%d")
         ret_dic["page_count"] = cur_book.page_count
@@ -59,6 +46,7 @@ def main(app):
             ret_dic["description"] = cur_book.original_description
 
         # 著者
+        ret_dic["authors"] = []
         for author in book_info["authors"]:
             ret_dic["authors"].append({
                 "author_id": author.author_id,
@@ -68,6 +56,18 @@ def main(app):
         # 出版者
         ret_dic["publisher_name"] = book_info["publisher"].publisher_name
         ret_dic["publisher_code"] = book_info["publisher"].publisher_code
+
+        # collection
+        if book_info["collection"]:
+            ret_dic["num_of_same_books"] = book_info["collection"].num_of_same_books;
+            ret_dic["added_dt"] = book_info["collection"].added_dt.strftime("%Y-%m-%d")
+        else:
+            # このケースはないはずだが一応・・・
+            ret_dic["num_of_same_books"] = 0
+            ret_dic["added_dt"] = now_dt.strftime("%Y-%m-%d")
+        
+        # ジャンル
+        ret_dic["genres"] = []  # ★未着手
 
     else:
         #print(200)
@@ -102,17 +102,27 @@ def main(app):
         if "publishedDate" in volume_info:
             # APIで得る文字列のまま、設定する
             # (最後にjsonifyするため)
-            ret_dic["published_dt"] = volume_info["publishedDate"]
+            pub_dt_str = volume_info["publishedDate"]
+            # %dが入っていない時があるので、"-"が1つしかない場合は"-01"をつける
+            if re.match(r"\d+-\d+$", pub_dt_str):
+                pub_dt_str += "-01"
+            ret_dic["published_dt"] = pub_dt_str
         else:
             ret_dic["published_dt"] = None
+        ret_dic["original_description"] = volume_info.get("description", None)
         ret_dic["description"] = volume_info.get("description", None)
         ret_dic["page_count"] = volume_info.get("pageCount", None)
         if "dimensions" in volume_info:
             ret_dic["dimensions_height"] = volume_info["dimensions"].get("height", None)
             ret_dic["dimensions_width"] = volume_info["dimensions"].get("width", None)
             ret_dic["dimensions_thickness"] = volume_info["dimensions"].get("thickness", None)
+        else:
+            ret_dic["dimensions_height"] = None
+            ret_dic["dimensions_width"] = None
+            ret_dic["dimensions_thickness"] = None
 
         # 著者
+        ret_dic["authors"] = []
         if "authors" in volume_info:
             for a in volume_info["authors"]:
                 ret_dic["authors"].append({
@@ -124,11 +134,32 @@ def main(app):
         ret_dic["publisher_code"] = DbPublisher.get_publisher_code_from_isbn(isbn)
         ret_dic["publisher_name"] = "to be implemented!"
 
-        #print("999")
-        #print(ret_dic)
-
+        # collection
+        now_dt = datetime.now()
+        ret_dic["added_dt"] = now_dt.strftime("%Y-%m-%d")
+        ret_dic["num_of_same_books"] = 0
+        
+        # ジャンル
+        ret_dic["genres"] = []
     
-    # ジャンル
+    # 構築において、すべての項目を設定しているはずであることの確認
+    # 項目の追加をした時には、必ず追加すること
+    assert "isbn" in ret_dic
+    assert "book_name" in ret_dic
+    assert "image_url" in ret_dic
+    assert "published_dt" in ret_dic
+    assert "page_count" in ret_dic
+    assert "dimensions_height" in ret_dic
+    assert "dimensions_width" in ret_dic
+    assert "dimensions_thickness" in ret_dic
+    assert "original_description" in ret_dic
+    assert "description" in ret_dic
+    assert "authors" in ret_dic
+    assert "publisher_name" in ret_dic
+    assert "publisher_code" in ret_dic
+    assert "num_of_same_books" in ret_dic
+    assert "added_dt" in ret_dic
+    assert "genres" in ret_dic
 
     #print(1000)
     return jsonify(ResultSet=json.dumps(ret_dic))

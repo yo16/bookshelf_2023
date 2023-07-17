@@ -1,17 +1,11 @@
 /* books.css */
 
-#book_main {
+#book_main   {
     display: flex;
     flex-direction: column;
     gap: 20px;
     margin-left: 30px;
     margin-right: 20px;
-}
-@media screen and (max-width: 600px) {
-    #book_main {
-        margin-left: 20px;
-        margin-right: 20px;
-    }
 }
 #container_top {
     display: flex;
@@ -59,21 +53,6 @@
 }
 #book_details #book_name {
     font-size: 28px;
-}
-#book_details_table {
-    background-color: var(--accent2-color-pale);
-    border-spacing: 5px;
-    border-radius: 6px;
-}
-#book_details_table td {
-    background-color: var(--text-bg-white);
-    padding: 5px 15px;
-    border-radius: 4px;
-}
-.book_detail_header {
-    font-size: 0.8rem;
-    width: 70px;
-    text-align: right;
 }
 #borrowing_num {
     margin-left: 5px;

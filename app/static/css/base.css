@@ -44,4 +44,26 @@ body {
     justify-content: space-between;
 }
 
+#body_body {
+    margin: 30px 10px 10px 10px;
+}
+
+
+/* booksとmaintenanceで共通 */
+.book_details_table {
+    background-color: var(--accent2-color-pale);
+    border-spacing: 5px;
+    border-radius: 6px;
+    margin-bottom: 3px;
+}
+.book_details_table td {
+    background-color: var(--text-bg-white);
+    padding: 5px 15px;
+    border-radius: 4px;
+}
+.book_detail_header {
+    font-size: 0.8rem;
+    width: 70px;
+    text-align: right;
+}
 

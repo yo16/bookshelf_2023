@@ -15,11 +15,8 @@ def main(app):
 
     # getでisbnが指定されている場合は取得
     isbn = request.args.get("isbn", None)
-    print("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
-    print(f"1111:{isbn}")
     if isbn:
         form.isbn.data = isbn
-        print(f"22222:{form.isbn.data}")
 
     if form.validate_on_submit():
         # 登録処理
