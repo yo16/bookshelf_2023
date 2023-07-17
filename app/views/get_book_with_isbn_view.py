@@ -53,7 +53,7 @@ def main(app):
         ret_dic["dimensions_thickness"] = cur_book.dimensions_thickness
         ret_dic["original_description"] = cur_book.original_description
         if book_info["collection"]:
-            ret_dic["description"] = cur_book.description
+            ret_dic["description"] = book_info["collection"].description
         else:
             # まだ組織にない本の場合は、original_descriptionを設定する
             ret_dic["description"] = cur_book.original_description

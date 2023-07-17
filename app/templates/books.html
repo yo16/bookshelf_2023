@@ -96,9 +96,8 @@ books
             </form>
             {% if member.is_admin -%}
             <hr />
-            <form method="POST" action="{{ url_for('return_book') }}">
-                {{ return_form.csrf_token }}
-                {{ return_form.book_id }}
+            <form method="GET" action="{{ url_for('maintenance') }}">
+                <input type="hidden" name="isbn" value="{{ book_info.book.isbn }}" />
                 <button type="submit" class="btn_submit btn_submit_admin">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
                         <use xlink:href="#wrench"></use>

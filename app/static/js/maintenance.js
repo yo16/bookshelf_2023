@@ -25,10 +25,10 @@ $(function(){
         $("#genres").val(cur_genres.join(","))
     });
 
-    initialize();
+    //initialize();
 
     // for debug
-    $("#isbn").val(9784768705261);
+    //$("#isbn").val(9784768705261);
 })
 
 function get_book(isbn){
@@ -88,7 +88,7 @@ function get_book(isbn){
             $("#image_url").val(js_data["image_url"]);
         }
         $("#published_dt").val(js_data["published_dt"]);
-        $("#original_description").val(js_data["description"]);
+        $("#original_description").val(js_data["original_description"]);
         $("#description").val(js_data["description"]);
         $("#page_count").val(js_data["page_count"]);
         $("#dimensions_height").val(js_data["dimensions_height"]);
