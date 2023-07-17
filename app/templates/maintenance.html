@@ -16,9 +16,9 @@ maintenance
 <table class="book_details_table">
 <tr>
     <td class="book_detail_header">ISBN</td>
-    <td>
+    <td id="td_isbn_search">
         {{ form.isbn }}
-        <button id="btn_search_book" type="button">検索</button>
+        <button id="btn_search_book" type="button" class="btn_submit btn_small">検索</button>
     </td>
 </tr>
 </table>
@@ -30,12 +30,12 @@ maintenance
     {'header_title': '出版者CD', 'id': 'publisher_code', 'type': 'text'},
     {'header_title': '出版者', 'id': 'publisher_name', 'type': 'text'},
     {'header_title': '出版日', 'id': 'published_dt', 'type': 'date'},
-    {'header_title': 'ページ数', 'id': 'page_count', 'type': 'text'},
-    {'header_title': 'サイズ-高さ', 'id': 'dimensions_height', 'type': 'text'},
-    {'header_title': 'サイズ-幅', 'id': 'dimensions_width', 'type': 'text'},
-    {'header_title': 'サイズ-厚さ', 'id': 'dimensions_thickness', 'type': 'text'},
+    {'header_title': 'ページ数', 'id': 'page_count', 'type': 'text', 'class': 'text_right'},
+    {'header_title': 'サイズ-高さ', 'id': 'dimensions_height', 'type': 'text', 'class': 'text_right'},
+    {'header_title': 'サイズ-幅', 'id': 'dimensions_width', 'type': 'text', 'class': 'text_right'},
+    {'header_title': 'サイズ-厚さ', 'id': 'dimensions_thickness', 'type': 'text', 'class': 'text_right'},
     {'header_title': 'システム<br />登録日', 'id': 'added_dt', 'type': 'date', 'value': 'now'},
-    {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text'},
+    {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text', 'class': 'text_right'},
 ] -%}
 
 <table class="book_details_table">
@@ -44,7 +44,8 @@ maintenance
     <td class="book_detail_header">{{ item.header_title|safe }}</td>
     <td>
         {% if (item.type=='text') -%}
-            <input type="text" id="{{ item.id }}" name="{{ item.id }}" />
+            <input type="text" id="{{ item.id }}" name="{{ item.id }}"
+            {%- if ('class' in item) %} class="{{ item.class }}"{% endif -%} />
         {% elif (item.type=='date') -%}
             <input type="date" id="{{ item.id }}" name="{{ item.id }}" />
         {% elif (item.type=='area') or (item.type=='hidden') -%}

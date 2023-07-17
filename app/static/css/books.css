@@ -95,6 +95,11 @@
     vertical-align: middle;
     opacity: 0.6;
 }
+.btn_small {
+    height: 25px;
+    width: 5rem;
+    font-size: 0.7rem;
+}
 
 
 /* comment & histories */
@@ -144,13 +149,9 @@
     width: 50%;
     min-width: 200px;
     height: 3em;
+    border-width: 1px;
     border-color: var(--accent2-color);
     border-radius: 5px;
-}
-#div_note_regist_form button {
-    height: 25px;
-    width: 5rem;
-    font-size: 0.7rem;
 }
 
 .comment_area {

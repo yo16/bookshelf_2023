@@ -18,10 +18,45 @@
     background: url("/static/img/gif-load.gif") center center no-repeat;
 }
 
+#td_isbn_search {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+#isbn, #publisher_code {
+    width: 120px;
+}
 #book_name {
     width: 300px;
+}
+#page_count, #dimensions_height, #dimensions_width, #dimensions_thickness, #num_of_same_books {
+    width: 50px;
 }
 #description {
     width: 300px;
     height: 4.0em;
+}
+
+input, textarea {
+    border-radius: 5px;
+    border: solid 1px var(--accent2-color);
+    padding: 5px 7px;
+}
+
+.btn_submit {
+    height: 40px;
+    width: 90px;
+    background-color: var(--accent3-color-pale);
+    box-shadow: 1px 2px 0 var(--accent3-color);
+    border: 0;
+    border-radius: 10px;
+    color: var(--accent1-color);
+    cursor: pointer;
+    transition: 0.2s all;
+}
+.btn_small {
+    height: 25px;
+    width: 5rem;
+    font-size: 0.7rem;
 }
