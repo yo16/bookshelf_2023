@@ -21,8 +21,6 @@ books
         <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
         <path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
     </symbol>
-    <symbol 
-    
 </svg>
 <div id="book_main">
     <div id="container_top">
@@ -97,8 +95,7 @@ books
             {% if member.is_admin -%}
             <hr />
             <form method="GET" action="{{ url_for('maintenance') }}">
-                <input type="hidden" name="isbn" value="{{ book_info.book.isbn }}" />
-                <input type="hidden" name="book_name" value="{{ book_info.book.book_name }}" />
+                <input type="hidden" name="book_id" value="{{ book_info.book.book_id }}" />
                 <button type="submit" class="btn_submit btn_submit_admin">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
                         <use xlink:href="#wrench"></use>
@@ -193,6 +190,18 @@ books
         </div>
     </div>
 </div>
+<script language="JavaScript">
+    make_breadcrumbs([
+        [
+            "蔵書一覧",
+            "{{ url_for('main') }}"
+        ],
+        [
+            "{{ book_info.book.book_name }}",
+            "{{ url_for('books', book_id=book_info.book.book_id) }}"
+        ]
+    ]);
+</script>
 
 <hr />
 <hr />
@@ -273,16 +282,4 @@ num_of_same_books: {{ edit_form.num_of_same_books }}<br />
     {{ note_form.note }}
     <button type="submit">ノート</button>
 </form>
-<script language="JavaScript">
-    make_breadcrumbs([
-        [
-            "蔵書一覧",
-            "{{ url_for('main') }}"
-        ],
-        [
-            "{{ book_info.book.book_name }}",
-            "{{ url_for('books', book_id=book_info.book.book_id) }}"
-        ]
-    ]);
-</script>
 {% endblock -%}

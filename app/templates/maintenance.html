@@ -12,7 +12,7 @@ maintenance
 
 
 {% block body -%}
-<form method="POST" action="{{ url_for('maintenance') }}">
+<form method="POST" action="{{ url_for('maintenance') }}" id="regist_book">
 <table class="book_details_table">
 <tr>
     <td class="book_detail_header">ISBN</td>
@@ -22,63 +22,80 @@ maintenance
     </td>
 </tr>
 </table>
-{% set items = [
-    {'header_title': 'タイトル', 'id': 'book_name', 'type': 'text'},
-    {'header_title': '画像', 'id': 'image_url', 'type': 'img' },
-    {'header_title': '概要<br />original', 'id': 'description_original', 'type': 'hidden'},
-    {'header_title': '概要', 'id': 'description', 'type': 'area'},
-    {'header_title': '出版者CD', 'id': 'publisher_code', 'type': 'text'},
-    {'header_title': '出版者', 'id': 'publisher_name', 'type': 'text'},
-    {'header_title': '出版日', 'id': 'published_dt', 'type': 'date'},
-    {'header_title': 'ページ数', 'id': 'page_count', 'type': 'text', 'class': 'text_right'},
-    {'header_title': 'サイズ-高さ', 'id': 'dimensions_height', 'type': 'text', 'class': 'text_right'},
-    {'header_title': 'サイズ-幅', 'id': 'dimensions_width', 'type': 'text', 'class': 'text_right'},
-    {'header_title': 'サイズ-厚さ', 'id': 'dimensions_thickness', 'type': 'text', 'class': 'text_right'},
-    {'header_title': 'システム<br />登録日', 'id': 'added_dt', 'type': 'date', 'value': 'now'},
-    {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text', 'class': 'text_right'},
-] -%}
 
-<table class="book_details_table">
-{% for item in items -%}
-<tr{% if (item.type=='hidden') %} style="display:none;"{% endif %}>
-    <td class="book_detail_header">{{ item.header_title|safe }}</td>
-    <td>
-        {% if (item.type=='text') -%}
-            <input type="text" id="{{ item.id }}" name="{{ item.id }}"
-            {%- if ('class' in item) %} class="{{ item.class }}"{% endif -%} />
-        {% elif (item.type=='date') -%}
-            <input type="date" id="{{ item.id }}" name="{{ item.id }}" />
-        {% elif (item.type=='area') or (item.type=='hidden') -%}
-            <textarea id="{{ item.id }}" name="{{ item.id }}"></textarea>
-        {% elif (item.type=='img') -%}
-            <img id="{{ item.id }}" name="{{ item.id }}" />
-        {% endif -%}
-    </td>
-</tr>
-{% endfor -%}
-</table>
+<div id="details_and_buttons">
+    {% set items = [
+        {'header_title': 'タイトル', 'id': 'book_name', 'type': 'text', 'readonly': 1},
+        {'header_title': '画像', 'id': 'image_url', 'type': 'img', 'readonly': 1 },
+        {'header_title': '概要<br />original', 'id': 'description_original', 'type': 'hidden', 'readonly': 1},
+        {'header_title': '概要', 'id': 'description', 'type': 'area'},
+        {'header_title': '出版者CD', 'id': 'publisher_code', 'type': 'text', 'readonly': 1},
+        {'header_title': '出版者', 'id': 'publisher_name', 'type': 'text', 'readonly': 1},
+        {'header_title': '出版日', 'id': 'published_dt', 'type': 'date', 'readonly': 1},
+        {'header_title': 'ページ数', 'id': 'page_count', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+        {'header_title': 'サイズ-高さ', 'id': 'dimensions_height', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+        {'header_title': 'サイズ-幅', 'id': 'dimensions_width', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+        {'header_title': 'サイズ-厚さ', 'id': 'dimensions_thickness', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+        {'header_title': 'システム<br />登録日', 'id': 'added_dt', 'type': 'date', 'value': 'now', 'readonly': 1},
+        {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text', 'class': 'text_right'},
+    ] -%}
+    <table id="tbl_detail" class="book_details_table">
+    {% for item in items -%}
+    {% if item.readonly == 1 %}{% set readonly = 'readonly' %}{% else %}{% set readonly = '' %}{% endif %}
+    <tr{% if (item.type=='hidden') %} style="display:none;"{% endif %}>
+        <td class="book_detail_header">{{ item.header_title|safe }}</td>
+        <td>
+            {% if (item.type=='text') -%}
+                <input type="text" id="{{ item.id }}" name="{{ item.id }}"
+                {%- if ('class' in item) %} class="{{ item.class }}"{% endif -%} {{ readonly }} />
+            {% elif (item.type=='date') -%}
+                <input type="date" id="{{ item.id }}" name="{{ item.id }}" {{ readonly }} />
+            {% elif (item.type=='area') or (item.type=='hidden') -%}
+                <textarea id="{{ item.id }}" name="{{ item.id }}" {{ readonly }}></textarea>
+            {% elif (item.type=='img') -%}
+                <img id="{{ item.id }}" name="{{ item.id }}" />
+            {% endif -%}
+        </td>
+    </tr>
+    {% endfor -%}
+    <tr class="book_detail_header">
+        <td>ジャンル</td>
+        <td>ジャンル・・・</td>
+    </tr>
+    </table>
+    <div id="buttons">
+        {{ form.csrf_token }}
+        <button type="button" class="btn_submit">更新</button>
+    </div>
+</div>
 </form>
 
-
 <script language="JavaScript">
-    let bc = [["本メンテ","{{ url_for('maintenance') }}"]];
-
-    // book_nameが指定されていたら設定する
-    let url = new URL(window.location.href);
-    let params = url.searchParams;
-    let book_name = params.get("book_name");
-    if (book_name != null) {
-        bc.push(
-            [
-                book_name,
-                "{{ url_for('maintenance', isbn=form.isbn.data) }}"
-            ]
-        );
-    }
+    {% if book_info -%}
+    {# book_infoがあったら、一覧から #}
+    let bc =[
+        [
+            "蔵書一覧",
+            "{{ url_for('main') }}"
+        ],
+        [
+            "{{ book_info['book'].book_name }}",
+            "{{ url_for('books', book_id=book_info['book'].book_id) }}"
+        ],
+        [
+            "メンテナンス",
+            "{{ url_for('maintenance', book_id=book_info['book'].book_id) }}"
+        ]
+    ];
+    {% else -%}
+    {# book_infoがなかったら、メンテから #}
+    let bc = [["本の追加","{{ url_for('maintenance') }}"]];
+    {% endif -%}
 
     make_breadcrumbs(bc);
 </script>
 
+{#
 <!-- ------------------------------------------------------------------------ -->
 
 <!--
@@ -131,5 +148,5 @@ maintenance
     <p><button type="submit">本の登録</button></p>
 </form>
 -->
-
+#}
 {% endblock -%}

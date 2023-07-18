@@ -23,6 +23,11 @@ $(function(){
         search_book(isbn);
     });
 
+    // 登録ボタン
+    $("#regist_book").click(function(){
+        // 
+    });
+
     // 最初からISBNが入っている場合は、検索する
     if ($("#isbn").val().length > 0) {
         search_book($("#isbn").val());
@@ -141,7 +146,7 @@ function initialize_breadcrumbs(){
     // パンくずリストの再作成
     // まだ作ってないとき用に空にする
     make_breadcrumbs(
-        [["本メンテ","{{ url_for('maintenance') }}"]]
+        [["本の追加","{{ url_for('maintenance') }}"]]
     )
 }
 

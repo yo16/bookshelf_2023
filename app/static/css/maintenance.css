@@ -18,6 +18,7 @@
     background: url("/static/img/gif-load.gif") center center no-repeat;
 }
 
+/* ISBN検索 */
 #td_isbn_search {
     display: flex;
     flex-direction: row;
@@ -28,20 +29,47 @@
     width: 120px;
 }
 #book_name {
-    width: 300px;
+    width: 400px;
+}
+@media screen and (max-width: 600px) {
+    #book_name {
+        width: 200px;
+    }
 }
 #page_count, #dimensions_height, #dimensions_width, #dimensions_thickness, #num_of_same_books {
     width: 50px;
 }
 #description {
-    width: 300px;
+    width: 400px;
     height: 4.0em;
 }
+@media screen and (max-width: 600px) {
+    #description {
+        width: 200px;
+    }
+}
 
+/* details and buttons */
+#details_and_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+@media screen and (max-width: 600px) {
+    #details_and_buttons {
+        flex-direction: column;
+    }
+}
+
+/* details */
 input, textarea {
     border-radius: 5px;
     border: solid 1px var(--accent2-color);
     padding: 5px 7px;
+}
+input:read-only, textarea:read-only {
+    background-color: var(--text-bg-white);
+    border-color: var(--accent2-color-pale);
 }
 
 .btn_submit {

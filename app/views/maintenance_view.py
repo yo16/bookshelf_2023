@@ -13,10 +13,12 @@ def main(app):
     form = RegistBookForm(request.form)
     org_mem = get_org_mem()
 
-    # getでisbnが指定されている場合は取得
-    isbn = request.args.get("isbn", None)
-    if isbn:
-        form.isbn.data = isbn
+    # getでbook_idが指定されている場合は、DBから情報を取得
+    book_id = request.args.get("book_id", None)
+    book_info = None
+    if book_id:
+        book_info = DbBook.get_book_info(book_id, org_mem["organization"].org_id)
+        form.isbn.data = book_info["book"].isbn
 
     if form.validate_on_submit():
         # 登録処理
@@ -28,6 +30,7 @@ def main(app):
     return render_template(
         "maintenance.html", **org_mem,
         form = form,
+        book_info = book_info,
         genres = genres,
         now = datetime.now()
     )
