@@ -65,7 +65,14 @@ maintenance
     </table>
     <div id="buttons">
         {{ form.csrf_token }}
-        <button type="button" class="btn_submit">更新</button>
+        <button type="button" class="btn_submit">
+        {# book_infoがあると更新で、ないと新規 #}
+        {%- if book_info -%}
+            更新
+        {%- else -%}
+            登録
+        {%- endif -%}
+        </button>
     </div>
 </div>
 </form>
