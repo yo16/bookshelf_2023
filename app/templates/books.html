@@ -144,7 +144,7 @@ books
                     </svg>
                     <div class="comment_area">
                         <div class="member_name_comment_dt">
-                            <a href="{{ url_for('members', member_id=member.member_id) }}">
+                            <a href="{{ url_for('members', member_id=note_member[1].member_id) }}">
                                 {{ note_member[1].member_name }}
                             </a>
                             {{ note_member[0].noted_dt.strftime("%Y/%m/%d %H:%M") }}
@@ -185,7 +185,11 @@ books
                         {{ his.borrowed_history.returned_dt.strftime("%Y/%m/%d %H:%M") -}}
                         {% endif -%}
                         </td>
-                        <td>{{ his.member.member_name -}}</td>
+                        <td>
+                            <a href="{{ url_for('members', member_id=his.member.member_id) }}">
+                                {{ his.member.member_name }}
+                            </a>
+                        </td>
                     </tr>
                     {% endfor -%}
                 </table>

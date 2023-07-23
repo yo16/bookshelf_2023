@@ -1,29 +1,46 @@
 {% extends "base_internal.html" %}
 
 {% block title -%}
-member(one)
+{{ disp_member.member_name }}
+{%- endblock %}
+
+
+{% block header_append %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/members.css') }}" />
 {%- endblock %}
 
 
 {% block body -%}
-<h1>member(one)</h1>
-member_id: {{ disp_member.member_id }}<br />
-member_name: {{ disp_member.member_name }}<br />
-is_admin: {{ disp_member.is_admin }}<br />
--- his --<br />
-<table border="1">
-    <tr>
-        <th>book_name</th>
-        <th>borrowed_dt</th>
-        <th>returned_dt</th>
-    </tr>
-    {% for h in histories -%}
-    <tr>
-        <td><a href="{{ url_for('books', book_id=h.book.book_id) }}">{{ h.book.book_name }}</a></td>
-        <td>{{ h.borrowed_history.borrowed_dt }}</td>
-        <td>{{ h.borrowed_history.returned_dt }}</td>
-    </tr>
-    {% endfor -%}
-</table>
+<div id="div_member_name">{{ disp_member.member_name }}</div>
+<div id="borrowed_his">
+    <div id="div_his_title">履歴</div>
+    <table>
+        <tr>
+            <th>タイトル</th>
+            <th>貸出</th>
+            <th>返却</th>
+        </tr>
+        {% for h in histories -%}
+        <tr>
+            <td><a href="{{ url_for('books', book_id=h.book.book_id) }}">{{ h.book.book_name }}</a></td>
+            <td>{{ h.borrowed_history.borrowed_dt.strftime("%Y/%m/%d %H:%M") }}</td>
+            <td>
+                {% if h.borrowed_history.returned_dt is not none -%}
+                {{ h.borrowed_history.returned_dt.strftime("%Y/%m/%d %H:%M") -}}
+                {% endif -%}
+            </td>
+        </tr>
+        {% endfor -%}
+    </table>
+</div>
 
+<script language="JavaScript">
+    make_breadcrumbs(
+        [
+            ["メンバー","{{ url_for('members') }}"],
+            ["{{ disp_member.member_name }}","{{ url_for('members', member_id=disp_member.member_id) }}"]
+        ]
+    );
+</script>
 {% endblock -%}

@@ -162,16 +162,4 @@
     fill: var(--text-bg-white);
 }
 
-/* histroies */
-#borrowed_his table{
-    margin: 10px;
-    border-spacing: 2px;
-}
-#borrowed_his th{
-    background-color: var(--text-bg-white);
-    font-weight: normal;
-}
-#borrowed_his th, #borrowed_his td{
-    padding: 2px 10px;
-    border: 1px solid var(--accent2-color-pale);
-}
+
