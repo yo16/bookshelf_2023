@@ -22,10 +22,18 @@ def main(app):
 
     if form.validate_on_submit():
         # 登録処理
-        regist_info()
+        regist_info(org_mem["organization"].org_id)
     
     # ジャンル一覧を取得
     genres = DbGenre.get_genres(org_mem["organization"].org_id)
+    # ジャンル名に階層を示すスペーサーを埋め込む
+    for g in genres:
+        # 階層
+        floor_num = len(g.sort_key.split("_")) - 1
+        # 字下げ
+        floor_spacer = "　" * (floor_num - 1)
+        # スペーサーを入れる
+        g.genre_name = floor_spacer + g.genre_name
 
     return render_template(
         "maintenance.html", **org_mem,
@@ -36,15 +44,14 @@ def main(app):
     )
 
 
-def regist_info():
+def regist_info(org_id):
     """登録情報をもとに、関連テーブルを登録する
     """
     req = {
         "isbn": request.form["isbn"],
         "book_name": request.form["book_name"],
         "image_url": request.form["image_url"],
-        "authors": [],
-        "num_of_authors": int(request.form["num_of_authors"]),
+        "authors": request.form["authors"].split("\n"),
         "publisher_code": request.form["publisher_code"],
         "publisher_name": request.form["publisher_name"],
         "published_dt": None,
@@ -55,7 +62,7 @@ def regist_info():
         "dimensions_width": None,
         "dimensions_thickness": None,
         "genres": request.form["genres"],
-        "org_id": int(request.form["org_id"]),
+        "org_id": org_id,
         "num_of_same_books": int(request.form["num_of_same_books"]),
         "added_dt": datetime.strptime(request.form["added_dt"], "%Y-%m-%d")
     }
@@ -68,12 +75,6 @@ def regist_info():
         req["published_dt"] = datetime.strptime(dt_str, "%Y-%m-%d")
     except:
         req["published_dt"] = None
-    # authors
-    for i in range(req["num_of_authors"]):
-        author = ""
-        if f"author{i}" in request.form:
-            author = request.form[f"author{i}"]
-        req["authors"].append(author)
     # 任意項目でintのもの
     optional_int_items = ["page_count", "dimensions_height", "dimensions_width", "dimensions_thickness"]
     for item in optional_int_items:
@@ -318,6 +319,9 @@ def create_classifications(info, book):
         genres_str = "0"
     
     genre_id_ary = genres_str.split(",")
+
+    # 空の要素があったらスキップ
+    genre_id_ary.remove("")
 
     ret_genres = []
     for g_id in genre_id_ary:

@@ -25,11 +25,14 @@
     gap: 10px;
     align-items: center;
 }
+.author_show, #publisher_name {
+    width: 150px;
+}
 #isbn, #publisher_code {
     width: 120px;
 }
 #book_name {
-    width: 400px;
+    width: 450px;
 }
 @media screen and (max-width: 600px) {
     #book_name {
@@ -40,7 +43,7 @@
     width: 50px;
 }
 #description {
-    width: 400px;
+    width: 450px;
     height: 4.0em;
 }
 @media screen and (max-width: 600px) {
@@ -48,6 +51,29 @@
         width: 200px;
     }
 }
+#sel_genre_selected {
+    width: fit-content;
+}
+#spn_authors {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+#spn_genres {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#sel_genre_master {
+    padding: 3px 10px;
+    width: fit-content;
+
+}
+#btn_select_genre svg, #btn_remove_genre svg {
+    vertical-align: middle;
+    opacity: 0.6;
+}
+
 
 /* details and buttons */
 #details_and_buttons {
@@ -62,7 +88,7 @@
 }
 
 /* details */
-input, textarea {
+input, textarea, select {
     border-radius: 5px;
     border: solid 1px var(--accent2-color);
     padding: 5px 7px;
@@ -70,21 +96,4 @@ input, textarea {
 input:read-only, textarea:read-only {
     background-color: var(--text-bg-white);
     border-color: var(--accent2-color-pale);
-}
-
-.btn_submit {
-    height: 40px;
-    width: 90px;
-    background-color: var(--accent3-color-pale);
-    box-shadow: 1px 2px 0 var(--accent3-color);
-    border: 0;
-    border-radius: 10px;
-    color: var(--accent1-color);
-    cursor: pointer;
-    transition: 0.2s all;
-}
-.btn_small {
-    height: 25px;
-    width: 5rem;
-    font-size: 0.7rem;
 }

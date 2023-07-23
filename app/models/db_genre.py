@@ -1,6 +1,7 @@
 from sqlalchemy import String, select, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func, and_
+from functools import cmp_to_key
 
 from .db_common import Base, get_db
 
@@ -34,6 +35,11 @@ class DbGenre(Base):
 
     @staticmethod
     def get_genres(org_id):
+        """ジャンル一覧を取得する
+        単純にDB項目のsort_keyでorder_byしても諸事情でダメなので、
+        sort_genres()を呼ぶ
+        """
+        # DBから抽出
         with get_db() as db:
             genres = db.execute(
                 select(
@@ -42,7 +48,11 @@ class DbGenre(Base):
                     DbGenre.org_id == org_id
                 )
             ).scalars().all()
-        return genres
+        
+        # ソートキーでソート
+        genres_sorted = DbGenre.sort_genres(genres)
+
+        return genres_sorted
 
 
     @staticmethod
@@ -57,12 +67,23 @@ class DbGenre(Base):
         """
         def get_child_genres(parent_id):
             ret_genres = []
+
+            # 取得
+            ary_genres = []
             for g in genres:
                 if g.parent_genre_id == parent_id:
-                    ret_genres.append({
-                        "genre": g,
-                        "children": get_child_genres(g.genre_id)
-                    })
+                    ary_genres.append(g)
+            
+            # ソート
+            ary_genres_sorted = DbGenre.sort_genres(ary_genres)
+
+            # 結果配列に入れる
+            for g in ary_genres_sorted:
+                ret_genres.append({
+                    "genre": g,
+                    "children": get_child_genres(g.genre_id)
+                })
+            
             return ret_genres
         
         if len(genres)==0:
@@ -150,10 +171,36 @@ class DbGenre(Base):
             genre_array (list): DbGenreの配列
             acsend (bool): Ture: 昇順, False: 降順
         """
-        def eval_sort_key_tail(a):
-            return a.get_sort_key_tail()
+        def compare_genre(a, b):
+            """ genreの比較
+            階層の浅い方から比較する
+            aの方が小さい場合は-1、大きい場合は1を返す
+            """
+            # 数値の配列にする（最後は空が入っているので除外）
+            a_sort_keys = [ int(s) for s in a.sort_key.split("_")[:-1]]
+            b_sort_keys = [ int(s) for s in b.sort_key.split("_")[:-1]]
+
+            # 浅い方の数に合わせる
+            a_is_shallower = -1      # ここでついでに、浅い方を保存しておく
+            loop_num = len(a_sort_keys)
+            if (len(b_sort_keys) < len(a_sort_keys)):
+                a_is_shallower = 1
+                loop_num = len(b_sort_keys)
+            
+            # 浅い方から１階層ずつ比較
+            # 途中で異なっている場合、その段階で小さい方が先
+            for i in range(loop_num):
+                if (a_sort_keys[i] < b_sort_keys[i]):
+                    return -1
+                elif (a_sort_keys[i] > b_sort_keys[i]):
+                    return 1
+            
+            # （完全に一致していることはない前提で）
+            # 浅い方の深さまでは一致しているので、
+            # 浅い方が先
+            return a_is_shallower
         
-        return sorted(genre_array, key=eval_sort_key_tail, reverse=not ascend)
+        return sorted(genre_array, key=cmp_to_key(compare_genre), reverse=not ascend)
     
 
     def get_sort_key_tail(self):

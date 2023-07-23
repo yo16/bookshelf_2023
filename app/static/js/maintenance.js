@@ -10,6 +10,8 @@ $(function(){
             // 検索
             let isbn = $("#isbn").val();
             search_book(isbn);
+            
+            return false;
         }
     });
 
@@ -21,11 +23,31 @@ $(function(){
         // 検索
         let isbn = $("#isbn").val();
         search_book(isbn);
+            
+        return false;
     });
 
+    // ジャンル選択ボタン
+    // 選択しているジャンルを登録する
+    $("#btn_select_genre").click(function(){
+        add_genre(
+            $("#sel_genre_master").children(":selected").val(),
+            $("#sel_genre_master").children(":selected").text()
+        );
+        return false;
+    });
+    // ジャンル除外ボタン
+    $("#btn_remove_genre").click(function(){
+        remove_genre();
+        return false;
+    });
+    // ジャンルの初期登録
+    initialize_genres();
+
     // 登録ボタン
-    $("#regist_book").click(function(){
-        // 
+    $("#btn_regist_book").click(function(){
+        // submit
+        $("#frm_regist_book").submit();
     });
 
     // 最初からISBNが入っている場合は、検索する
@@ -36,7 +58,7 @@ $(function(){
 
 // ISBNから本情報を検索して設定
 function search_book(isbn_input){
-    console.log(isbn_input);
+    //console.log(isbn_input);
     let book_info = {};
 
     // ハイフンが入っていたら除く
@@ -118,9 +140,9 @@ function set_book_info(book_info){
     //console.log({book_info});
 
     // book_infoの登録
-    $("#image_url").attr("src", book_info["image_url"]);
     let val_pattern_items = [
         "book_name",
+        "image_url",
         "description_original",
         "description",
         "publisher_code",
@@ -137,6 +159,24 @@ function set_book_info(book_info){
         let item = val_pattern_items[i];
         $("#"+item).val(book_info[item]);
     }
+    $("#image_url_img").attr("src", book_info["image_url"]);
+    $("#spn_authors").empty();
+    for(let i=0; i<book_info["authors"].length; i++){
+        // textareaに追加
+        let cur = $("#authors").val()
+        cur += book_info["authors"][i] + "\n";
+        $("#authors").val(cur);
+
+        // inputを追加
+        let ent = $("<input>")
+            .attr("id", "author_show"+i)
+            .attr("name", "author_show"+i)
+            .attr("class", "author_show")
+            .attr("readonly", "1")
+            .val(book_info["authors"][i])
+        ;
+        $("#spn_authors").append(ent);
+    }
 
     // 登録日
     $("#added_dt").val()
@@ -149,6 +189,99 @@ function initialize_breadcrumbs(){
         [["本の追加","{{ url_for('maintenance') }}"]]
     )
 }
+
+// ジャンルを追加する
+function add_genre(genre_id, genre_name){
+    // 指定されたgenre_idがすでに登録済の場合、何もせず終了する
+    let found_same_val = false;
+    $("#sel_genre_selected option").each(function(){
+        if (genre_id == $(this).val()) {
+            found_same_val = true;
+        }
+    });
+    if (found_same_val){
+        return false;
+    }
+
+    // スペーサーが入ってたら除去
+    genre_name = genre_name.replace(/　/g, "");
+
+    // まだ追加されていないので追加する
+    let new_opt = $("<option></option>")
+        .val(genre_id)
+        .text(genre_name);
+    $("#sel_genre_selected").append(new_opt);
+
+    // #genres(hidden form項目)にも追加する
+    $("#genres").val($("#genres").val()+genre_id+",");
+
+    return true;
+}
+
+// 選択しているジャンルを除外する
+function remove_genre(){
+    // 選択しているジャンル
+    // （HTMLで１行選択しかできないことにしているが
+    //   複数選択でも正常に動く）
+    let cur_genres = $("#sel_genre_selected option:selected");
+    if (cur_genres.length == 0){
+        return false;
+    }
+    // 除外
+    cur_genres.remove();
+
+    // genre_idを取得
+    let ids = [];
+    cur_genres.each(function(){
+        ids.push($(this).attr("value"));
+    });
+    // idを#genresから探して削除する
+    genres_text = $("#genres").val();
+    genres_text = genres_text.replace(/,+$/,"");    // 末尾の,を削除
+    gernes_text_ary = genres_text.split(",");
+    genres_text_ary_removed = gernes_text_ary.filter(function(v){
+        return !ids.includes(v);
+    });
+    $("#genres").val(genres_text_ary_removed.join(",")+",")
+
+    // もし全部除外して空になってしまったら、
+    // #sel_genre_masterのval=0の要素（分類なしのはず）を
+    // 追加する
+    let exists_genres = $("#sel_genre_selected option");
+    if (exists_genres.length == 0){
+        initialize_genres();
+    }
+
+    return true;
+}
+
+// val=0のジャンル（分類なし）だけを追加
+function initialize_genres(){
+    let genres = $("#sel_genre_selected");
+
+    // val=0のジャンル名を取得
+    // （"分類なし"のはずだが、念のため取得）
+    let val0_text = "分類なし";
+    $("#sel_genre_master option").each(function(){
+        if ($(this).val() == 0){
+            val0_text = $(this).text();
+            return;
+        }
+    });
+
+    // 強制的に全部空にする
+    genres.empty();
+    // val0を追加
+    let val0 = $("<option></option>")
+        .val(0)
+        .text(val0_text);
+    genres.append(val0);
+    // テキストは0を入れる
+    $("#genres").val("0,");
+    
+    return;
+}
+
 
 /*
 $(function(){
@@ -272,6 +405,7 @@ function initialize(){
     $("#author0").val("");
     $("#publisher_name").val("");
     $("#genres").val("");
+    $("#sel_genre_selected").empty();
 };
 
 /*
