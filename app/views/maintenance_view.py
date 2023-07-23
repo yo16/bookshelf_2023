@@ -84,23 +84,23 @@ def regist_info(org_id):
         except Exception as e:
             req[item] = None
     
-    # 登録する情報
-    book, is_new_book = create_book(req)
-    authors = None
-    writings = None
-    publisher = None
-    is_new_pub = False
-    classifications = None
-    if is_new_book:
-        authors = create_authors(req)
-        writings = create_writings(req, book, authors)
-        publisher, is_new_pub = create_publisher(req)
-        book.publisher_id = publisher.publisher_id
-    classifications = create_classifications(req, book)
-    collection, is_new_collection = create_collection(req, book)
-
-    # 登録
     with get_db() as db:
+        # 登録する情報
+        book, is_new_book = create_book(req)
+        authors = None
+        writings = None
+        publisher = None
+        is_new_pub = False
+        classifications = None
+        if is_new_book:
+            authors = create_authors(req)
+            writings = create_writings(req, book, authors)
+            publisher, is_new_pub = create_publisher(req)
+            book.publisher_id = publisher.publisher_id
+        classifications = create_classifications(req, book)
+        collection, is_new_collection = create_collection(req, book)
+
+        # 登録
         # 他のorg_idが登録済のbookの場合があり、
         # 完全に未登録の場合のみ、bookやauthors等を登録する
         if is_new_book:
@@ -121,8 +121,33 @@ def regist_info(org_id):
                 db.add(publisher)
         
         # classification
-        for c in classifications:
-            db.add(c)
+        if is_new_book:
+            # 新規の場合は、単純にclassificationsを追加
+            for c in classifications:
+                db.add(c)
+        else:
+            edit_classifications = []
+            # 既存のbookの場合は、追加分を追加し、削除されたものは削除、それ以外は何もしない
+            exists_classes = DbClassification.get_classifications(org_id, book.book_id)
+            for c_e in exists_classes:  # すでにあるもの
+                exists_in_newer_list = False
+                for c_a in classifications: # これから追加しようとしているもの
+                    if (c_e.org_id==c_a.org_id) and (c_e.book_id==c_a.book_id) and (c_e.genre_id==c_a.genre_id):
+                        # あった
+                        exists_in_newer_list = True
+                if not exists_in_newer_list:
+                    # 新しいリストになかったら、既存は削除
+                    db.delete(c_e)
+            for c_a in classifications: # これから追加しようとしているもの
+                exists_in_older_list = False
+                for c_e in exists_classes:  # すでにあるもの
+                    if (c_e.org_id==c_a.org_id) and (c_e.book_id==c_a.book_id) and (c_e.genre_id==c_a.genre_id):
+                        # あった
+                        exists_in_older_list = True
+                if not exists_in_older_list:
+                    # 既存のリストになかったら、追加
+                    db.add(c_a)
+                    edit_classifications.append(c_a)
 
         # collection
         if is_new_collection:
@@ -141,10 +166,9 @@ def regist_info(org_id):
                 db.refresh(w)
             if is_new_pub:
                 db.refresh(publisher)
-        for c in classifications:
+        for c in edit_classifications:
             db.refresh(c)
-        if is_new_collection:
-            db.refresh(collection)
+        db.refresh(collection)
     
     return
     
@@ -294,12 +318,17 @@ def create_collection(info, book):
         cur_collection = DbCollection(
             org_id = info["org_id"],
             book_id = book.book_id,
-            num_of_same_books = info["num_of_same_books"],
+            num_of_same_books = int(info["num_of_same_books"]),
             description = info["description"],
             added_dt = info["added_dt"]
         )
     else:
+        # 既存の場合は、infoの情報をもとに更新する
+        print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU 更新はしてる")
         cur_collection = collections[0]
+        print(cur_collection)
+        cur_collection.num_of_same_books = int(info["num_of_same_books"])
+        cur_collection.description = info["description"]
 
     return cur_collection, is_new_collection
 
@@ -318,10 +347,8 @@ def create_classifications(info, book):
         print("LEN=0")
         genres_str = "0"
     
-    genre_id_ary = genres_str.split(",")
-
-    # 空の要素があったらスキップ
-    genre_id_ary.remove("")
+    # カンマ区切りで数字を取り出す
+    genre_id_ary = [ int(s) for s in genres_str.split(",") if len(s)>0 ]
 
     ret_genres = []
     for g_id in genre_id_ary:

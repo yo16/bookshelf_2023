@@ -67,7 +67,13 @@ def main(app):
             ret_dic["added_dt"] = now_dt.strftime("%Y-%m-%d")
         
         # ジャンル
-        ret_dic["genres"] = []  # ★未着手
+        ret_dic["genres"] = []
+        if book_info["genres"]:
+            for genre in book_info["genres"]:
+                ret_dic["genres"].append({
+                    "genre_id": genre.genre_id,
+                    "genre_name": genre.genre_name
+                })
 
     else:
         #print(200)

@@ -115,6 +115,7 @@ function search_book(isbn_input){
         book_info["dimensions_height"] = js_data["dimensions_height"];
         book_info["dimensions_width"] = js_data["dimensions_width"];
         book_info["dimensions_thickness"] = js_data["dimensions_thickness"];
+        book_info["genres"] = [];
         for(let i=0; i<js_data["genres"].length; i++){
             book_info["genres"].push(js_data["genres"][i]);
         }
@@ -176,6 +177,12 @@ function set_book_info(book_info){
             .val(book_info["authors"][i])
         ;
         $("#spn_authors").append(ent);
+    }
+    $("genres").empty();
+    for(let i=0; i<book_info["genres"].length; i++){
+        let genre_id = book_info["genres"][i]["genre_id"];
+        let genre_name = book_info["genres"][i]["genre_name"];
+        add_genre(genre_id, genre_name);
     }
 
     // 登録日
