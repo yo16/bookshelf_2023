@@ -151,15 +151,9 @@
 .comment_str {
     background-color: var(--text-bg-white);
     position: relative;
-    border-radius: 30px;
+    border: 2px solid var(--accent2-color-pale);
+    border-radius: 0 30px 30px 30px;
     padding: 15px 30px;
-}
-.comment_str svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    fill: var(--text-bg-white);
 }
 
 
