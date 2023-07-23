@@ -196,7 +196,9 @@ def load_user(id):
     splitted_id = id.split("-")
     org_id = splitted_id[0]
     member_id = splitted_id[1]
-    member = DbMember.get(org_id, member_id)
+    member = None
+    with get_db() as db:
+        member = DbMember.get(db, org_id, member_id)
     
     return member
 

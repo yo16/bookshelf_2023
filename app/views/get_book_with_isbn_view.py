@@ -8,7 +8,7 @@ from datetime import datetime
 import re
 
 from .view_common import get_org_mem
-from models import DbBook, DbWriting, DbAuthor, DbPublisher
+from models import DbBook, DbWriting, DbAuthor, DbPublisher, get_db
 
 def main(app):
     """自分のDBを見に行って、なかったらGoogleAPIで検索する
@@ -20,16 +20,20 @@ def main(app):
 
     #print(10)
     # 組織と無関係にbook情報があるか確認
-    cur_book = DbBook.get_book_by_isbn(isbn)
+    cur_book = None
+    with get_db() as db:
+        cur_book = DbBook.get_book_by_isbn(db, isbn)
 
     #print(20)
     if cur_book:
         #print(100)
-        # DBに見つかったので正式にbookと周辺情報を取得
-        book_info = DbBook.get_book_info(
-            cur_book.book_id,
-            org_mem["organization"].org_id
-        )
+        with get_db() as db:
+            # DBに見つかったので正式にbookと周辺情報を取得
+            book_info = DbBook.get_book_info(
+                db,
+                cur_book.book_id,
+                org_mem["organization"].org_id
+            )
 
         ret_dic["book_name"] = cur_book.book_name
         ret_dic["image_url"] = cur_book.image_url
@@ -64,6 +68,7 @@ def main(app):
         else:
             # このケースはないはずだが一応・・・
             ret_dic["num_of_same_books"] = 0
+            now_dt = datetime.now()
             ret_dic["added_dt"] = now_dt.strftime("%Y-%m-%d")
         
         # ジャンル

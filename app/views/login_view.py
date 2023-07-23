@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request
 from flask_login import login_user
 
 from .forms import LoginForm
-from models import DbMember
+from models import get_db, DbMember
 
 
 def main(app):
@@ -13,13 +13,14 @@ def main(app):
         member_code = form.member_code.data
         password = form.password.data
 
-        # memberを取得してログイン
-        member_id = DbMember.get_member_id_by_member_code(org_id, member_code)
-        member = DbMember.get(org_id, member_id)
-        if (member is not None) and member.verify_password(password):
-            # 一致
-            login_user(member)
-            return redirect(url_for("main"))
+        with get_db() as db:
+            # memberを取得してログイン
+            member_id = DbMember.get_member_id_by_member_code(db, org_id, member_code)
+            member = DbMember.get(db, org_id, member_id)
+            if (member is not None) and member.verify_password(password):
+                # 一致
+                login_user(member)
+                return redirect(url_for("main"))
         
         # 認証失敗
         message = "組織ID、ユーザー名、またはパスワードが正しくありません。"

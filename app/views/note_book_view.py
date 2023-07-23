@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.sql.expression import and_
 import re
 
-from models import DbBookNote
+from models import get_db, DbBookNote
 from .forms import TakeANoteForm
 
 
@@ -21,13 +21,19 @@ def main(app):
     note = re.sub(r"\n+$", "", note)
 
     # note内の改行を<br />に置換
-    note = note.replace("\n", "<br />")
+    str_note = note.replace("\n", "<br />")
 
-    DbBookNote.take_a_note(
-        org_id = current_user.org_id,
-        member_id = current_user.member_id,
-        book_id = book_id,
-        note = note,
-    )
-
+    with get_db() as db:
+        rec_note = DbBookNote.take_a_note(
+            db,
+            org_id = current_user.org_id,
+            member_id = current_user.member_id,
+            book_id = book_id,
+            note = str_note,
+        )
+        
+        db.add(rec_note)
+        db.commit()
+        db.refresh(rec_note)
+        
     return redirect(url_for("books", book_id=book_id))

@@ -11,33 +11,34 @@ from .forms import RegistMemberForm, EditMemberForm, DeleteMemberForm
 def main(app, member_id):
     ret = None
 
-    if member_id is not None:
-        # member_idが指定されている時は、memberページを表示
-        ret = show_member_page(app, member_id)
-        
-    else:
-        org_mem = get_org_mem()
-        if (not current_user.is_admin):
-            # 管理者ではない場合、自分のページを表示する
-            member_id = current_user.member_id
-            ret = show_member_page(app, member_id)
+    with get_db() as db:
+        if member_id is not None:
+            # member_idが指定されている時は、memberページを表示
+            ret = show_member_page(db, app, member_id)
             
         else:
-            # adminの場合は、memberの管理ページ(members)を表示
-            ret = show_members_page(app)
+            org_mem = get_org_mem()
+            if (not current_user.is_admin):
+                # 管理者ではない場合、自分のページを表示する
+                member_id = current_user.member_id
+                ret = show_member_page(db, app, member_id)
+                
+            else:
+                # adminの場合は、memberの管理ページ(members)を表示
+                ret = show_members_page(db, app)
     
     return ret
 
 
-def show_member_page(app, member_id):
+def show_member_page(db, app, member_id):
     org_mem = get_org_mem()
     org_id = org_mem["organization"].org_id
     
     # member
-    member = DbMember.get(org_id, member_id)
+    member = DbMember.get(db, org_id, member_id)
 
     # borrowed_his
-    hiss = DbBook.get_bookhis_by_member(org_id, member_id)
+    hiss = DbBook.get_bookhis_by_member(db, org_id, member_id)
 
     # 描画
     return render_template(
@@ -48,7 +49,7 @@ def show_member_page(app, member_id):
     )
 
 
-def show_members_page(app):
+def show_members_page(db, app):
     org_mem = get_org_mem()
     regist_form = RegistMemberForm(request.form)
     regist_form.method.data = "POST"
@@ -62,28 +63,28 @@ def show_members_page(app):
     if regist_form.is_submitted():
         method = request.form.get("method")
         if (method=="POST"):
-            # 追加
+            # 追加（この関数内でget_dbしてcommitする）
             regist_member(
                 org_mem["organization"],
                 request.form
             )
 
         elif (method=="PUT"):
-            # 編集
+            # 編集（この関数内でget_dbしてcommitする）
             edit_member(
                 org_mem["organization"],
                 request.form
             )
 
         elif (method=="DELETE"):
-            # 削除
+            # 削除（この関数内でget_dbしてcommitする）
             delete_member(
                 org_mem["organization"],
                 request.form
             )
 
     # 組織内のメンバーを取得
-    members = DbMember.get_members_in_org(org_mem["organization"].org_id)
+    members = DbMember.get_members_in_org(db, org_mem["organization"].org_id)
 
     return render_template(
         "members.html", **org_mem,
@@ -103,7 +104,7 @@ def regist_member(organization, form):
     """
     with get_db() as db:
         # 次のID
-        next_member_id = DbMember.get_new_member_id(organization.org_id)
+        next_member_id = DbMember.get_new_member_id(db, organization.org_id)
 
         # パスワードをハッシュ化
         hashed_pass = DbMember.hash_password(form.get("reg_password"))

@@ -168,6 +168,9 @@ books
                 </svg>
             </div>
             <div id="borrowed_his">
+                {% if book_info.histories|length == 0 -%}
+                (貸出履歴なし)
+                {% else -%}
                 <table>
                     <tr>
                         <th>貸出</th>
@@ -186,6 +189,7 @@ books
                     </tr>
                     {% endfor -%}
                 </table>
+                {% endif -%}
             </div>
         </div>
     </div>
@@ -202,84 +206,4 @@ books
         ]
     ]);
 </script>
-
-<hr />
-<hr />
-<hr />
-{% if message -%}
-<p>message:{{ message }}</p>
-{% endif -%}
-book_id: {{ book_info.book.book_id }}<br />
-isbn: {{ book_info.book.isbn }}<br />
-book_name: {{ book_info.book.book_name }}<br />
-img: <img src="{{ book_info.book.image_url }}" /><br />
-publisher_id: {{ book_info.book.publisher_id }}<br />
-publisher_name: {{ book_info.publisher }}<br />
-published_dt: {{ book_info.book.published_dt }}<br />
-description: {{ book_info.book.description }}<br />
-page_count: {{ book_info.book.page_count }}<br />
-dimensions_height: {{ book_info.book.dimensions_height }}<br />
-dimensions_width: {{ book_info.book.dimensions_width }}<br />
-dimensions_thickness: {{ book_info.book.dimensions_thickness }}<br />
-authors: {% for a in book_info.authors -%}
-- {{ a.author_name }}<br />
-{% endfor -%}
-genres: {% for g in book_info.genres -%}
-- {{ g.genre_name }}<br />
-{% endfor -%}
-<form method="POST">
-    {{ edit_form.csrf_token }}
-num_of_same_books: {{ edit_form.num_of_same_books }}<br />
--- his --<br />
-<table border="1">
-    <tr>
-        <th>member</th>
-        <th>borrowed_dt</th>
-        <th>returned_dt</th>
-    </tr>
-    {% for h in book_info.histories -%}
-    <tr>
-        <td><a href="{{ url_for('members', member_id=h.member.member_id) }}">{{ h.member.member_name }}</a></td>
-        <td>{{ h.borrowed_history.borrowed_dt }}</td>
-        <td>{{ h.borrowed_history.returned_dt }}</td>
-    </tr>
-    {% endfor -%}
-</table>
-
--- notes --<br />
-<table border="1">
-    <tr>
-        <th>member</th>
-        <th>noted_dt</th>
-        <th>note</th>
-    </tr>
-    {% for n in book_info.book_notes -%}
-    <tr>
-        <td><a href="{{ url_for('members', member_id=n.member.member_id) }}">{{ n.member.member_name }}</a></td>
-        <td>{{ n.book_note.noted_dt }}</td>
-        <td>{{ n.book_note.note }}</td>
-    </tr>
-    {% endfor -%}
-</table>
-
-
-<hr />
-    <button type="submit">数の変更</button>
-</form>
-<form method="POST" action="{{ url_for('borrow_book') }}">
-    {{ borrow_form.csrf_token }}
-    {{ borrow_form.book_id }}
-    <button type="submit">本を借りる</button>
-</form>
-<form method="POST" action="{{ url_for('return_book') }}">
-    {{ return_form.csrf_token }}
-    {{ return_form.book_id }}
-    <button type="submit">本を返す</button>
-</form>
-<form method="POST" action="{{ url_for('note_book') }}">
-    {{ note_form.csrf_token }}
-    {{ note_form.book_id }}
-    {{ note_form.note }}
-    <button type="submit">ノート</button>
-</form>
 {% endblock -%}

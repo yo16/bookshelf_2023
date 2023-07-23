@@ -16,16 +16,19 @@ def main(app):
     # getでbook_idが指定されている場合は、DBから情報を取得
     book_id = request.args.get("book_id", None)
     book_info = None
-    if book_id:
-        book_info = DbBook.get_book_info(book_id, org_mem["organization"].org_id)
-        form.isbn.data = book_info["book"].isbn
+    genres = []
+    with get_db() as db:
+        if book_id:
+            book_info = DbBook.get_book_info(db, book_id, org_mem["organization"].org_id)
+            form.isbn.data = book_info["book"].isbn
 
-    if form.validate_on_submit():
-        # 登録処理
-        regist_info(org_mem["organization"].org_id)
+        if form.validate_on_submit():
+            # 登録処理（内部でcommitする）
+            regist_info(db, org_mem["organization"].org_id)
+
+        # ジャンル一覧を取得
+        genres = DbGenre.get_genres(db, org_mem["organization"].org_id)
     
-    # ジャンル一覧を取得
-    genres = DbGenre.get_genres(org_mem["organization"].org_id)
     # ジャンル名に階層を示すスペーサーを埋め込む
     for g in genres:
         # 階層
@@ -44,14 +47,14 @@ def main(app):
     )
 
 
-def regist_info(org_id):
-    """登録情報をもとに、関連テーブルを登録する
+def regist_info(db, org_id):
+    """登録情報をもとに、関連テーブルを登録する（この関数内部でcommitする）
     """
     req = {
         "isbn": request.form["isbn"],
         "book_name": request.form["book_name"],
         "image_url": request.form["image_url"],
-        "authors": request.form["authors"].split("\n"),
+        "authors": [ a for a in request.form["authors"].split("\n") if len(a)>0 ],
         "publisher_code": request.form["publisher_code"],
         "publisher_name": request.form["publisher_name"],
         "published_dt": None,
@@ -84,97 +87,97 @@ def regist_info(org_id):
         except Exception as e:
             req[item] = None
     
-    with get_db() as db:
-        # 登録する情報
-        book, is_new_book = create_book(req)
-        authors = None
-        writings = None
-        publisher = None
-        is_new_pub = False
-        classifications = None
-        if is_new_book:
-            authors = create_authors(req)
-            writings = create_writings(req, book, authors)
-            publisher, is_new_pub = create_publisher(req)
-            book.publisher_id = publisher.publisher_id
-        classifications = create_classifications(req, book)
-        collection, is_new_collection = create_collection(req, book)
+    # 登録する情報
+    book, is_new_book = create_book(db, req)
+    authors = None
+    writings = None
+    publisher = None
+    is_new_pub = False
+    classifications = None
+    if is_new_book:
+        authors = create_authors(db, req)
+        writings = create_writings(req, book, authors)
+        publisher, is_new_pub = create_publisher(db, req)
+        book.publisher_id = publisher.publisher_id
+    classifications = create_classifications(req, book)
+    collection, is_new_collection = create_collection(db, req, book)
 
-        # 登録
-        # 他のorg_idが登録済のbookの場合があり、
-        # 完全に未登録の場合のみ、bookやauthors等を登録する
-        if is_new_book:
-            # book
-            db.add(book)
+    # 登録
+    # 他のorg_idが登録済のbookの場合があり、
+    # 完全に未登録の場合のみ、bookやauthors等を登録する
+    if is_new_book:
+        # book
+        db.add(book)
 
-            # author
-            for a in authors:
-                if a["is_new_author"]:
-                    db.add(a["author"])
-            
-            # writing
-            for w in writings:
-                db.add(w)
-
-            # publisher
-            if is_new_pub:
-                db.add(publisher)
+        # author
+        for a in authors:
+            if a["is_new_author"]:
+                db.add(a["author"])
         
-        # classification
-        if is_new_book:
-            # 新規の場合は、単純にclassificationsを追加
-            for c in classifications:
-                db.add(c)
-        else:
-            edit_classifications = []
-            # 既存のbookの場合は、追加分を追加し、削除されたものは削除、それ以外は何もしない
-            exists_classes = DbClassification.get_classifications(org_id, book.book_id)
-            for c_e in exists_classes:  # すでにあるもの
-                exists_in_newer_list = False
-                for c_a in classifications: # これから追加しようとしているもの
-                    if (c_e.org_id==c_a.org_id) and (c_e.book_id==c_a.book_id) and (c_e.genre_id==c_a.genre_id):
-                        # あった
-                        exists_in_newer_list = True
-                if not exists_in_newer_list:
-                    # 新しいリストになかったら、既存は削除
-                    db.delete(c_e)
+        # writing
+        for w in writings:
+            db.add(w)
+
+        # publisher
+        if is_new_pub:
+            db.add(publisher)
+    
+    # classification
+    edit_classifications = []
+    if is_new_book:
+        # 新規の場合は、単純にclassificationsを追加
+        for c in classifications:
+            db.add(c)
+            edit_classifications.append(c)
+    else:
+        # 既存のbookの場合は、追加分を追加し、削除されたものは削除、それ以外は何もしない
+        exists_classes = DbClassification.get_classifications(db, org_id, book.book_id)
+        for c_e in exists_classes:  # すでにあるもの
+            exists_in_newer_list = False
             for c_a in classifications: # これから追加しようとしているもの
-                exists_in_older_list = False
-                for c_e in exists_classes:  # すでにあるもの
-                    if (c_e.org_id==c_a.org_id) and (c_e.book_id==c_a.book_id) and (c_e.genre_id==c_a.genre_id):
-                        # あった
-                        exists_in_older_list = True
-                if not exists_in_older_list:
-                    # 既存のリストになかったら、追加
-                    db.add(c_a)
-                    edit_classifications.append(c_a)
+                if (c_e.org_id==c_a.org_id) and (c_e.book_id==c_a.book_id) and (c_e.genre_id==c_a.genre_id):
+                    # あった
+                    exists_in_newer_list = True
+            if not exists_in_newer_list:
+                # 新しいリストになかったら、既存は削除
+                db.delete(c_e)
+        for c_a in classifications: # これから追加しようとしているもの
+            exists_in_older_list = False
+            for c_e in exists_classes:  # すでにあるもの
+                if (c_e.org_id==c_a.org_id) and (c_e.book_id==c_a.book_id) and (c_e.genre_id==c_a.genre_id):
+                    # あった
+                    exists_in_older_list = True
+            if not exists_in_older_list:
+                # 既存のリストになかったら、追加
+                db.add(c_a)
+                edit_classifications.append(c_a)
 
-        # collection
-        if is_new_collection:
-            db.add(collection)
-        
-        db.commit()
+    # collection
+    if is_new_collection:
+        db.add(collection)
+    
+    db.commit()
 
-        # 片付け
-        if is_new_book:
-            db.refresh(book)
+    # 片付け
+    if is_new_book:
+        db.refresh(book)
 
-            for a in authors:
-                if a["is_new_author"]:
-                    db.refresh(a["author"])
-            for w in writings:
-                db.refresh(w)
-            if is_new_pub:
-                db.refresh(publisher)
-        for c in edit_classifications:
-            db.refresh(c)
-        db.refresh(collection)
+        for a in authors:
+            if a["is_new_author"]:
+                db.refresh(a["author"])
+        for w in writings:
+            db.refresh(w)
+        if is_new_pub:
+            db.refresh(publisher)
+    for c in edit_classifications:
+        db.refresh(c)
+    db.refresh(collection)
     
     return
     
 
 
-def create_book(info):
+def create_book(db, info):
     """登録するDbBookを作成
 
     Args:
@@ -184,12 +187,12 @@ def create_book(info):
     """
     is_new_book = False
     # DBから本情報を取得
-    cur_book = DbBook.get_book_by_isbn(info["isbn"])
+    cur_book = DbBook.get_book_by_isbn(db, info["isbn"])
 
     if cur_book is None:
         # なかったので、新しいIDを取得して作る
         is_new_book = True
-        new_book_id = DbBook.get_new_book_id()
+        new_book_id = DbBook.get_new_book_id(db)
         cur_book = DbBook(
             book_id = new_book_id,
             isbn = info["isbn"],
@@ -207,7 +210,7 @@ def create_book(info):
     return cur_book, is_new_book
 
 
-def create_authors(info):
+def create_authors(db, info):
     """登録するDbAuthorを作成
 
     Args:
@@ -221,15 +224,14 @@ def create_authors(info):
         is_new_author = False
 
         # 登録済のDbAuthorがないか確認（名前で！）
-        with get_db() as db:
-            author = db.execute(
-                select(DbAuthor).where(DbAuthor.author_name == a)
-            ).scalar()
+        author = db.execute(
+            select(DbAuthor).where(DbAuthor.author_name == a)
+        ).scalar()
         if author is None:
             # 未登録なので登録
             is_new_author = True
             if not new_author_id:
-                new_author_id = DbAuthor.get_new_author_id()
+                new_author_id = DbAuthor.get_new_author_id(db)
             new_author_count += 1
             author = DbAuthor(
                 author_id = new_author_id + new_author_count,
@@ -270,7 +272,7 @@ def create_writings(info, book, authors):
     return ret
 
 
-def create_publisher(info):
+def create_publisher(db, info):
     """登録するDbPublisherを作成
 
     Args:
@@ -283,11 +285,11 @@ def create_publisher(info):
     # 存在している場合は作成しない
     publisher_code = DbPublisher.get_publisher_code_from_isbn(info["isbn"])
     if (len(info["isbn"]) > 0):
-        registed_pub = DbPublisher.get_publisher_by_pubcode(publisher_code)
+        registed_pub = DbPublisher.get_publisher_by_pubcode(db, publisher_code)
         if registed_pub:
             return registed_pub, False
 
-    new_pub_id = DbPublisher.get_new_publisher_id()
+    new_pub_id = DbPublisher.get_new_publisher_id(db)
     publisher_name = f"code[{publisher_code}]"
 
     return DbPublisher(
@@ -297,7 +299,7 @@ def create_publisher(info):
     ), True
 
 
-def create_collection(info, book):
+def create_collection(db, info, book):
     """Collectionを作成
 
     Args:
@@ -307,6 +309,7 @@ def create_collection(info, book):
     is_new_collection = False
     # 登録済みかどうか確認
     collections = DbCollection.get_collection(
+        db,
         org_id = info["org_id"],
         book_id = book.book_id
     )
@@ -324,9 +327,7 @@ def create_collection(info, book):
         )
     else:
         # 既存の場合は、infoの情報をもとに更新する
-        print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU 更新はしてる")
         cur_collection = collections[0]
-        print(cur_collection)
         cur_collection.num_of_same_books = int(info["num_of_same_books"])
         cur_collection.description = info["description"]
 

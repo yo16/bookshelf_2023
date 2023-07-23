@@ -2,7 +2,7 @@ from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func
 
-from .db_common import Base, get_db
+from .db_common import Base
 
 
 class DbAuthor(Base):
@@ -12,15 +12,14 @@ class DbAuthor(Base):
     author_name: Mapped[str] = mapped_column(String(50), nullable=False)
 
     @staticmethod
-    def get_new_author_id():
+    def get_new_author_id(db):
         new_author_id = 0
 
-        with get_db() as db:
-            result = db.execute(
-                select(
-                    func.max(DbAuthor.author_id).label("max_author_id")
-                )
-            ).scalars().first()
+        result = db.execute(
+            select(
+                func.max(DbAuthor.author_id).label("max_author_id")
+            )
+        ).scalars().first()
 
         if result is None:
             new_author_id = 0

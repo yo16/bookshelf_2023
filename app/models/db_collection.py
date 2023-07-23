@@ -15,7 +15,7 @@ class DbCollection(Base):
     added_dt: Mapped[datetime]  = mapped_column(DateTime, nullable=False)
 
     @staticmethod
-    def get_collection(org_id, book_id=None):
+    def get_collection(db, org_id, book_id=None):
         """組織IDとbook_idをキーに、collection情報を取得する。
         book_idの指定がない場合は、組織のみで抽出。
         ない場合は[]を返す。
@@ -36,8 +36,7 @@ class DbCollection(Base):
             )
         stmt = select(DbCollection).where(where_clause)
 
-        with get_db() as db:
-            collections = db.scalars(stmt).all()
+        collections = db.scalars(stmt).all()
         if (collections is None) or (len(collections) == 0):
             return []
         

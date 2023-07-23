@@ -23,7 +23,7 @@ def main(app):
 
         # 登録
         with get_db() as db:
-            new_org_id = DbOrganization.get_free_org_id()
+            new_org_id = DbOrganization.get_free_org_id(db)
 
             # organization
             new_organization = DbOrganization(

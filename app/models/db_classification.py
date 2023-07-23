@@ -13,23 +13,22 @@ class DbClassification(Base):
     book_id: Mapped[int] = mapped_column(primary_key=True)
 
     @staticmethod
-    def get_classifications(org_id, book_id):
+    def get_classifications(db, org_id, book_id):
         """指定した本に関するclassificationを全部取得
 
         Args:
             org_id (_type_): org_id
             book_id (_type_): book_id
         """
-        with get_db() as db:
-            classes = db.scalars(
-                select(
-                    DbClassification
-                ).where(
-                    and_(
-                        DbClassification.org_id == org_id,
-                        DbClassification.book_id == book_id
-                    )
+        classes = db.scalars(
+            select(
+                DbClassification
+            ).where(
+                and_(
+                    DbClassification.org_id == org_id,
+                    DbClassification.book_id == book_id
                 )
-            ).all()
+            )
+        ).all()
 
         return classes

@@ -13,20 +13,18 @@ class DbOrganization(Base):
 
 
     @staticmethod
-    def get(org_id):
-        with get_db() as db:
-            org = db.execute(
-                select(DbOrganization).where(DbOrganization.org_id == org_id)
-            ).scalars().first()
+    def get(db, org_id):
+        org = db.execute(
+            select(DbOrganization).where(DbOrganization.org_id == org_id)
+        ).scalars().first()
         return org
 
 
     @staticmethod
-    def get_free_org_id():
+    def get_free_org_id(db):
         """新しいorg_idのために、かぶらないorg_idを適当に決めて返す
         """
-        with get_db() as db:
-            result = db.execute(select(DbOrganization)).scalars().all()
+        result = db.execute(select(DbOrganization)).scalars().all()
         count_all_org = len(result)
 
         # ２桁増やして作る
@@ -42,10 +40,9 @@ class DbOrganization(Base):
             )
             print(f"new_org_id:{new_org_id}")
             # 存在しているか確認
-            with get_db() as db:
-                result = db.execute(
-                    select(DbOrganization).where(DbOrganization.org_id == new_org_id)
-                ).scalar()
+            result = db.execute(
+                select(DbOrganization).where(DbOrganization.org_id == new_org_id)
+            ).scalar()
             if result is None:    # 中身は関係なく存在していなければよし
                 already_exists = False
 

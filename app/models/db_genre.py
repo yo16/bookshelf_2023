@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func, and_
 from functools import cmp_to_key
 
-from .db_common import Base, get_db
+from .db_common import Base
 
 
 class DbGenre(Base):
@@ -18,36 +18,35 @@ class DbGenre(Base):
 
 
     @staticmethod
-    def get_genre(org_id, genre_id):
-        with get_db() as db:
-            genres = db.scalars(
-                select(
-                    DbGenre
-                ).where(
-                    and_(
-                        DbGenre.org_id == org_id,
-                        DbGenre.genre_id == genre_id
-                    )
+    def get_genre(db, org_id, genre_id):
+        genres = db.scalars(
+            select(
+                DbGenre
+            ).where(
+                and_(
+                    DbGenre.org_id == org_id,
+                    DbGenre.genre_id == genre_id
                 )
-            ).first()
+            )
+        ).first()
+
         return genres
 
 
     @staticmethod
-    def get_genres(org_id):
-        """ジャンル一覧を取得する
+    def get_genres(db, org_id):
+        """組織が持つ全ジャンル一覧を取得する
         単純にDB項目のsort_keyでorder_byしても諸事情でダメなので、
         sort_genres()を呼ぶ
         """
         # DBから抽出
-        with get_db() as db:
-            genres = db.execute(
-                select(
-                    DbGenre
-                ).where(
-                    DbGenre.org_id == org_id
-                )
-            ).scalars().all()
+        genres = db.execute(
+            select(
+                DbGenre
+            ).where(
+                DbGenre.org_id == org_id
+            )
+        ).scalars().all()
         
         # ソートキーでソート
         genres_sorted = DbGenre.sort_genres(genres)
@@ -113,17 +112,16 @@ class DbGenre(Base):
 
 
     @staticmethod
-    def get_new_genre_id(org_id):
+    def get_new_genre_id(db, org_id):
         new_genre_id = 0
 
-        with get_db() as db:
-            exec_result = db.execute(
-                select(
-                    func.max(DbGenre.genre_id).label("max_book_id")
-                ).where(
-                    DbGenre.org_id == org_id
-                )
+        exec_result = db.execute(
+            select(
+                func.max(DbGenre.genre_id).label("max_book_id")
+            ).where(
+                DbGenre.org_id == org_id
             )
+        )
         result = exec_result.scalars().first()
         
         if result is None:
@@ -135,19 +133,18 @@ class DbGenre(Base):
     
 
     @staticmethod
-    def get_next_sort_key(parent_genre):
+    def get_next_sort_key(db, parent_genre):
         """親genreから、その子の次のsort_keyを取得する
 
         Args:
             parent_genre (DbGenre): 親genre
         """
-        with get_db() as db:
-            stmt = select(
-                DbGenre
-            ).where(
-                DbGenre.parent_genre_id == parent_genre.genre_id
-            )
-            exec_result = db.scalars(stmt).all()
+        stmt = select(
+            DbGenre
+        ).where(
+            DbGenre.parent_genre_id == parent_genre.genre_id
+        )
+        exec_result = db.scalars(stmt).all()
         
         # 見つからない場合は1、見つかった場合はmax+1
         ret_sort_key = ""

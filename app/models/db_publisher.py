@@ -2,7 +2,7 @@ from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func
 
-from .db_common import Base, get_db
+from .db_common import Base
 
 
 class DbPublisher(Base):
@@ -34,15 +34,14 @@ class DbPublisher(Base):
 
 
     @staticmethod
-    def get_new_publisher_id():
+    def get_new_publisher_id(db):
         new_publisher_id = 0
 
-        with get_db() as db:
-            result = db.execute(
-                select(
-                    func.max(DbPublisher.publisher_id).label("max_pub_id")
-                )
-            ).scalars().first()
+        result = db.execute(
+            select(
+                func.max(DbPublisher.publisher_id).label("max_pub_id")
+            )
+        ).scalars().first()
 
         if result is None:
             new_publisher_id = 0
@@ -53,15 +52,14 @@ class DbPublisher(Base):
 
 
     @staticmethod
-    def get_publisher_by_pubcode(publisher_code):
-        with get_db() as db:
-            result = db.execute(
-                select(
-                    DbPublisher
-                ).where(
-                    DbPublisher.publisher_code == publisher_code
-                )
-            ).scalars().first()
+    def get_publisher_by_pubcode(db, publisher_code):
+        result = db.execute(
+            select(
+                DbPublisher
+            ).where(
+                DbPublisher.publisher_code == publisher_code
+            )
+        ).scalars().first()
         
         if result is None:
             return None

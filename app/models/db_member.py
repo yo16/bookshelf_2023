@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql.expression import func, and_
 import hashlib
 
-from .db_common import Base, get_db
+from .db_common import Base
 
 
 class DbMember(Base, UserMixin):
@@ -71,7 +71,7 @@ class DbMember(Base, UserMixin):
 
 
     @staticmethod
-    def get(org_id, member_id):
+    def get(db, org_id, member_id):
         """org_id, member_idからユーザー情報を取得する
 
         Args:
@@ -82,13 +82,16 @@ class DbMember(Base, UserMixin):
         if ((org_id is None) or (member_id is None)):
             return None
 
-        with get_db() as db:
-            member = db.execute(select(DbMember).where(
+        member = db.execute(
+            select(
+                DbMember
+            ).where(
                 and_(
                     DbMember.org_id == org_id,
                     DbMember.member_id == member_id
                 )
-            )).scalars().first()
+            )
+        ).scalars().first()
         if member is None:
             return None
 
@@ -98,31 +101,28 @@ class DbMember(Base, UserMixin):
 
 
     @staticmethod
-    def get_members_in_org(org_id):
-        members = None
-        with get_db() as db:
-            members = db.scalars(
-                select(
-                    DbMember
-                ).where(
-                    DbMember.org_id == org_id
-                )
-            ).all()
-            # 今この要求を出しているユーザーが必ず１人はいるはず
-            assert(members is not None, "メンバーが見つからない")
+    def get_members_in_org(db, org_id):
+        members = db.scalars(
+            select(
+                DbMember
+            ).where(
+                DbMember.org_id == org_id
+            )
+        ).all()
+        # 今この要求を出しているユーザーが必ず１人はいるはず
+        assert(members is not None, "メンバーが見つからない")
 
         return members
 
 
     @staticmethod
-    def get_member_id_by_member_code(org_id, member_code):
-        with get_db() as db:
-            member = db.execute(select(DbMember).where(
-                and_(
-                    DbMember.org_id == org_id,
-                    DbMember.member_code == member_code
-                )
-            )).scalars().first()
+    def get_member_id_by_member_code(db, org_id, member_code):
+        member = db.execute(select(DbMember).where(
+            and_(
+                DbMember.org_id == org_id,
+                DbMember.member_code == member_code
+            )
+        )).scalars().first()
         if member is None:
             return None
             
@@ -132,17 +132,16 @@ class DbMember(Base, UserMixin):
 
 
     @staticmethod
-    def get_new_member_id(org_id):
+    def get_new_member_id(db, org_id):
         new_member_id = 0
 
-        with get_db() as db:
-            exec_result = db.execute(
-                select(
-                    func.max(DbMember.member_id).label("max_member_id")
-                ).where(
-                    DbMember.org_id == org_id
-                )
+        exec_result = db.execute(
+            select(
+                func.max(DbMember.member_id).label("max_member_id")
+            ).where(
+                DbMember.org_id == org_id
             )
+        )
         result = exec_result.scalars().first()
         
         if result is None:

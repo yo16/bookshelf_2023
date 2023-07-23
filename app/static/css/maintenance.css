@@ -73,6 +73,9 @@
     vertical-align: middle;
     opacity: 0.6;
 }
+#genres {
+    display: none;
+}
 
 
 /* details and buttons */

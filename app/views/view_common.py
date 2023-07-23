@@ -1,6 +1,6 @@
 from flask_login import current_user
 
-from models import DbOrganization
+from models import get_db, DbOrganization
 
 
 def get_org_mem():
@@ -9,7 +9,11 @@ def get_org_mem():
     Returns:
         dict: {organization:DbOrganization, member:DbMember}
     """
+    org = None
+    with get_db() as db:
+        org = DbOrganization.get(db, current_user.org_id)
+
     return {
-        "organization": DbOrganization.get(current_user.org_id),
+        "organization": org,
         "member": current_user
     }

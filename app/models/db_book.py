@@ -3,7 +3,7 @@ from sqlalchemy import String, DateTime, select
 from sqlalchemy.orm import Mapped, mapped_column, aliased
 from sqlalchemy.sql.expression import func, and_
 
-from .db_common import Base, get_db
+from .db_common import Base
 from .db_collection import DbCollection
 from .db_author import DbAuthor
 from .db_writing import DbWriting
@@ -31,15 +31,14 @@ class DbBook(Base):
     original_description: Mapped[str] = mapped_column(String(1000))
 
     @staticmethod
-    def get_new_book_id():
+    def get_new_book_id(db):
         new_book_id = 0
 
-        with get_db() as db:
-            exec_result = db.execute(
-                select(
-                    func.max(DbBook.book_id).label("max_book_id")
-                )
+        exec_result = db.execute(
+            select(
+                func.max(DbBook.book_id).label("max_book_id")
             )
+        )
         result = exec_result.scalars().first()
         
         if result is None:
@@ -50,60 +49,13 @@ class DbBook(Base):
         return new_book_id
 
 
-    # たぶん使ってないので削除！
-    # @staticmethod
-    # def get_book(book_id, org_id):
-    #     """book_idをキーに、本情報を取得する。
-    #     ない場合はNoneを返す。
-    #     DBの構造上、org_idは指定しなくてもいいが、
-    #     ロジック上、org_idが一致しないbook_idを取得することはないため、必ず指定することとする。
-    #     """
-    #     books = None
-    #     num_of_same_books = 0
-    #     with get_db() as db:
-    #         subq = select(
-    #             DbCollection.book_id.label("book_id")
-    #         ).where(
-    #             DbCollection.org_id == org_id
-    #         ).subquery()
-    #         stmt = select(
-    #                 DbBook
-    #             ).join(
-    #                 target = subq,
-    #                 onclause = DbBook.book_id == subq.c.book_id
-    #             ).where(
-    #                 DbBook.book_id == book_id
-    #             )
-    #         books = db.scalars(stmt).all()
-    #         if (books is None) or (len(books) == 0):
-    #             return None, 0
-    #         # 見つかった場合は１件のはず
-    #         assert(len(books)==1)
-    # 
-    #         # collectionをもう一度検索して、所有数を取得する
-    #         # 本当は１発で取りたい・・・！
-    #         stmt = select(
-    #             DbCollection.num_of_same_books
-    #         ).where(
-    #             and_(
-    #                 DbCollection.org_id == org_id,
-    #                 DbCollection.book_id == book_id
-    #             )
-    #         )
-    #         num_of_same_books = db.scalars(stmt).first()
-    # 
-    #     # 結果を返す
-    #     return books[0], num_of_same_books
-
-
     @staticmethod
-    def get_book_by_isbn(isbn):
+    def get_book_by_isbn(db, isbn):
         """ISBNをキーに、本情報を取得する。ない場合はNoneを返す
         """
-        with get_db() as db:
-            exec_result = db.execute(
-                select(DbBook).where(DbBook.isbn == isbn)
-            ).scalar()
+        exec_result = db.execute(
+            select(DbBook).where(DbBook.isbn == isbn)
+        ).scalar()
         if exec_result is None:
             return None
         
@@ -112,21 +64,20 @@ class DbBook(Base):
 
 
     @staticmethod
-    def get_books_collection(org_id):
+    def get_books_collection(db, org_id):
         """組織が持つ本一覧を返す
 
         Args:
             org_id (int): 組織id
         """
-        with get_db() as db:
-            subq = select(
-                DbCollection.book_id.label("book_id")
-            ).where(DbCollection.org_id==org_id).subquery()
-            stmt = select(DbBook).join(
-                    target = subq,
-                    onclause = DbBook.book_id == subq.c.book_id
-                )
-            exec_result = db.scalars(stmt).all()
+        subq = select(
+            DbCollection.book_id.label("book_id")
+        ).where(DbCollection.org_id==org_id).subquery()
+        stmt = select(DbBook).join(
+                target = subq,
+                onclause = DbBook.book_id == subq.c.book_id
+            )
+        exec_result = db.scalars(stmt).all()
         if (exec_result is None) or (len(exec_result) == 0):
             return []
         
@@ -134,7 +85,7 @@ class DbBook(Base):
 
 
     @staticmethod
-    def get_book_info(book_id, org_id):
+    def get_book_info(db, book_id, org_id):
         """bookとその周辺のテーブルも全部取得してdictにして返す
         book, publisher, authorsは org_idに依存しない。
         collection, genres, histories, book_notesは依存する。
@@ -146,144 +97,143 @@ class DbBook(Base):
             book_id (_type_): book_id
             org_id (_type_): org_id
         """
-        with get_db() as db:
-            # ---- org_id に依存しない ----
-            # book, publisher
-            result = db.execute(
-                select(
-                    DbBook,
-                    DbPublisher
-                ).where(
-                    DbBook.book_id == book_id
-                ).join(
-                    target = DbPublisher,
-                    onclause = DbBook.publisher_id == DbPublisher.publisher_id
-                )
-            ).first()
-            if (result is None) or (len(result) == 0):
-                # 正常であれば存在するはず
-                return None
-            book, publisher = result
+        # ---- org_id に依存しない ----
+        # book, publisher
+        result = db.execute(
+            select(
+                DbBook,
+                DbPublisher
+            ).where(
+                DbBook.book_id == book_id
+            ).join(
+                target = DbPublisher,
+                onclause = DbBook.publisher_id == DbPublisher.publisher_id
+            )
+        ).first()
+        if (result is None) or (len(result) == 0):
+            # 正常であれば存在するはず
+            return None
+        book, publisher = result
 
-            # authors
-            subq_writing = select(
-                DbWriting.author_id.label("author_id")
-            ).where(
-                DbWriting.book_id == book_id
-            ).subquery()
-            stmt_authors = select(
-                DbAuthor
-            ).join(
-                target = subq_writing,
-                onclause = DbAuthor.author_id == subq_writing.c.author_id
+        # authors
+        subq_writing = select(
+            DbWriting.author_id.label("author_id")
+        ).where(
+            DbWriting.book_id == book_id
+        ).subquery()
+        stmt_authors = select(
+            DbAuthor
+        ).join(
+            target = subq_writing,
+            onclause = DbAuthor.author_id == subq_writing.c.author_id
+        )
+        authors = db.scalars(stmt_authors).all()
+        if (authors is None) or (len(authors) == 0):
+            # 正常であれば存在するはず
+            return None
+        
+        # ---- org_id に依存する ----
+        # collection
+        stmt = select(
+            DbCollection
+        ).where(
+            and_(
+                DbCollection.org_id == org_id,
+                DbCollection.book_id == book_id
             )
-            authors = db.scalars(stmt_authors).all()
-            if (authors is None) or (len(authors) == 0):
-                # 正常であれば存在するはず
-                return None
-            
-            # ---- org_id に依存する ----
-            # collection
-            stmt = select(
-                DbCollection
-            ).where(
-                and_(
-                    DbCollection.org_id == org_id,
-                    DbCollection.book_id == book_id
-                )
+        )
+        collections = db.execute(stmt).first()
+        if (collections is None) or (len(collections) == 0):
+            # 組織に登録していない本の場合はNone
+            collection = None
+        else:
+            collection = collections[0]
+        
+        # genres
+        subq_cls = select(
+            DbClassification.org_id.label("org_id"),
+            DbClassification.genre_id.label("genre_id")
+        ).where(
+            and_(
+                DbClassification.org_id == org_id,
+                DbClassification.book_id == book_id
             )
-            collections = db.execute(stmt).first()
-            if (collections is None) or (len(collections) == 0):
-                # 組織に登録していない本の場合はNone
-                collection = None
-            else:
-                collection = collections[0]
-            
-            # genres
-            subq_cls = select(
-                DbClassification.org_id.label("org_id"),
-                DbClassification.genre_id.label("genre_id")
-            ).where(
-                and_(
-                    DbClassification.org_id == org_id,
-                    DbClassification.book_id == book_id
-                )
-            ).subquery()
-            stmt_genres = select(
-                DbGenre
-            ).join(
-                target = subq_cls,
-                onclause = and_(
-                    DbGenre.org_id == subq_cls.c.org_id,
-                    DbGenre.genre_id == subq_cls.c.genre_id
-                )
+        ).subquery()
+        stmt_genres = select(
+            DbGenre
+        ).join(
+            target = subq_cls,
+            onclause = and_(
+                DbGenre.org_id == subq_cls.c.org_id,
+                DbGenre.genre_id == subq_cls.c.genre_id
             )
-            genres = db.scalars(stmt_genres).all()
-            if (genres is None) or (len(genres) == 0):
-                # 組織に登録していない本の場合は空配列
-                genres = []
+        )
+        genres = db.scalars(stmt_genres).all()
+        if (genres is None) or (len(genres) == 0):
+            # 組織に登録していない本の場合は空配列
+            genres = []
 
-            # borrowed_his
-            subq_his = select(
-                DbBorrowedHistory
-            ).where(
-                and_(
-                    DbBorrowedHistory.org_id == org_id,
-                    DbBorrowedHistory.book_id == book_id
-                )
-            ).subquery()
-            subq_his_alias = aliased(DbBorrowedHistory, subq_his, "his")
-            stmt_members = select(
-                DbMember,
-                subq_his_alias
-            ).join(
-                target = subq_his_alias,
-                onclause = and_(
-                    DbMember.org_id == subq_his_alias.org_id,
-                    DbMember.member_id == subq_his_alias.member_id
-                )
-            ).order_by(
-                subq_his_alias.borrowed_dt
+        # borrowed_his
+        subq_his = select(
+            DbBorrowedHistory
+        ).where(
+            and_(
+                DbBorrowedHistory.org_id == org_id,
+                DbBorrowedHistory.book_id == book_id
             )
-            hiss_result = db.execute(stmt_members).all()
-            hiss = []
-            if (hiss_result is not None):
-                for rslt in hiss_result:
-                    hiss.append({
-                        "member": rslt[0],
-                        "borrowed_history": rslt[1],
-                    })
+        ).subquery()
+        subq_his_alias = aliased(DbBorrowedHistory, subq_his, "his")
+        stmt_members = select(
+            DbMember,
+            subq_his_alias
+        ).join(
+            target = subq_his_alias,
+            onclause = and_(
+                DbMember.org_id == subq_his_alias.org_id,
+                DbMember.member_id == subq_his_alias.member_id
+            )
+        ).order_by(
+            subq_his_alias.borrowed_dt
+        )
+        hiss_result = db.execute(stmt_members).all()
+        hiss = []
+        if (hiss_result is not None):
+            for rslt in hiss_result:
+                hiss.append({
+                    "member": rslt[0],
+                    "borrowed_history": rslt[1],
+                })
 
-            # book_note
-            subq_note = select(
-                DbBookNote
-            ).where(
-                and_(
-                    DbBookNote.org_id == org_id,
-                    DbBookNote.book_id == book_id
-                )
-            ).subquery()
-            subq_note_alias = aliased(DbBookNote, subq_note, "note")
-            stmt_note_members = select(
-                DbMember,
-                subq_note_alias
-            ).join(
-                target = subq_note_alias,
-                onclause = and_(
-                    DbMember.org_id == subq_note_alias.org_id,
-                    DbMember.member_id == subq_note_alias.member_id
-                )
-            ).order_by(
-                subq_note_alias.noted_dt
+        # book_note
+        subq_note = select(
+            DbBookNote
+        ).where(
+            and_(
+                DbBookNote.org_id == org_id,
+                DbBookNote.book_id == book_id
             )
-            notes_result = db.execute(stmt_note_members).all()
-            notes = []
-            if (notes_result is not None):
-                for rslt in notes_result:
-                    notes.append({
-                        "member": rslt[0],
-                        "book_note": rslt[1],
-                    })
+        ).subquery()
+        subq_note_alias = aliased(DbBookNote, subq_note, "note")
+        stmt_note_members = select(
+            DbMember,
+            subq_note_alias
+        ).join(
+            target = subq_note_alias,
+            onclause = and_(
+                DbMember.org_id == subq_note_alias.org_id,
+                DbMember.member_id == subq_note_alias.member_id
+            )
+        ).order_by(
+            subq_note_alias.noted_dt
+        )
+        notes_result = db.execute(stmt_note_members).all()
+        notes = []
+        if (notes_result is not None):
+            for rslt in notes_result:
+                notes.append({
+                    "member": rslt[0],
+                    "book_note": rslt[1],
+                })
 
         return {
             "book": book,
@@ -297,33 +247,32 @@ class DbBook(Base):
 
 
     @staticmethod
-    def get_bookhis_by_member(org_id, member_id):
-        with get_db() as db:
-            subq_his = select(
-                DbBorrowedHistory
-            ).where(
-                and_(
-                    DbBorrowedHistory.org_id == org_id,
-                    DbBorrowedHistory.member_id == member_id
-                )
-            ).subquery()
-            subq_his_alias = aliased(DbBorrowedHistory, subq_his, "his")
-            stmt_book_his = select(
-                DbBook,
-                subq_his_alias
-            ).join(
-                target = subq_his_alias,
-                onclause = DbBook.book_id == subq_his_alias.book_id
-            ).order_by(
-                subq_his_alias.borrowed_dt
+    def get_bookhis_by_member(db, org_id, member_id):
+        subq_his = select(
+            DbBorrowedHistory
+        ).where(
+            and_(
+                DbBorrowedHistory.org_id == org_id,
+                DbBorrowedHistory.member_id == member_id
             )
-            book_his_result = db.execute(stmt_book_his).all()
-            hiss = []
-            if (book_his_result is not None):
-                for rslt in book_his_result:
-                    hiss.append({
-                        "book": rslt[0],
-                        "borrowed_history": rslt[1],
-                    })
+        ).subquery()
+        subq_his_alias = aliased(DbBorrowedHistory, subq_his, "his")
+        stmt_book_his = select(
+            DbBook,
+            subq_his_alias
+        ).join(
+            target = subq_his_alias,
+            onclause = DbBook.book_id == subq_his_alias.book_id
+        ).order_by(
+            subq_his_alias.borrowed_dt
+        )
+        book_his_result = db.execute(stmt_book_his).all()
+        hiss = []
+        if (book_his_result is not None):
+            for rslt in book_his_result:
+                hiss.append({
+                    "book": rslt[0],
+                    "borrowed_history": rslt[1],
+                })
 
         return hiss
