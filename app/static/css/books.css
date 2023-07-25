@@ -69,31 +69,6 @@
 }
 
 
-
-/* comment & histories */
-.contents_title {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-
-    background-color: var(--accent2-color-pale);
-    padding: 5px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-}
-.contents_title svg {
-    fill: var(--accent1-color);
-    transition: opacity 0.3s ease;
-    height: 15px;
-}
-.contents_title svg:hover {
-    opacity: 0.5;
-}
-.contents_title svg:active {
-    opacity: 0.5;
-}
-
 /* comment */
 .one_comment {
     display: flex;

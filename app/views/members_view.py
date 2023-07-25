@@ -3,7 +3,7 @@ from flask import render_template, request
 from sqlalchemy import update, delete
 from sqlalchemy.sql.expression import and_
 
-from models import get_db, DbMember, DbBook
+from models import get_db, DbMember, DbBook, DbBookNote
 from .view_common import get_org_mem
 from .forms import RegistMemberForm, EditMemberForm, DeleteMemberForm
 
@@ -46,6 +46,9 @@ def show_member_page(member_id):
         # member
         member = DbMember.get(db, org_id, member_id)
 
+        # comment
+        notes = DbBook.get_notes_by_member(db, org_id, member_id)
+
         # borrowed_his
         hiss = DbBook.get_bookhis_by_member(db, org_id, member_id)
 
@@ -54,6 +57,7 @@ def show_member_page(member_id):
         "member.html",      # membersではなく、member固有のページ
         **org_mem,
         disp_member = member,
+        notes = notes,
         histories = hiss
     )
 

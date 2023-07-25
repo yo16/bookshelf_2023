@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
 from .db_common import Base
-from .db_member import DbMember
+from . import DbMember
 
 
 class DbBookNote(Base):
@@ -41,7 +41,6 @@ class DbBookNote(Base):
         )
 
         return note
-
 
 
     @staticmethod

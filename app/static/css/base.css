@@ -108,26 +108,57 @@ body {
 
 
 /* histroies(booksとmembersで共通) */
-#borrowed_his table{
+#borrowed_his table, #div_noted table{
     margin: 10px;
     border-spacing: 2px;
 }
-#borrowed_his th{
+#borrowed_his th, #div_noted th{
     background-color: var(--text-bg-white);
     font-weight: normal;
 }
-#borrowed_his th, #borrowed_his td{
+#borrowed_his th, #borrowed_his td,
+#div_noted th, #div_noted td
+{
     padding: 2px 10px;
     border: 1px solid var(--accent2-color-pale);
 }
-#borrowed_his a {
+#borrowed_his a,
+#div_noted a
+{
     color: var(--accent1-color);
     transition: opacity 0.3s ease;
     text-decoration: none;
 }
-#borrowed_his a:hover {
+#borrowed_his a:hover,
+#div_noted a:hover{
     opacity: 0.5;
 }
-#borrowed_his a:active {
+#borrowed_his a:active,
+#div_noted a:active{
     opacity: 0.1;
+}
+
+
+/* comment & histories (booksとmembersで共通) */
+.contents_title {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+
+    background-color: var(--accent2-color-pale);
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+.contents_title svg {
+    fill: var(--accent1-color);
+    transition: opacity 0.3s ease;
+    height: 15px;
+}
+.contents_title svg:hover {
+    opacity: 0.5;
+}
+.contents_title svg:active {
+    opacity: 0.5;
 }
