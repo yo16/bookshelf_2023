@@ -114,7 +114,7 @@ def show_admin_members_page():
         members = DbMember.get_members_in_org(db, org_mem["organization"].org_id)
 
     return render_template(
-        "members_maintenance.html", **org_mem,
+        "members_all.html", **org_mem,
         regist_form = regist_form,
         edit_form = edit_form,
         delete_form = delete_form,
