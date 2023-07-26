@@ -1,7 +1,7 @@
 import datetime
 from sqlalchemy import String, DateTime, select
 from sqlalchemy.orm import Mapped, mapped_column, aliased
-from sqlalchemy.sql.expression import func, desc, and_
+from sqlalchemy.sql.expression import func, asc, and_
 
 from .db_common import Base
 from .db_collection import DbCollection
@@ -294,8 +294,8 @@ class DbBook(Base):
             DbBookNote.org_id == org_id,
             DbBookNote.member_id == member_id
         ).order_by(
-            desc(DbBookNote.book_id),
-            desc(DbBookNote.noted_dt)
+            asc(DbBookNote.book_id),
+            asc(DbBookNote.noted_dt)
         )
         results = db.execute(stmt).all()
         if (results is None) or (len(results) == 0):

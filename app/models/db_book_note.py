@@ -1,4 +1,4 @@
-from sqlalchemy import String, DateTime, select, func, desc, and_
+from sqlalchemy import String, DateTime, select, func, asc, and_
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
@@ -61,7 +61,7 @@ class DbBookNote(Base):
             DbBookNote.org_id == org_id,
             DbBookNote.book_id == book_id
         ).order_by(
-            desc(DbBookNote.noted_dt)
+            asc(DbBookNote.noted_dt)
         )
         results = db.execute(stmt).all()
         if (results is None) or (len(results) == 0):

@@ -104,6 +104,7 @@ books
         </div>
     </div>
     <div id="container_bottom">
+        {# --------------- コメント(note) ------------------------ -#}
         <div id="content_comment">
             <div class="contents_title">
                 コメント
@@ -112,6 +113,25 @@ books
                 </svg>
             </div>
             <div id="comments">
+                {# ------ 一覧 ------ -#}
+                {% for note_member in notes -%}
+                <div class="one_comment">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" height="20px">
+                        <use xlink:href="#user"></use>
+                    </svg>
+                    <div class="comment_area">
+                        <div class="member_name_comment_dt">
+                            <a href="{{ url_for('members', member_id=note_member[1].member_id) }}" class="a_type1">
+                                {{ note_member[1].member_name }}
+                            </a>
+                            {{ note_member[0].noted_dt.strftime("%Y/%m/%d %H:%M") }}
+                        </div>
+                        <div class="comment_str">
+                            {{ note_member[0].note|safe }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor -%}
                 {# ------ 入力フォーム ------ -#}
                 <form method="POST" action="{{ url_for('note_book') }}">
                     {{ note_form.csrf_token }}
@@ -135,27 +155,9 @@ books
                         </div>
                     </div>
                 </form>
-                {# ------ 一覧 ------ -#}
-                {% for note_member in notes -%}
-                <div class="one_comment">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" height="20px">
-                        <use xlink:href="#user"></use>
-                    </svg>
-                    <div class="comment_area">
-                        <div class="member_name_comment_dt">
-                            <a href="{{ url_for('members', member_id=note_member[1].member_id) }}" class="a_type1">
-                                {{ note_member[1].member_name }}
-                            </a>
-                            {{ note_member[0].noted_dt.strftime("%Y/%m/%d %H:%M") }}
-                        </div>
-                        <div class="comment_str">
-                            {{ note_member[0].note|safe }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor -%}
             </div>
         </div>
+        {# --------------- 貸出履歴 ------------------------ -#}
         <div id="content_borrowed_his">
             <div class="contents_title">
                 貸出履歴
