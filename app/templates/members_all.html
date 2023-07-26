@@ -14,7 +14,9 @@ member
 {# ------ organization ---------------------- -#}
 <div id="organization">
     <span id="org_name">{{ organization.org_name }}</span>{# -#}
+    {% if current_user.is_admin -%}
     <span id="org_id">({{ organization.org_id }})</span>
+    {% endif -%}
 </div>
 
 {# ------ organization ---------------------- -#}

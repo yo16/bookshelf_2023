@@ -49,18 +49,6 @@
     font-size: 0.95rem;
     text-align: left;
 }
-.user_mark a,
-.user_mark a:visited {
-    color: var(--accent1-color);
-    transition: opacity 0.3s ease;
-    text-decoration: none;
-}
-.user_mark a:hover {
-    opacity: 0.5;
-}
-.user_mark a:active {
-    opacity: 0.1;
-}
 .user_mark svg {
     vertical-align: middle;
     fill: var(--accent1-color);
