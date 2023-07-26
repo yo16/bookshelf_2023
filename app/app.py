@@ -14,6 +14,7 @@ from views import (
     note_book_view_main,
     maintenance_view_main,
     members_view_main,
+    members_all_view_main,
     genre_view_main,
     get_book_with_isbn_view_main,
     signup_view_main,
@@ -124,6 +125,13 @@ def note_book():
 @log_info
 def members(member_id=None):
     return members_view_main(app, member_id)
+
+
+@app.route("/members_all/", methods=["GET", "POST"])
+@login_required
+@log_info
+def members_all():
+    return members_all_view_main(app)
 
 
 

@@ -5,6 +5,7 @@ from .return_view import main as return_view_main
 from .note_book_view import main as note_book_view_main
 from .maintenance_view import main as maintenance_view_main
 from .members_view import main as members_view_main
+from .members_all_view import main as members_all_view_main
 from .genre_view import main as genre_view_main
 from .get_book_with_isbn_view import main as get_book_with_isbn_view_main
 from .signup_view import main as signup_view_main

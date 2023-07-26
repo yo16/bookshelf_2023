@@ -92,7 +92,7 @@
 <script language="JavaScript">
     make_breadcrumbs(
         [
-            ["メンバー","{{ url_for('members') }}"],
+            ["メンバー","{{ url_for('members_all') }}"],
             ["{{ disp_member.member_name }}","{{ url_for('members', member_id=disp_member.member_id) }}"]
         ]
     );
