@@ -126,6 +126,7 @@ body {
 }
 .tbl_type1 tr:hover td {
     background-color: var(--accent2-color-pale);
+    transition: all  0.3s ease;
 }
 
 /* a */
