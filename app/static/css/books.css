@@ -112,17 +112,6 @@
 .one_comment > svg {
     fill: var(--accent1-color);
 }
-.member_name_comment_dt > a {
-    color: var(--accent1-color);
-    transition: opacity 0.3s ease;
-    text-decoration: none;
-}
-.member_name_comment_dt > a:hover {
-    opacity: 0.5;
-}
-.member_name_comment_dt > a:active {
-    opacity: 0.1;
-}
 .comment_str {
     background-color: var(--text-bg-white);
     position: relative;

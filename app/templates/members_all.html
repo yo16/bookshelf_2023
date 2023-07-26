@@ -6,11 +6,60 @@ member
 
 {% block header_append -%}
 {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/members_all.css') }}" />
 <script src="{{ url_for('static', filename='js/members_all.js') }}"></script>
 {% endblock -%}
 
 {% block body -%}
-<h1>members</h1>
+{# ------ organization ---------------------- -#}
+<div id="organization">
+    <span id="org_name">{{ organization.org_name }}</span>{# -#}
+    <span id="org_id">({{ organization.org_id }})</span>
+</div>
+
+{# ------ organization ---------------------- -#}
+<div id="members">
+    <table id="tbl_members" class="tbl_type1">
+        <tr>
+            {% if current_user.is_admin -%}
+            <th>選択</th>
+            <th>#</th>
+            <th>ID</th>
+            {% endif -%}
+            <th>名前</th>
+            <th>管理者</th>
+            {% if current_user.is_admin -%}
+            <th>有効</th>
+            {% endif %}
+        </tr>
+        {% for m in members -%}
+        <tr>
+            {% if current_user.is_admin -%}
+            <td class="text_center"><input type="radio"
+                name="rdo_member_select"
+                value="{{ m.member_id }}"
+                member_code="{{ m.member_code }}"
+                member_name="{{ m.member_name }}"
+                is_admin="{{ m.is_admin }}"
+                is_enabled="{{ m.is_enabled }}" /></td>
+            <td>{{ m.member_id }}</td>
+            <td>{{ m.member_code }}</td>
+            {% endif -%}
+            <td>
+                <a href="{{ url_for('members', member_id=m.member_id) }}" class="a_type1">{{ m.member_name }}</a>
+            </td>
+            <td>{% if m.is_admin %}管理者{% endif %}</td>
+            {% if current_user.is_admin -%}
+            <td>{{ m.is_enabled }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+{# ---------------------------------------------- -#}
+{# 
 <table border="1">
     <tr>
         <th />
@@ -72,5 +121,13 @@ member
     {{ delete_form.method }}
     <button type="submit">削除</button>
 </form>
+ #}
 
+<script language="JavaScript">
+    make_breadcrumbs(
+        [
+            ["メンバー","{{ url_for('members_all') }}"]
+        ]
+    );
+</script>
 {% endblock -%}

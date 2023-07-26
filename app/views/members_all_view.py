@@ -24,7 +24,6 @@ def main(app):
     return ret
 
 
-
 def show_admin_members_page():
     """admin用のメンバー管理ページを表示
     またそこから投げられたPOSTの対応もする
