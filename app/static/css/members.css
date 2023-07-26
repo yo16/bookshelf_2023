@@ -1,12 +1,17 @@
 
 #div_member_name {
     font-size: 1.5em;
-    margin: 0 0 20px 10px;
+    margin: 0 0 10px 10px;
 }
 
 #div_his_title {
     font-size: 1.2em;
     margin: 0 0 0 20px;
+}
+
+#container_member_info {
+    margin-left: 30px;
+    margin-right: 20px;
 }
 
 #container_note_and_his {

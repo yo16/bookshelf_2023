@@ -21,6 +21,12 @@
 </svg>
 
 <div id="div_member_name">{{ disp_member.member_name }}</div>
+<div id="container_member_info">
+    <ul>
+        <li>貸出回数：{{ histories|length }}回</li>
+        <li>コメント回数：{{ notes|length }}回</li>
+    </ul>
+</div>
 <div id="container_note_and_his">
     {# --------------- his ------------------------- -#}
     <div id="div_borrowed_his">
