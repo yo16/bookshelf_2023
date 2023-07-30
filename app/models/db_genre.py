@@ -1,4 +1,4 @@
-from sqlalchemy import String, select, UniqueConstraint
+from sqlalchemy import String, UniqueConstraint, select, delete
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import func, and_
 from functools import cmp_to_key
@@ -214,3 +214,20 @@ class DbGenre(Base):
         # 末尾の"_"はない前提でsplitして最後の要素を返す
         keys = sk.split("_")
         return keys[len(keys)-1]
+
+
+    @staticmethod
+    def delete_genre(db, org_id, genre_id):
+        db.execute(
+            delete(
+                DbGenre
+            ).where(
+                and_(
+                    DbGenre.org_id == org_id,
+                    DbGenre.genre_id == genre_id
+                )
+            )
+        )
+
+        return
+

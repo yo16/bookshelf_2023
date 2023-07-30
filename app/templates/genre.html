@@ -148,7 +148,18 @@ genre
             class="rdo_genre_command" />
         <label class="lbl_tab_command" for="rdo_delete_genre">削除</label>
         <div id="div_delete_genre" class="div_command_content">
-            削除
+            <form method="POST" name="frm_del">
+                {{ delete_form.csrf_token }}
+                <table class="tbl_type2">
+                    <tr>
+                        <th>ジャンル名</th>
+                        <td><input type="text" id="txt_delete_genre_id" readonly /></td>
+                    </tr>
+                </table>
+                {{ delete_form.del_genre_id }}
+                {{ delete_form.method }}
+                <button type="submit" class="btn_submit">変更</button>
+            </form>
         </div>
     </div>
 </div>

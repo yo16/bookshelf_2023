@@ -36,4 +36,9 @@ function changed_genre(rdo_genre){
     $("#edit_parent_genre_id").val(parent_genre_id);
     $("#edit_genre_id").val(genre_id);
     $("#edit_genre_name").val(genre_name);
+
+    // 削除用
+    // 削除の場合は、選択したジャンルが削除対象
+    $("#txt_delete_genre_id").val(genre_name);
+    $("#del_genre_id").val(genre_id);
 }

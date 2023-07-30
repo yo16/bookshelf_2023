@@ -34,7 +34,7 @@ def main(app):
 
             elif (method=="DELETE"):
                 # 削除（この関数内でget_dbしてcommitする）
-                pass
+                delete_genre(db, org_id, request.form)
 
             # フォームを初期化
             regist_form = RegistGenreForm()
@@ -110,3 +110,16 @@ def edit_genre(db, org_id, form):
     # commit
     db.commit()
     db.refresh(cur_genre)
+
+
+def delete_genre(db, org_id, form):
+    """登録情報からgenreを削除する（当関数内でcommitする）
+    """
+    # 対象のジャンルID、ジャンル
+    genre_id = form.get("del_genre_id")
+
+    # 削除
+    DbGenre.delete_genre(db, org_id, genre_id)
+
+    # commit
+    db.commit()
