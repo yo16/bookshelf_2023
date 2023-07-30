@@ -13,6 +13,7 @@
 
 .menu_tab {
     background-color: var(--accent3-color-pale);
+    margin-top: 10px;
     padding: 10px 20px 5px 20px;
     border-radius: 7px 7px 0 0;
 }
@@ -20,16 +21,14 @@
     background-color: var(--accent2-color-pale);
 }
 
-.menu_tab a, .menu_tab a:visited {
+.menu_tab {
     color: var(--accent1-color);
-    transition: opacity 0.2s ease;
+    transition: 0.3s;
     text-decoration: none;
 }
-.menu_tab a:hover {
-    opacity: 0.5;
-}
-.menu_tab a:active {
-    opacity: 0.1;
+.menu_tab:hover {
+    margin-top: 4px;
+    padding-bottom: 9px;
 }
 .menu_tab svg {
     vertical-align: middle;
