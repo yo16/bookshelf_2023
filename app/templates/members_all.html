@@ -59,14 +59,27 @@ member
     </table>
 </div>
 
-<div id="div_add_member">
-    追加
-</div>
-<div id="div_add_member">
-    編集
-</div>
-<div id="div_add_member">
-    削除
+<div id="div_commands">
+    <input type="radio" name="rdo_member_command" id="rdo_add_member"
+        class="rdo_member_command" checked />
+    <label class="lbl_tab_command" for="rdo_add_member">追加</label>
+    <div id="div_add_member" class="div_command_content">
+        追加
+    </div>
+
+    <input type="radio" name="rdo_member_command" id="rdo_edit_member"
+        class="rdo_member_command" />
+    <label class="lbl_tab_command" for="rdo_edit_member">編集</label>
+    <div id="div_edit_member" class="div_command_content">
+        編集
+    </div>
+
+    <input type="radio" name="rdo_member_command" id="rdo_delete_member"
+        class="rdo_member_command" />
+    <label class="lbl_tab_command" for="rdo_delete_member">削除</label>
+    <div id="div_delete_member" class="div_command_content">
+        削除
+    </div>
 </div>
 
 {# ---------------------------------------------- -#}

@@ -17,3 +17,39 @@
 }
 
 /* members */
+
+/* commands */
+#div_commands {
+    margin: 20px 20px 0 40px;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+}
+.lbl_tab_command {
+    background-color: var(--accent2-color-pale);
+    opacity: 0.7;
+    padding: 5px 20px 0px 20px;
+    margin: 0px 5px;
+    border-radius: 7px 7px 0 0;
+    font-size: 0.95rem;
+    text-align: center;
+    display: block;
+    order: -1;
+}
+.rdo_member_command {
+    display: none;
+}
+.rdo_member_command:checked + .lbl_tab_command {
+    background-color: var(--accent2-color);
+    color: var(--text-bg-white);
+    opacity: 1.0;
+}
+.div_command_content {
+    display: none;
+    width: 100%;
+    background-color:#f00;
+}
+.rdo_member_command:checked + .lbl_tab_command + .div_command_content {
+    display: block;
+}
