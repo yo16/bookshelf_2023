@@ -22,7 +22,7 @@ def main(app):
     with get_db() as db:
         # 本来は、methodを分けたいが、ブラウザが対応していないので
         # formの中身で分岐する
-        if regist_form.validate_on_submit():
+        if regist_form.is_submitted():
             method = request.form.get("method")
             if (method=="POST"):
                 # 追加（中でcommitする）
@@ -30,7 +30,7 @@ def main(app):
 
             elif (method=="PUT"):
                 # 編集（この関数内でget_dbしてcommitする）
-                pass
+                edit_genre(db, org_id, request.form)
 
             elif (method=="DELETE"):
                 # 削除（この関数内でget_dbしてcommitする）
@@ -88,3 +88,25 @@ def regist_genre(db, org_id, form):
     db.refresh(genre)
 
     return
+
+
+def edit_genre(db, org_id, form):
+    """登録情報からgenreを編集する（当関数内でcommitする）
+    """
+    # 対象のジャンルID、ジャンル
+    genre_id = form.get("edit_genre_id")
+    cur_genre = DbGenre.get_genre(db, org_id, genre_id)
+
+    # 変更項目
+    # 親ジャンルID
+    parent_genre_id = form.get("edit_parent_genre_id")
+    # ジャンル名
+    genre_name = form.get("edit_genre_name")
+
+    # 変更
+    cur_genre.parent_genre_id = parent_genre_id
+    cur_genre.genre_name = genre_name
+
+    # commit
+    db.commit()
+    db.refresh(cur_genre)

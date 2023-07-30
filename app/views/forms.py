@@ -105,11 +105,11 @@ class EditGenreForm(flask_wtf.FlaskForm):
         'method',
         [wtforms.validators.InputRequired()]
     )
-    edit_genre_id = wtforms.StringField(
+    edit_genre_id = wtforms.HiddenField(
         'edit_genre_id',
         [wtforms.validators.InputRequired()]
     )
-    edit_parent_genre_id = wtforms.StringField(
+    edit_parent_genre_id = wtforms.HiddenField(
         'edit_parent_genre_id',
         [wtforms.validators.InputRequired()]
     )
