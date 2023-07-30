@@ -52,7 +52,6 @@
 .div_command_content {
     display: none;
     width: 100%;
-    background-color:#f00;
 }
 .rdo_member_command:checked + .lbl_tab_command + .div_command_content {
     display: block;

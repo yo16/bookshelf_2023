@@ -64,7 +64,30 @@ member
         class="rdo_member_command" checked />
     <label class="lbl_tab_command" for="rdo_add_member">追加</label>
     <div id="div_add_member" class="div_command_content">
-        追加
+        <form method="POST" name="frm_regist">
+            {{ regist_form.csrf_token }}
+            <table class="tbl_type2">
+                <tr>
+                    <th>ログインID</th>
+                    <td>{{ regist_form.reg_member_code }}</td>
+                </tr>
+                <tr>
+                    <th>表示される名前</th>
+                    <td>{{ regist_form.reg_member_name }}</td>
+                </tr>
+                <tr>
+                    <th>パスワード</th>
+                    <td>{{ regist_form.reg_password }}</td>
+                </tr>
+                <tr>
+                    <th>管理者</th>
+                    <td><input type="checkbox" id="registform_is_admin" /></td>
+                </tr>
+            </table>
+            {{ regist_form.reg_is_admin }}
+            {{ regist_form.method }}
+            <button type="submit" class="btn_submit">追加</button>
+        </form>
     </div>
 
     <input type="radio" name="rdo_member_command" id="rdo_edit_member"

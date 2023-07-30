@@ -91,24 +91,6 @@ body {
 }
 
 
-/* booksとmaintenanceで共通 */
-.book_details_table {
-    background-color: var(--accent2-color-pale);
-    border-spacing: 5px;
-    border-radius: 6px;
-    margin-bottom: 3px;
-}
-.book_details_table td {
-    background-color: var(--text-bg-white);
-    padding: 5px 15px;
-    border-radius: 4px;
-}
-.book_detail_header {
-    font-size: 0.8rem;
-    width: 70px;
-    text-align: right;
-}
-
 
 /* table */
 /* type1: thの背景色は白、tdに枠がありカーソルONでtrが強調 */
@@ -128,6 +110,27 @@ body {
     background-color: var(--accent2-color-pale);
     transition: all  0.3s ease;
 }
+
+/* type2: th/tdともに背景色は白、thはフォントが小さく右寄せ */
+.tbl_type2 {
+    background-color: var(--accent2-color-pale);
+    border-spacing: 5px;
+    border-radius: 6px;
+    margin-bottom: 3px;
+}
+.tbl_type2 th, .tbl_type2 td {
+    background-color: var(--text-bg-white);
+    padding: 5px 15px;
+    border-radius: 4px;
+}
+.tbl_type2 th {
+    font-size: 0.8rem;
+    font-weight: normal;
+    width: 70px;
+    text-align: right;
+}
+
+
 
 /* a */
 .a_type1
@@ -166,4 +169,10 @@ body {
 }
 .contents_title svg:active {
     opacity: 0.5;
+}
+
+
+/* checkbox */
+input[type=checkbox] {
+    transform: scale(1.4);
 }

@@ -26,14 +26,14 @@ books
         </div>
         <div id="content_book_detail" class="book_contents">
             <div id="book_details">
-                <table class="book_details_table">
+                <table class="tbl_type2">
                     <tr>
                         <td colspan="2">
                             <span id="book_name">{{ book_info.book.book_name }}</span><br />
                         </td>
                     </tr>
                     <tr>
-                        <td class="book_detail_header">著者</td>
+                        <th>著者</th>
                         <td>
                             {%- for a in book_info.authors -%}
                             {% if loop.index0 > 0 %}、{% endif -%}
@@ -42,25 +42,25 @@ books
                         </td>
                     </tr>
                     <tr>
-                        <td class="book_detail_header">概要</td>
+                        <th>概要</th>
                         <td>
                             {{ book_info.collection.description }}
                         </td>
                     </tr>
                     {% if book_info.book.published_dt -%}
                     <tr>
-                        <td class="book_detail_header">出版日</td>
+                        <th>出版日</th>
                         <td>{{ book_info.book.published_dt.strftime('%Y/%m/%d') }}</td>
                     </tr>
                     {% endif -%}
                     {% if book_info.publisher -%}
                     <tr>
-                        <td class="book_detail_header">出版社</td>
+                        <th>出版社</th>
                         <td>{{ book_info.publisher.publisher_name }}</td>
                     </tr>
                     {% endif -%}
                     <tr>
-                        <td class="book_detail_header">ジャンル</td>
+                        <th>ジャンル</th>
                         <td>
                             {%- for g in book_info.genres -%}
                             {% if loop.index0 > 0 %}&nbsp;/&nbsp;{% endif -%}
@@ -69,7 +69,7 @@ books
                         </td>
                     </tr>
                     <tr>
-                        <td class="book_detail_header">所有数</td>
+                        <th>所有数</th>
                         <td>
                             {{ book_info.collection.num_of_same_books }}冊
                             <span id="borrowing_num">(うち貸出中:{{ borrowing_num }}冊、残:{{ remained_num }}冊)</span>

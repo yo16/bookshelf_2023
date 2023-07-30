@@ -29,9 +29,9 @@ maintenance
 </svg>
 
 <form method="POST" action="{{ url_for('maintenance') }}" id="frm_regist_book" name="frm_regist_book">
-<table class="book_details_table">
+<table class="tbl_type2">
 <tr>
-    <td class="book_detail_header">ISBN</td>
+    <th>ISBN</th>
     <td id="td_isbn_search">
         {{ form.isbn }}
         <button id="btn_search_book" type="button" class="btn_submit btn_small">検索</button>
@@ -57,11 +57,11 @@ maintenance
         {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text', 'class': 'text_right'},
         {'header_title': 'ジャンル', 'id': 'genres', 'type': 'genres'},
     ] -%}
-    <table id="tbl_detail" class="book_details_table">
+    <table id="tbl_detail" class="tbl_type2">
     {% for item in items -%}
     {% if item.readonly == 1 %}{% set readonly = 'readonly' %}{% else %}{% set readonly = '' %}{% endif %}
     <tr{% if (item.type=='hidden') %} style="display:none;"{% endif %}>
-        <td class="book_detail_header">{{ item.header_title|safe }}</td>
+        <th>{{ item.header_title|safe }}</th>
         <td>
             {% if (item.type=='text') -%}
                 <input type="text" id="{{ item.id }}" name="{{ item.id }}"
