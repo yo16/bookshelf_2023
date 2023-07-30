@@ -26,9 +26,10 @@
     flex-direction: row;
     gap: 0px;
 }
+/* 通常のタブ */
 .lbl_tab_command {
     background-color: var(--accent2-color-pale);
-    opacity: 0.7;
+    opacity: 0.5;
     padding: 5px 20px 0px 20px;
     margin: 0px 3px;
     border-radius: 7px 7px 0 0;
@@ -38,15 +39,14 @@
     order: -1;
 }
 .lbl_tab_command:hover {
-    opacity: 1.0;
+    opacity: 0.8;
     transition: opacity 0.3s ease;
 }
 .rdo_member_command {
     display: none;
 }
+/* 選択されているタブ */
 .rdo_member_command:checked + .lbl_tab_command {
-    background-color: var(--accent2-color);
-    color: var(--text-bg-white);
     opacity: 1.0;
 }
 .div_command_content {
