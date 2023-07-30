@@ -44,7 +44,8 @@ genre
 <tr>
     <th genre_id="{{ cur_genre.genre.genre_id }}">
         <input type="radio" name="rdo_genre_select"
-            id="rdo_genre_{{ cur_genre.genre.genre_id }}" />
+            id="rdo_genre_{{ cur_genre.genre.genre_id }}"
+            genre_id="{{ cur_genre.genre.genre_id }}" genre_name="{{ cur_genre.genre.genre_name }}" />
     </th>
     <td style="padding-left:{{ 15 + depth * 35 }}px" genre_id="{{ cur_genre.genre.genre_id }}">
         {{- cur_genre.genre.genre_name -}}
@@ -63,6 +64,7 @@ genre
 {% block body -%}
 <div id="genre_mastermaintenance">
     <div id="div_genre_list">
+        {# ジャンル一覧テーブル -#}
         <table id="tbl_genre" class="tbl_type1">
             <tr>
                 <th />
@@ -73,6 +75,8 @@ genre
             </tr>
             {{ show_genre_trs(genres) }}
         </table>
+
+        {# 並び順変更ボタン -#}
         <div id="div_genre_sort_pos_chagne">
             <button id="btn_genre_sort_up">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
@@ -86,12 +90,29 @@ genre
             </button>
         </div>
     </div>
+    
+    {# ジャンル変更コマンド -#}
     <div id="div_commands">
         <input type="radio" name="rdo_genre_command" id="rdo_add_genre"
             class="rdo_genre_command" checked />
         <label class="lbl_tab_command" for="rdo_add_genre">新規</label>
         <div id="div_add_genre" class="div_command_content">
-            新規
+            <form method="POST" name="frm_regist">
+                {{ regist_form.csrf_token }}
+                <table class="tbl_type2">
+                    <tr>
+                        <th>親ジャンル</th>
+                        <td><input type="text" id="txt_regist_parent_genre" readonly /></td>
+                    </tr>
+                    <tr>
+                        <th>ジャンル名</th>
+                        <td>{{ regist_form.reg_genre_name }}</td>
+                    </tr>
+                </table>
+                {{ regist_form.reg_parent_genre_id }}
+                {{ regist_form.method }}
+                <button type="submit" class="btn_submit">追加</button>
+            </form>
         </div>
 
         <input type="radio" name="rdo_genre_command" id="rdo_edit_genre"
@@ -126,11 +147,11 @@ genre
 {{ create_genre_li(genres) -}}
 <h2>登録</h2>
 <form method="POST">
-    {{ form.csrf_token }}
+    {{ regist_form.csrf_token }}
     <p>parent_genre_id: <select id="parent_genre_id" name="parent_genre_id">
         {{ create_genre_opt(genres) -}}
     </select></p>
-    <p>genre_name: {{ form.genre_name }}</p>
+    <p>genre_name: {{ regist_form.genre_name }}</p>
     <p><button type="submit">ジャンルの登録</button></p>
 </form>
 

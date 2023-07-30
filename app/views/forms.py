@@ -85,11 +85,51 @@ class TakeANoteForm(flask_wtf.FlaskForm):
 
 # ジャンルの登録
 class RegistGenreForm(flask_wtf.FlaskForm):
-    parent_genre_id = wtforms.StringField(
-        'parent_genre_id'
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
     )
-    genre_name = wtforms.StringField(
-        'genre_name',
+    reg_parent_genre_id = wtforms.HiddenField(
+        'reg_parent_genre_id',
+        [wtforms.validators.InputRequired()]
+    )
+    reg_genre_name = wtforms.StringField(
+        'reg_genre_name',
+        [wtforms.validators.InputRequired()]
+    )
+
+
+# ジャンルの編集
+class EditGenreForm(flask_wtf.FlaskForm):
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_genre_id = wtforms.StringField(
+        'edit_genre_id',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_parent_genre_id = wtforms.StringField(
+        'edit_parent_genre_id',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_genre_name = wtforms.StringField(
+        'edit_genre_name',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_sort_key = wtforms.HiddenField(
+        'edit_sort_key',
+        [wtforms.validators.InputRequired()]
+    )
+
+# ジャンルの削除
+class DeleteGenreForm(flask_wtf.FlaskForm):
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
+    )
+    del_genre_id = wtforms.StringField(
+        'del_genre_id',
         [wtforms.validators.InputRequired()]
     )
 
