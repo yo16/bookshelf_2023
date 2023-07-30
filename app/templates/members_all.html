@@ -31,7 +31,7 @@ member
             <th>名前</th>
             <th>管理者</th>
             {% if current_user.is_admin -%}
-            <th>有効</th>
+            <th>使用可能</th>
             {% endif %}
         </tr>
         {% for m in members -%}
@@ -52,7 +52,7 @@ member
             </td>
             <td>{% if m.is_admin %}管理者{% endif %}</td>
             {% if current_user.is_admin -%}
-            <td>{{ m.is_enabled }}</td>
+            <td class="text_center">{% if m.is_enabled %}〇{% else %}×{% endif %}</td>
             {% endif %}
         </tr>
         {% endfor %}
@@ -133,7 +133,17 @@ member
         class="rdo_member_command" />
     <label class="lbl_tab_command" for="rdo_delete_member">削除</label>
     <div id="div_delete_member" class="div_command_content">
-        削除
+        <form method="POST" name="frm_delete">
+            {{ delete_form.csrf_token }}
+            <table class="tbl_type2">
+                <tr>
+                    <th>#</th>
+                    <td>{{ delete_form.del_member_id }}</td>
+                </tr>
+            </table>
+            {{ delete_form.method }}
+            <button type="submit" class="btn_submit">削除</button>
+        </form>
     </div>
 </div>
 

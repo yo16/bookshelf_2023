@@ -125,8 +125,8 @@ class EditMemberForm(flask_wtf.FlaskForm):
     )
     edit_member_id = wtforms.IntegerField(
         'edit_member_id',
-        [wtforms.validators.InputRequired()]
-        ,render_kw={'readonly': True}
+        [wtforms.validators.InputRequired()],
+        render_kw={'readonly': True}
     )
     edit_member_name = wtforms.StringField(
         'edit_member_name',
@@ -155,6 +155,7 @@ class DeleteMemberForm(flask_wtf.FlaskForm):
     )
     del_member_id = wtforms.IntegerField(
         'del_member_id',
-        [wtforms.validators.InputRequired()]
+        [wtforms.validators.InputRequired()],
+        render_kw={'readonly': True}
     )
 
