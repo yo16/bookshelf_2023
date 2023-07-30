@@ -7,6 +7,7 @@ genre
 {% block header_append -%}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/genre.css') }}"></link>
+<script src="{{ url_for('static', filename='js/genre.js') }}"></script>
 {% endblock -%}
 
 {# 再帰的にジャンルを表示 #}
@@ -37,7 +38,88 @@ genre
     {% endfor -%}
 {% endmacro -%}
 
+
+{# tbl_genreのtrを作成する #}
+{% macro show_genre_trs(cur_genre, depth=0) -%}
+<tr>
+    <th genre_id="{{ cur_genre.genre.genre_id }}">
+        <input type="radio" name="rdo_genre_select"
+            id="rdo_genre_{{ cur_genre.genre.genre_id }}" />
+    </th>
+    <td style="padding-left:{{ 15 + depth * 35 }}px" genre_id="{{ cur_genre.genre.genre_id }}">
+        {{- cur_genre.genre.genre_name -}}
+    </td>
+    {% if debug -%}
+    <td genre_id="{{ cur_genre.genre.genre_id }}">
+        {{ cur_genre.genre.sort_key }}
+    </td>
+    {% endif -%}
+</tr>
+    {% for g in cur_genre.children -%}
+        {{ show_genre_trs(g, depth+1) -}}
+    {% endfor -%}
+{% endmacro -%}
+
 {% block body -%}
+<div id="genre_mastermaintenance">
+    <div id="div_genre_list">
+        <table id="tbl_genre" class="tbl_type1">
+            <tr>
+                <th />
+                <th>ジャンル</th>
+                {% if debug -%}
+                <th>sort_key</th>
+                {% endif -%}
+            </tr>
+            {{ show_genre_trs(genres) }}
+        </table>
+        <div id="div_genre_sort_pos_chagne">
+            <button id="btn_genre_sort_up">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
+                    <use xlink:href="#sort-up-solid"></use>
+                </svg>
+            </button>
+            <button id="btn_genre_sort_down">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
+                    <use xlink:href="#sort-down-solid"></use>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="div_commands">
+        <input type="radio" name="rdo_genre_command" id="rdo_add_genre"
+            class="rdo_genre_command" checked />
+        <label class="lbl_tab_command" for="rdo_add_genre">新規</label>
+        <div id="div_add_genre" class="div_command_content">
+            新規
+        </div>
+
+        <input type="radio" name="rdo_genre_command" id="rdo_edit_genre"
+            class="rdo_genre_command" />
+        <label class="lbl_tab_command" for="rdo_edit_genre">編集</label>
+        <div id="div_edit_genre" class="div_command_content">
+            編集
+        </div>
+
+        <input type="radio" name="rdo_genre_command" id="rdo_delete_genre"
+            class="rdo_genre_command" />
+        <label class="lbl_tab_command" for="rdo_delete_genre">削除</label>
+        <div id="div_delete_genre" class="div_command_content">
+            削除
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    make_breadcrumbs(
+        [
+            ["ジャンルマスタメンテ","{{ url_for('genre') }}"]
+        ]
+    );
+</script>
+
+{# ------------------------------------------------------------------- #}
+<hr />
 <h1>ジャンルマスタメンテ！</h1>
 
 <h2>登録済みジャンル</h2>

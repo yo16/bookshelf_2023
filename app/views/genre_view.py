@@ -32,7 +32,8 @@ def main(app):
         "genre.html",
         **org_mem,
         form = form,
-        genres = genres
+        genres = genres,
+        debug = True
     )
 
 

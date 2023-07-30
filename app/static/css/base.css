@@ -5,6 +5,7 @@
     --accent2-color-pale: #8e937940;
     --accent3-color: #4891c1;
     --accent3-color-pale: #4891c140;
+    --accent3-color-pale2: #c5d5da;   /* 不透明でpaleに近い色 */
     --debug-color: #e39cb9;
     --text-bg-white: #f6f6f6;
 }
@@ -106,7 +107,7 @@ body {
     padding: 2px 10px;
     border: 1px solid var(--accent2-color-pale);
 }
-.tbl_type1 tr:hover td {
+.tbl_type1 tr:hover td, .tbl_type1 tr:hover th {
     background-color: var(--accent2-color-pale);
     transition: all  0.3s ease;
 }
