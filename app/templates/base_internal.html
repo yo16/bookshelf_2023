@@ -41,8 +41,15 @@
         </span>
     </div>
     <ul id="contents_menu">
-        <li id="menu1" class="menu_tab"><a href="{{ url_for('main') }}">蔵書一覧</a></li>
-        <li id="menu2" class="menu_tab"><a href="{{ url_for('members', member_id=member.member_id) }}">履歴</a></li>
+        <li id="menu1" class="menu_tab">
+            <a href="{{ url_for('main') }}">蔵書一覧</a>
+        </li>
+        <li id="menu2" class="menu_tab">
+            <a href="{{ url_for('members', member_id=member.member_id) }}">履歴</a>
+        </li>
+        <li id="admin_menu3" class="menu_tab">
+            <a href="{{ url_for('members_all') }}">メンバー</a>
+        </li>
         {% if member.is_admin -%}
         <li id="admin_menu1" class="menu_tab admin_menu_tab">
             <a href="{{ url_for('maintenance') }}">
@@ -58,14 +65,6 @@
                     <use xlink:href="#wrench"></use>
                 </svg>
                 ジャンル
-            </a>
-        </li>
-        <li id="admin_menu3" class="menu_tab admin_menu_tab">
-            <a href="{{ url_for('members_all') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
-                    <use xlink:href="#wrench"></use>
-                </svg>
-                メンバー
             </a>
         </li>
         {% endif -%}
