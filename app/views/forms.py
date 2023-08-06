@@ -145,7 +145,7 @@ class DeleteGenreForm(flask_wtf.FlaskForm):
         'method',
         [wtforms.validators.InputRequired()]
     )
-    del_genre_id = wtforms.StringField(
+    del_genre_id = wtforms.HiddenField(
         'del_genre_id',
         [wtforms.validators.InputRequired()]
     )
