@@ -222,12 +222,16 @@ def create_authors(db, info):
 
     for i, a in enumerate(info["authors"]):
         is_new_author = False
+        
+        # 著者名
+        author_name = re.sub(r"[\r\n]", "", a)
 
         # 登録済のDbAuthorがないか確認（名前で！）
         author = db.execute(
-            select(DbAuthor).where(DbAuthor.author_name == a)
+            select(DbAuthor).where(DbAuthor.author_name == author_name)
         ).scalar()
         if author is None:
+            print("ADDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             # 未登録なので登録
             is_new_author = True
             if not new_author_id:
@@ -235,9 +239,10 @@ def create_authors(db, info):
             new_author_count += 1
             author = DbAuthor(
                 author_id = new_author_id + new_author_count,
-                author_name = a
+                author_name = author_name
             )
         else:
+            print("UPPPPPPPPPPPPPPPPPPPPPPPPPPPPPdt")
             # 登録されている
             is_new_author = False
             author = author

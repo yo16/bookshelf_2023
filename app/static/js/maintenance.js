@@ -41,8 +41,6 @@ $(function(){
         remove_genre();
         return false;
     });
-    // ジャンルの初期登録
-    initialize_genres();
 
     // 登録ボタン
     $("#btn_regist_book").click(function(){
@@ -178,12 +176,19 @@ function set_book_info(book_info){
         ;
         $("#spn_authors").append(ent);
     }
+    // ジャンルのtextとselectをいったん全クリア
     $("#genres").empty();
     $("#sel_genre_selected").empty();
-    for(let i=0; i<book_info["genres"].length; i++){
-        let genre_id = book_info["genres"][i]["genre_id"];
-        let genre_name = book_info["genres"][i]["genre_name"];
-        add_genre(genre_id, genre_name);
+    // book_infoに入っているジャンルを登録
+    if( book_info["genres"].length > 0 ){
+        for(let i=0; i<book_info["genres"].length; i++){
+            let genre_id = book_info["genres"][i]["genre_id"];
+            let genre_name = book_info["genres"][i]["genre_name"];
+            add_genre(genre_id, genre_name);
+        }
+    } else {
+        // 空の場合は、デフォルトの値を設定
+        add_default_genre();
     }
 
     // 登録日
@@ -199,6 +204,7 @@ function initialize_breadcrumbs(){
 }
 
 // ジャンルを追加する
+// selectのoptionと、input[type=text]の両方に追加
 function add_genre(genre_id, genre_name){
     // 指定されたgenre_idがすでに登録済の場合、何もせず終了する
     let found_same_val = false;
@@ -257,151 +263,46 @@ function remove_genre(){
     // 追加する
     let exists_genres = $("#sel_genre_selected option");
     if (exists_genres.length == 0){
-        initialize_genres();
+        add_default_genre();
     }
 
     return true;
 }
 
 // val=0のジャンル（分類なし）だけを追加
-function initialize_genres(){
-    let genres = $("#sel_genre_selected");
+// selectのoptionと、input[type=text]の両方に追加
+//function initialize_genres(){
+function add_default_genre(){
+    // select
+    let sel_genres = $("#sel_genre_selected");
+    // input[type=text]
+    let input_genre = $("#genres");
+    // ユーザーが選択する、プルダウンのジャンル selectのoption(複数)
+    let pulldown_opt_genres = $("#sel_genre_master option");
 
-    // val=0のジャンル名を取得
+    // プルダウンから、val=0のジャンル名を取得
     // （"分類なし"のはずだが、念のため取得）
     let val0_text = "分類なし";
-    $("#sel_genre_master option").each(function(){
+    pulldown_opt_genres.each(function(){
         if ($(this).val() == 0){
             val0_text = $(this).text();
             return;
         }
     });
 
-    // 強制的に全部空にする
-    genres.empty();
+    // selectをいったん全部空にする
+    sel_genres.empty();
     // val0を追加
     let val0 = $("<option></option>")
         .val(0)
         .text(val0_text);
-    genres.append(val0);
-    // テキストは0を入れる
-    $("#genres").val("0,");
+        sel_genres.append(val0);
+    
+    // inputは"0,"だけを入れる
+    input_genre.val("0,");
     
     return;
 }
-
-
-/*
-$(function(){
-    $("#search_book").click(function(){
-        let isbn = $("#isbn").val();
-        console.log("isbn:" + isbn);
-        get_book(isbn);
-    });
-    $("#btn_add_genre").click(function(){
-        // 今の入力状態
-        let cur_genres_str = $("#genres").val();
-        let cur_genres = [];
-        if (cur_genres_str.length > 0){
-            cur_genres = cur_genres_str.split(",");
-        }
-        // 今選択されているgenre
-        let added_genre = $("#sel_genre").val();
-        // 入力されている場合は、何もせず抜ける
-        if (cur_genres.includes(added_genre)){
-            return;
-        }
-        // 入力されていない場合は、追加する
-        cur_genres.push(added_genre);
-        // 入力
-        $("#genres").val(cur_genres.join(","))
-    });
-
-    //initialize();
-
-    // for debug
-    //$("#isbn").val(9784768705261);
-})
-*/
-/*
-function get_book(isbn){
-    ret = {};
-    if (isbn == "") {
-        console.log("search_book_by_isbn() needs isbn code.")
-        return;
-    }
-
-    // ハイフンが入っていたら除く
-    isbn = isbn.replace(/\-/g, "");
-    $("#isbn").val(isbn);
-
-    // isbnコードをチェックする
-    $("#spnSearchISBNMessage").empty();
-    if (!validate_isbn_code(isbn)) {
-        console.log('illigal ISBN code.');
-        $("#spnSearchISBNMessage")
-            .append($("<br></br>"))
-            .append($("<span></span>")
-                .addClass("warning_message")
-                .text("ISBNコードが不正です。")
-            );
-        return;
-    }
-    
-    dispLoading("検索中...");
-
-    initialize();
-    $("#isbn").val(isbn);
-
-    // 本を検索 using Ajax
-    $.ajax({
-        url: "./get_book_with_isbn",
-        type: "POST",
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            "isbn": isbn
-        })
-    })
-    .done((data) => {
-        js_data = JSON.parse(data.ResultSet);
-        console.log(js_data);
-        
-        $("#isbn").val(isbn);
-        $("#book_name").val(js_data["book_name"]);
-        $("#num_of_authors").val(js_data["authors"].length);
-        for(var i=0; i<js_data["authors"].length; i++ ){
-            $("#author"+i).val(js_data["authors"][i]["author_name"]);
-        }
-        $("#publisher_code").val(js_data["publisher_code"]);
-        $("#publisher_name").val(js_data["publisher_name"]);
-        if (js_data["image_url"].length > 0){
-            $("#img_thumbnail").attr("src", js_data["image_url"])
-            $("#spnImageThumbnail").css("display", "");
-            $("#image_url").val(js_data["image_url"]);
-        }
-        $("#published_dt").val(js_data["published_dt"]);
-        $("#original_description").val(js_data["original_description"]);
-        $("#description").val(js_data["description"]);
-        $("#page_count").val(js_data["page_count"]);
-        $("#dimensions_height").val(js_data["dimensions_height"]);
-        $("#dimensions_width").val(js_data["dimensions_width"]);
-        $("#dimensions_thickness").val(js_data["dimensions_thickness"]);
-        $("#genres").val(js_data["genres"]);
-    })
-    .fail((data)=>{
-        console.log("Could not found book info by isbn["+isbn+"].");
-        console.log(data);
-
-        initialize();
-        $("#isbn").val(isbn);
-    })
-    .always((data)=>{
-        removeLoading();
-    });
-}
-
-*/
 
 
 /*
