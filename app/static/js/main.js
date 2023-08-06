@@ -1,2 +1,5 @@
 /* main.js */
 
+$(function(){
+
+});

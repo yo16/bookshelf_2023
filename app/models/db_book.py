@@ -64,19 +64,74 @@ class DbBook(Base):
 
 
     @staticmethod
-    def get_books_collection(db, org_id):
+    def get_books_collection(db, org_id,
+                             search_str=None, genre_id=None, author_id=None, publisher_id=None):
         """組織が持つ本一覧を返す
 
         Args:
             org_id (int): 組織id
+            search_str (str): タイトル検索ワード（いつか著者もやるかも）
+            genre_id (int): genre_id
+            author_id (int): author_id
+            publisher_id (int): publisher_id
         """
+        # ベースのクエリ
+        # 組織が所有する全book
         subq = select(
             DbCollection.book_id.label("book_id")
-        ).where(DbCollection.org_id==org_id).subquery()
-        stmt = select(DbBook).join(
-                target = subq,
-                onclause = DbBook.book_id == subq.c.book_id
+        ).where(
+            DbCollection.org_id==org_id
+        ).subquery()
+        stmt = select(
+            DbBook
+        ).join(
+            target = subq,
+            onclause = DbBook.book_id == subq.c.book_id
+        )
+
+        # search_strが指定されているときは、book_nameをlike検索
+        if search_str:
+            stmt = stmt.where(
+                DbBook.book_name.like(f"%{search_str}%")
             )
+        # genre_idが指定されているときは、classificationのgenre_idを結合
+        if genre_id:
+            subq_genre = select(
+                DbClassification.book_id.label("book_id")
+            ).where(
+                DbClassification.org_id == org_id,
+                DbClassification.genre_id == genre_id
+            ).subquery()
+            stmt = stmt.join(
+                target = subq_genre,
+                onclause = DbBook.book_id == subq_genre.c.book_id
+            )
+        # author_idが指定されているときは、writingのauthor_idを結合
+        if author_id:
+            subq_writing = select(
+                DbWriting.book_id.label("book_id")
+            ).where(
+                DbWriting.author_id == author_id
+            )
+            stmt = stmt.join(
+                target = subq_writing,
+                onclause = DbBook.book_id == subq_writing.c.book_id
+            )
+        # publisher_idが指定されているときは、publisherのpublisher_idを結合
+        #   ここは本当はbookの情報を見れば十分で結合しなくていいけど、
+        #   将来的に、publisher_nameを見たくなるかもしれないから結合する実装
+        if publisher_id:
+            subq_publisher = select(
+                DbPublisher.book_id.label("book_id")
+            ).where(
+                DbPublisher.publisher_id == publisher_id
+            )
+            stmt = stmt.join(
+                target = subq_publisher,
+                onclause = DbBook.publisher_id == subq_publisher.c.publisher_id
+            )
+        
+        # 検索実行
         exec_result = db.scalars(stmt).all()
         if (exec_result is None) or (len(exec_result) == 0):
             return []

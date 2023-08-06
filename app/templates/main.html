@@ -11,7 +11,12 @@
 {%- endblock %}
 
 {% block body -%}
-<!-- h1>main</h1 -->
+<div id="main_search">
+    <form method="GET" name="frm_search" id="frm_search">
+        <input type="text" name="ss" id="ss" />
+        <button type="submit" id="btn_search">検索</button>
+    </form>
+</div>
 <div id="main_books">
 {% for b in books -%}
 <div class="one_book">

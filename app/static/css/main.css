@@ -9,7 +9,22 @@
     }
 }
 
+/* 検索formを設置するため、共通部品の幅を上書きする */
+#breadcrumbs ol {
+    margin-bottom: 0px;
+}
+#body_body {
+    margin-top: 0px;
+}
 
+
+/* 検索form */
+#main_search {
+    text-align: right;
+}
+
+
+/* 一覧 */
 #main_books {
     display: flex;
     flex-direction: row;
