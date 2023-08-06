@@ -148,6 +148,27 @@ body {
 }
 
 
+/* input、text_area、select */
+input, textarea, select{
+    border-radius: 5px;
+    border: solid 1px var(--accent2-color);
+    padding: 5px 7px;
+}
+input:read-only, textarea:read-only {
+    background-color: var(--text-bg-white);
+    border-color: var(--accent2-color-pale);
+}
+
+
+
+
+/* checkbox */
+input[type=checkbox] {
+    transform: scale(1.4);
+}
+
+
+
 /* comment & histories (booksとmembersで共通) */
 .contents_title {
     display: flex;
@@ -173,7 +194,4 @@ body {
 }
 
 
-/* checkbox */
-input[type=checkbox] {
-    transform: scale(1.4);
-}
+

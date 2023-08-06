@@ -92,9 +92,6 @@
     width: 50%;
     min-width: 200px;
     height: 3em;
-    border-width: 1px;
-    border-color: var(--accent2-color);
-    border-radius: 5px;
 }
 
 .comment_area {
