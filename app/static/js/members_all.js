@@ -19,20 +19,20 @@ $(function(){
         changed_member($(this));
     });
     
-    // タブ切り替え時
-    // 追加
+    // is_admin、is_enabledのチェックを変えたとき、非表示のtextを変更する
+    // 追加 - is_admin
     $("#registform_is_admin").change(function(){
         $("#reg_is_admin").val(
             $(this).prop("checked")? 1: 0
         );
     });
-    // 編集
+    // 編集 - is_admin
     $("#editform_is_admin").change(function(){
         $("#edit_is_admin").val(
             $(this).prop("checked")? 1: 0
         );
     });
-    // 削除
+    // 編集 - is_enabled
     $("#editform_is_enabled").change(function(){
         $("#edit_is_enabled").val(
             $(this).prop("checked")? 1: 0
@@ -64,4 +64,9 @@ function changed_member(rdo_member){
     $("#del_member_code").val(member_code);
     $("#del_is_admin").prop("checked", is_admin);
     $("#del_is_enabled").prop("checked", is_enabled);
+
+    // "追加"タブだった場合、"編集"タブに変更
+    if($("#rdo_add_member").prop("checked")){
+        $("#rdo_edit_member").prop("checked", true)
+    }
 };
