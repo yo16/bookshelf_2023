@@ -102,7 +102,7 @@ def main(app):
 
         item = res_data["items"][0]
         volume_info = item["volumeInfo"]
-        print(volume_info)
+        #print(volume_info)
         
         # volume_infoを得ることができたので、順に設定していく
         ret_dic["book_name"] = volume_info.get("title","")

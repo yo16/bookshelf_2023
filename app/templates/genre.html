@@ -51,6 +51,9 @@ genre
     <td style="padding-left:{{ 15 + depth * 35 }}px" genre_id="{{ cur_genre.genre.genre_id }}">
         {{- cur_genre.genre.genre_name -}}
     </td>
+    <td class="text_center">
+        {{ genre_book_num[cur_genre.genre.genre_id] }}
+    </td>
     {% if debug -%}
     <td genre_id="{{ cur_genre.genre.genre_id }}">
         {{ cur_genre.genre.sort_key }}
@@ -70,6 +73,7 @@ genre
             <tr>
                 <th />
                 <th>ジャンル</th>
+                <th>本の数</th>
                 {% if debug -%}
                 <th>sort_key</th>
                 {% endif -%}

@@ -17,7 +17,6 @@
 
 #tbl_genre th, #tbl_genre td{
     padding-top: 3px;
-    padding-right: 15px;
     padding-bottom: 3px;
     /* leftはhtmlに直接定義 */
 }

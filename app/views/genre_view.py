@@ -2,7 +2,7 @@ from flask import render_template, request
 from sqlalchemy import select
 import re
 
-from models import get_db, DbGenre
+from models import get_db, DbGenre, DbClassification
 from .view_common import get_org_mem
 from .forms import RegistGenreForm, EditGenreForm, DeleteGenreForm, EditGenreOrderForm
 
@@ -25,21 +25,14 @@ def main(app):
     with get_db() as db:
         # 本来は、methodを分けたいが、ブラウザが対応していないので
         # formの中身で分岐する
-        print("SSSSSSSSSSSSSSSSSSSSSSSS")
-        print(bool(request))
-        print(request.method)
         if regist_form.is_submitted():
             method = request.form.get("method")
-            print("MMMMMMMMMMMMMMMM")
-            print(method)
             if (method=="POST"):
                 # 追加（中でcommitする）
                 regist_genre(db, org_id, request.form)
 
             elif (method=="PUT"):
-                print("DDDDDDDDDDDDDDDDDDDDDDDD")
                 delta = request.form.get("edit_order_delta")
-                print(delta)
                 if (delta):
                     # edit2_sort_order_delta がある場合は位置の変更
                     edit_genre_order(db, org_id, request.form)
@@ -59,6 +52,9 @@ def main(app):
         # 登録されているgenre情報を取得
         genres = get_genre_info(db, org_id)
 
+        # ジャンルごとの本の数
+        genre_book_num = DbClassification.get_books_num_by_genres(db, org_id)
+
     # 描画
     return render_template(
         "genre.html",
@@ -68,7 +64,8 @@ def main(app):
         edit_order_form = edit_order_form,
         delete_form = delete_form,
         genres = genres,
-        debug = True
+        genre_book_num = genre_book_num,
+        debug = False
     )
 
 
@@ -178,9 +175,6 @@ def edit_genre_order(db, org_id, form):
 
     # oldからnewに向かって１つずつ、sort_keyを交換していく
     for i in range(old_pos_i, new_pos_i, delta_direction):
-        print("------")
-        print(i)
-        print(i+delta_direction)
         # genre_children（対象と同じレベル）と、その子のsort_keyを交換
         sort_key1 = genre_children[i].sort_key
         sort_key2 = genre_children[i+delta_direction].sort_key
