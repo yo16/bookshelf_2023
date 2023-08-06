@@ -54,12 +54,17 @@
         <label id="menu2" class="menu_tab"
             onclick="window.location.href='{{ url_for("members", member_id=member.member_id) }}';"
         >
-            履歴
+            自分の貸出履歴
         </label>
         <label id="menu3" class="menu_tab"
             onclick="window.location.href='{{ url_for("members_all") }}';"
         >
             メンバー一覧
+        </label>
+        <label id="admin_menu2" class="menu_tab"
+            onclick="window.location.href='{{ url_for("genre") }}';"
+        >
+            ジャンル一覧
         </label>
         {% if member.is_admin -%}
         <label id="admin_menu1" class="menu_tab admin_menu_tab"
@@ -68,16 +73,8 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
                 <use xlink:href="#wrench"></use>
             </svg>
-            本
+            本の登録
         </label>
-        <label id="admin_menu2" class="menu_tab admin_menu_tab"
-            onclick="window.location.href='{{ url_for("genre") }}';"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
-                <use xlink:href="#wrench"></use>
-            </svg>
-            ジャンル
-        </labels>
         {% endif -%}
     </div>
     {#

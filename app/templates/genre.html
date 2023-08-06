@@ -42,12 +42,14 @@ genre
 {# tbl_genreのtrを作成する #}
 {% macro show_genre_trs(cur_genre, depth=0) -%}
 <tr genre_id="{{ cur_genre.genre.genre_id }}">
+    {% if member.is_admin -%}
     <th>
         <input type="radio" name="rdo_genre_select"
             id="rdo_genre_{{ cur_genre.genre.genre_id }}"
             genre_id="{{ cur_genre.genre.genre_id }}" genre_name="{{ cur_genre.genre.genre_name }}"
             parent_genre_id="{{ cur_genre.genre.parent_genre_id }}" />
     </th>
+    {% endif %}
     <td style="padding-left:{{ 15 + depth * 35 }}px">
         <a href="{{ url_for('main', gn=cur_genre.genre.genre_id) }}" class="a_type1">
         {{- cur_genre.genre.genre_name -}}
@@ -73,7 +75,9 @@ genre
         {# ジャンル一覧テーブル -#}
         <table id="tbl_genre" class="tbl_type1">
             <tr>
+                {% if member.is_admin -%}
                 <th />
+                {% endif %}
                 <th>ジャンル</th>
                 <th>本の数</th>
                 {% if debug -%}
@@ -83,6 +87,7 @@ genre
             {{ show_genre_trs(genres) }}
         </table>
 
+        {% if member.is_admin -%}
         {# 並び順変更ボタン -#}
         <div id="div_genre_sort_pos_chagne">
             <form method="POST" id="frm_edit_order" name="frm_edit_order">
@@ -102,8 +107,10 @@ genre
                 </button>
             </form>
         </div>
+        {% endif %}
     </div>
     
+    {% if member.is_admin -%}
     {# ジャンル変更コマンド -#}
     <div id="div_commands">
         <input type="radio" name="rdo_genre_command" id="rdo_add_genre"
@@ -174,12 +181,13 @@ genre
             </form>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script language="JavaScript">
     make_breadcrumbs(
         [
-            ["ジャンルマスタメンテ","{{ url_for('genre') }}"]
+            ["ジャンル","{{ url_for('genre') }}"]
         ]
     );
 </script>
