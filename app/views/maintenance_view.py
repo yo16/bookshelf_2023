@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from flask_login import current_user
 from sqlalchemy import select
 from datetime import datetime
@@ -24,7 +24,10 @@ def main(app):
 
         if form.validate_on_submit():
             # 登録処理（内部でcommitする）
-            regist_info(db, org_mem["organization"].org_id)
+            new_book_id = regist_info(db, org_mem["organization"].org_id)
+
+            # 登録が終わったら、登録済みのmaintenanceページを表示
+            return redirect(url_for("maintenance", book_id=new_book_id))
 
         # ジャンル一覧を取得
         genres = DbGenre.get_genres(db, org_mem["organization"].org_id)
@@ -173,7 +176,7 @@ def regist_info(db, org_id):
         db.refresh(c)
     db.refresh(collection)
     
-    return
+    return book.book_id
     
 
 
