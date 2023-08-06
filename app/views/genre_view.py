@@ -214,12 +214,7 @@ def update_genre_sort_key(db, org_id, top_genre, old_sort_pattern, new_sort_key_
     
     # 自分のsort_keyを変更
     # old_sort_keyの先頭からnew_sort_keyと一致している部分を置換した文字列を取得
-    print("------------")
-    print("old_sort_key:"+old_sort_key)
-    print("old_sort_pattern:"+old_sort_pattern)
-    print("new_sort_key_head:"+new_sort_key_head)
     new_sort_key = re.sub(old_sort_pattern, new_sort_key_head, old_sort_key)
-    print("[UPD]new_sort_key:"+new_sort_key)
     # トップのジャンルのsort_keyを変更(UPDATE)
     top_genre.sort_key = new_sort_key
 
