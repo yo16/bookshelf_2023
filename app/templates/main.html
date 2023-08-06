@@ -13,10 +13,12 @@
 {% block body -%}
 <div id="main_search">
     <form method="GET" name="frm_search" id="frm_search">
-        <input type="text" name="ss" id="ss" />
-        <button type="submit" id="btn_search">検索</button>
+        <input type="text" name="ss" id="input_ss" />
+        <button type="submit" id="btn_search" class="btn_submit btn_small">検索</button>
     </form>
 </div>
+
+{# ---------- book list ----------- #}
 <div id="main_books">
 {% for b in books -%}
 <div class="one_book">
@@ -34,6 +36,7 @@
 </div>
 {% endfor -%}
 </div>
+
 <script language="JavaScript">
     let bc_list = [
         ["蔵書一覧","{{ url_for('main') }}"]

@@ -22,6 +22,15 @@
 #main_search {
     text-align: right;
 }
+#frm_search {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 5px;
+}
+#input_ss {
+    width: 150px;
+}
 
 
 /* 一覧 */
