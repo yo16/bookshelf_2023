@@ -35,8 +35,20 @@
 {% endfor -%}
 </div>
 <script language="JavaScript">
-    make_breadcrumbs([
+    let bc_list = [
         ["蔵書一覧","{{ url_for('main') }}"]
-    ]);
+        {% if search_cond_str is not none %}
+            {% if search_str %}
+        ,["{{ search_cond_str }}", "{{ url_for('main', ss=search_str) }}"]
+            {% elif genre_id is not none %}
+        ,["{{ search_cond_str }}", "{{ url_for('main', gn=genre_id) }}"]
+            {% elif author_id is not none %}
+        ,["{{ search_cond_str }}", "{{ url_for('main', au=author_id) }}"]
+            {% elif publisher_id is not none %}
+        ,["{{ search_cond_str }}", "{{ url_for('main', pb=publisher_id) }}"]
+            {% endif %}
+        {% endif %}
+    ];
+    make_breadcrumbs(bc_list);
 </script>
 {% endblock -%}

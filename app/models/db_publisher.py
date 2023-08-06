@@ -49,6 +49,21 @@ class DbPublisher(Base):
             new_publisher_id = result + 1
 
         return new_publisher_id
+    
+
+    @staticmethod
+    def get_publisher(db, publisher_id):
+        publisher = db.execute(
+            select(
+                DbPublisher
+            ).where(
+                DbPublisher.publisher_id == publisher_id
+            )
+        ).first()
+        if publisher is None or len(publisher)==0:
+            return None
+        
+        return publisher[0]
 
 
     @staticmethod

@@ -27,3 +27,19 @@ class DbAuthor(Base):
             new_author_id = result + 1
         
         return new_author_id
+
+
+    @staticmethod
+    def get_author(db, author_id):
+        author = db.execute(
+            select(
+                DbAuthor
+            ).where(
+                DbAuthor.author_id == author_id
+            )
+        ).first()
+        if author is None or len(author)==0:
+            return None
+
+        return author[0]
+

@@ -70,7 +70,9 @@
                         <td>
                             {%- for g in book_info.genres -%}
                             {% if loop.index0 > 0 %}&nbsp;/&nbsp;{% endif -%}
-                            {{ g.genre_name -}}
+                            <a href="{{ url_for('main', gn=g.genre_id) }}" class="a_type1">
+                            {{- g.genre_name -}}
+                            </a>
                             {% endfor -%}
                         </td>
                     </tr>
