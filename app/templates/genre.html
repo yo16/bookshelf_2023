@@ -41,14 +41,14 @@ genre
 
 {# tbl_genreのtrを作成する #}
 {% macro show_genre_trs(cur_genre, depth=0) -%}
-<tr>
-    <th genre_id="{{ cur_genre.genre.genre_id }}">
+<tr genre_id="{{ cur_genre.genre.genre_id }}">
+    <th>
         <input type="radio" name="rdo_genre_select"
             id="rdo_genre_{{ cur_genre.genre.genre_id }}"
             genre_id="{{ cur_genre.genre.genre_id }}" genre_name="{{ cur_genre.genre.genre_name }}"
             parent_genre_id="{{ cur_genre.genre.parent_genre_id }}" />
     </th>
-    <td style="padding-left:{{ 15 + depth * 35 }}px" genre_id="{{ cur_genre.genre.genre_id }}">
+    <td style="padding-left:{{ 15 + depth * 35 }}px">
         <a href="{{ url_for('main', gn=cur_genre.genre.genre_id) }}" class="a_type1">
         {{- cur_genre.genre.genre_name -}}
         </a>
@@ -57,7 +57,7 @@ genre
         {{ genre_book_num[cur_genre.genre.genre_id] }}
     </td>
     {% if debug -%}
-    <td genre_id="{{ cur_genre.genre.genre_id }}">
+    <td>
         {{ cur_genre.genre.sort_key }}
     </td>
     {% endif -%}

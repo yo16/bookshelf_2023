@@ -35,15 +35,18 @@ member
             {% endif %}
         </tr>
         {% for m in members -%}
-        <tr>
+        <tr member_id="{{ m.member_id }}">
             {% if current_user.is_admin -%}
-            <td class="text_center"><input type="radio"
-                name="rdo_member_select"
-                value="{{ m.member_id }}"
-                member_code="{{ m.member_code }}"
-                member_name="{{ m.member_name }}"
-                is_admin="{{ m.is_admin }}"
-                is_enabled="{{ m.is_enabled }}" /></td>
+            <td class="text_center">
+                <input type="radio"
+                    name="rdo_member_select"
+                    id="rdo_member_select_{{ m.member_id }}"
+                    value="{{ m.member_id }}"
+                    member_code="{{ m.member_code }}"
+                    member_name="{{ m.member_name }}"
+                    is_admin="{{ m.is_admin }}"
+                    is_enabled="{{ m.is_enabled }}" />
+            </td>
             <td>{{ m.member_id }}</td>
             <td>{{ m.member_code }}</td>
             {% endif -%}
@@ -140,6 +143,22 @@ member
                 <tr>
                     <th>#</th>
                     <td>{{ delete_form.del_member_id }}</td>
+                </tr>
+                <tr>
+                    <th>ログインID</th>
+                    <td><input id="del_member_code" readonly /></td>
+                </tr>
+                <tr>
+                    <th>表示される名前</th>
+                    <td><input id="del_member_name" readonly /></td>
+                </tr>
+                <tr>
+                    <th>管理者</th>
+                    <td><input type="checkbox" id="del_is_admin" /></td>
+                </tr>
+                <tr>
+                    <th>使用可能</th>
+                    <td><input type="checkbox" id="del_is_enabled" /></td>
                 </tr>
             </table>
             {{ delete_form.method }}
