@@ -42,8 +42,7 @@ CREATE TABLE IF NOT EXISTS `genre` (
     `parent_genre_id`   INT,
     `genre_name`        VARCHAR(100)    NOT NULL,
     `sort_key`          VARCHAR(100)    NOT NULL,
-    PRIMARY KEY (org_id, genre_id),
-    UNIQUE (org_id, sort_key)
+    PRIMARY KEY (org_id, genre_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `classification` (

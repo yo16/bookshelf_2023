@@ -79,16 +79,22 @@ genre
 
         {# 並び順変更ボタン -#}
         <div id="div_genre_sort_pos_chagne">
-            <button id="btn_genre_sort_up">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
-                    <use xlink:href="#sort-up-solid"></use>
-                </svg>
-            </button>
-            <button id="btn_genre_sort_down">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
-                    <use xlink:href="#sort-down-solid"></use>
-                </svg>
-            </button>
+            <form method="POST" id="frm_edit_order" name="frm_edit_order">
+                {{ edit_order_form.csrf_token }}
+                {{ edit_order_form.edit_order_genre_id }}
+                {{ edit_order_form.edit_order_delta }}
+                {{ edit_order_form.method }}
+                <button id="btn_genre_sort_up" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
+                        <use xlink:href="#sort-up-solid"></use>
+                    </svg>
+                </button>
+                <button id="btn_genre_sort_down" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
+                        <use xlink:href="#sort-down-solid"></use>
+                    </svg>
+                </button>
+            </form>
         </div>
     </div>
     

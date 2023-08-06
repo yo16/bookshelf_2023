@@ -122,6 +122,23 @@ class EditGenreForm(flask_wtf.FlaskForm):
         [wtforms.validators.InputRequired()]
     )
 
+
+# ジャンルの編集（順序変更）
+class EditGenreOrderForm(flask_wtf.FlaskForm):
+    method = wtforms.HiddenField(
+        'method',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_order_genre_id = wtforms.HiddenField(
+        'edit_order_genre_id',
+        [wtforms.validators.InputRequired()]
+    )
+    edit_order_delta = wtforms.HiddenField(
+        'edit_order_delta',
+        [wtforms.validators.InputRequired()]
+    )
+
+
 # ジャンルの削除
 class DeleteGenreForm(flask_wtf.FlaskForm):
     method = wtforms.HiddenField(

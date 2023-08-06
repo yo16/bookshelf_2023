@@ -8,10 +8,11 @@
     flex-direction: row;
     gap: 5px;
 }
-#div_genre_sort_pos_chagne {
+#frm_edit_order {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    height: 100%;
 }
 
 #tbl_genre th, #tbl_genre td{

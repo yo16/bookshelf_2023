@@ -231,3 +231,22 @@ class DbGenre(Base):
 
         return
 
+
+    @staticmethod
+    def get_children(db, org_id, parent_genre_id):
+        """親ジャンルIDから子ジャンル群を取得
+        """
+        genres = db.scalars(
+            select(
+                DbGenre
+            ).where(
+                and_(
+                    DbGenre.org_id == org_id,
+                    DbGenre.parent_genre_id == parent_genre_id
+                )
+            ).order_by(
+                DbGenre.sort_key
+            )
+        ).all()
+
+        return genres

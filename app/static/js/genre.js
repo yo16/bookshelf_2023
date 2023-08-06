@@ -9,8 +9,14 @@ $(function(){
         changed_genre(rdo_genre);
     });
 
-    $("#btn_sort_up").click(function(){
+    $("#btn_genre_sort_up").click(function(){
+        $("#edit_order_delta").val(-1);
+        $("#frm_edit_order").submit();
+    });
 
+    $("#btn_genre_sort_down").click(function(){
+        $("#edit_order_delta").val(1);
+        $("#frm_edit_order").submit();
     });
 
     // ジャンル一覧テーブルで選択したとき
@@ -36,6 +42,9 @@ function changed_genre(rdo_genre){
     $("#edit_parent_genre_id").val(parent_genre_id);
     $("#edit_genre_id").val(genre_id);
     $("#edit_genre_name").val(genre_name);
+
+    // 並び順編集用
+    $("#edit_order_genre_id").val(genre_id);
 
     // 削除用
     // 削除の場合は、選択したジャンルが削除対象
