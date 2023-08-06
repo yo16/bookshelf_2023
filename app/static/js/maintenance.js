@@ -178,7 +178,8 @@ function set_book_info(book_info){
         ;
         $("#spn_authors").append(ent);
     }
-    $("genres").empty();
+    $("#genres").empty();
+    $("#sel_genre_selected").empty();
     for(let i=0; i<book_info["genres"].length; i++){
         let genre_id = book_info["genres"][i]["genre_id"];
         let genre_name = book_info["genres"][i]["genre_name"];
