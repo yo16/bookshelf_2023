@@ -49,7 +49,9 @@ genre
             parent_genre_id="{{ cur_genre.genre.parent_genre_id }}" />
     </th>
     <td style="padding-left:{{ 15 + depth * 35 }}px" genre_id="{{ cur_genre.genre.genre_id }}">
+        <a href="{{ url_for('main', gn=cur_genre.genre.genre_id) }}" class="a_type1">
         {{- cur_genre.genre.genre_name -}}
+        </a>
     </td>
     <td class="text_center">
         {{ genre_book_num[cur_genre.genre.genre_id] }}
@@ -181,21 +183,4 @@ genre
         ]
     );
 </script>
-
-{# ------------------------------------------------------------------- #}
-<hr />
-<h1>ジャンルマスタメンテ！</h1>
-
-<h2>登録済みジャンル</h2>
-{{ create_genre_li(genres) -}}
-<h2>登録</h2>
-<form method="POST">
-    {{ regist_form.csrf_token }}
-    <p>parent_genre_id: <select id="parent_genre_id" name="parent_genre_id">
-        {{ create_genre_opt(genres) -}}
-    </select></p>
-    <p>genre_name: {{ regist_form.genre_name }}</p>
-    <p><button type="submit">ジャンルの登録</button></p>
-</form>
-
 {% endblock -%}

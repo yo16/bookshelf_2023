@@ -21,9 +21,9 @@ def main(app):
             db,
             org_mem["organization"].org_id,
             search_str=ss,
-            genre_id=int(gn) if gn else None,
-            author_id=int(au) if au else None,
-            publisher_id=int(pb) if pb else None
+            genre_id=int(gn) if gn is not None else None,
+            author_id=int(au) if au is not None else None,
+            publisher_id=int(pb) if pb is not None else None
         )
 
     return render_template("main.html", **org_mem, books=books)

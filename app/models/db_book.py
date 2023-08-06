@@ -95,7 +95,7 @@ class DbBook(Base):
                 DbBook.book_name.like(f"%{search_str}%")
             )
         # genre_idが指定されているときは、classificationのgenre_idを結合
-        if genre_id:
+        if genre_id is not None:
             subq_genre = select(
                 DbClassification.book_id.label("book_id")
             ).where(
@@ -107,12 +107,12 @@ class DbBook(Base):
                 onclause = DbBook.book_id == subq_genre.c.book_id
             )
         # author_idが指定されているときは、writingのauthor_idを結合
-        if author_id:
+        if author_id is not None:
             subq_writing = select(
                 DbWriting.book_id.label("book_id")
             ).where(
                 DbWriting.author_id == author_id
-            )
+            ).subquery()
             stmt = stmt.join(
                 target = subq_writing,
                 onclause = DbBook.book_id == subq_writing.c.book_id
@@ -120,12 +120,12 @@ class DbBook(Base):
         # publisher_idが指定されているときは、publisherのpublisher_idを結合
         #   ここは本当はbookの情報を見れば十分で結合しなくていいけど、
         #   将来的に、publisher_nameを見たくなるかもしれないから結合する実装
-        if publisher_id:
+        if publisher_id is not None:
             subq_publisher = select(
-                DbPublisher.book_id.label("book_id")
+                DbPublisher.publisher_id.label("publisher_id")
             ).where(
                 DbPublisher.publisher_id == publisher_id
-            )
+            ).subquery()
             stmt = stmt.join(
                 target = subq_publisher,
                 onclause = DbBook.publisher_id == subq_publisher.c.publisher_id

@@ -37,7 +37,9 @@
                         <td>
                             {%- for a in book_info.authors -%}
                             {% if loop.index0 > 0 %}、{% endif -%}
-                            {{ a.author_name -}}
+                            <a href="{{ url_for('main', au=a.author_id) }}" class="a_type1">
+                            {{- a.author_name -}}
+                            </a>
                             {% endfor -%}
                         </td>
                     </tr>
@@ -56,7 +58,11 @@
                     {% if book_info.publisher -%}
                     <tr>
                         <th>出版社</th>
-                        <td>{{ book_info.publisher.publisher_name }}</td>
+                        <td>
+                            <a href="{{ url_for('main', pb=book_info.publisher.publisher_id) }}" class="a_type1">
+                            {{ book_info.publisher.publisher_name }}
+                            </a>
+                        </td>
                     </tr>
                     {% endif -%}
                     <tr>
