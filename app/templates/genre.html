@@ -111,6 +111,11 @@ genre
     </div>
     
     {% if member.is_admin -%}
+    {% if message is not none %}
+    <div id="div_message" class="error_message">
+        {{ message }}
+    </div>
+    {% endif %}
     {# ジャンル変更コマンド -#}
     <div id="div_commands">
         <input type="radio" name="rdo_genre_command" id="rdo_add_genre"

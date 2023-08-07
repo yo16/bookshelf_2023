@@ -8,7 +8,8 @@ from .forms import RegistGenreForm, EditGenreForm, DeleteGenreForm, EditGenreOrd
 
 
 def main(app):
-    form = RegistGenreForm(request.form)
+    message = None
+
     regist_form = RegistGenreForm(request.form)
     regist_form.method.data = "POST"
     edit_form = EditGenreForm(request.form)
@@ -44,10 +45,9 @@ def main(app):
 
             elif (method=="DELETE"):
                 # 削除（この関数内でget_dbしてcommitする）
-                delete_genre(db, org_id, request.form)
-
-            # フォームを初期化
-            regist_form = RegistGenreForm()
+                ret = delete_genre(db, org_id, request.form)
+                if ret < 0:
+                    message = "子ジャンルがあるジャンルは削除できません"
 
         # 登録されているgenre情報を取得
         genres = get_genre_info(db, org_id)
@@ -65,6 +65,7 @@ def main(app):
         delete_form = delete_form,
         genres = genres,
         genre_book_num = genre_book_num,
+        message = message,
         debug = False
     )
 
@@ -136,6 +137,12 @@ def delete_genre(db, org_id, form):
     # genre_id=0で作成するbook_id
     new_classification_book_ids = []
 
+    # 削除対象のジャンルの子ジャンルがある場合は削除中止
+    child_genres = DbGenre.get_children(db, org_id, genre_id)
+    if (child_genres is not None) and (len(child_genres)>0):
+        # 子ジャンルがある
+        return -1
+
     # 削除対象のジャンルを持つclassificationを取得
     classes = DbClassification.get_classifications_with_genre(db, org_id, genre_id)
     if classes:
@@ -169,6 +176,8 @@ def delete_genre(db, org_id, form):
     
     for c in new_classifications:
         db.refresh(c)
+    
+    return 0
 
 
 def edit_genre_order(db, org_id, form):

@@ -194,4 +194,8 @@ input[type=checkbox] {
 }
 
 
+.error_message {
+    color: #f00;
+}
+
 
