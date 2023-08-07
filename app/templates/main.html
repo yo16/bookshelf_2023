@@ -13,7 +13,11 @@
 {% block body -%}
 <div id="main_search">
     <form method="GET" name="frm_search" id="frm_search">
-        <input type="text" name="ss" id="input_ss" />
+        <input type="text" name="ss" id="input_ss"
+        {%- if search_str is not none -%}
+        value="{{ search_str }}"
+        {%- endif -%}
+         />
         <button type="submit" id="btn_search" class="btn_submit btn_small">検索</button>
     </form>
 </div>
@@ -41,7 +45,7 @@
     let bc_list = [
         ["蔵書一覧","{{ url_for('main') }}"]
         {% if search_cond_str is not none %}
-            {% if search_str %}
+            {% if search_str is not none %}
         ,["{{ search_cond_str }}", "{{ url_for('main', ss=search_str) }}"]
             {% elif genre_id is not none %}
         ,["{{ search_cond_str }}", "{{ url_for('main', gn=genre_id) }}"]

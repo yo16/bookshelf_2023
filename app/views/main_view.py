@@ -16,14 +16,17 @@ def main(app):
         gn = request.args.get('gn', None)   # genre_id
         au = request.args.get('au', None)   # author_id
         pb = request.args.get('pb', None)   # publisher_id
-        # int化
+        # 文字列の整備、int化
+        search_str = None if ss is None or len(ss)==0 else ss
         genre_id = int(gn) if gn is not None else None
         author_id = int(au) if au is not None else None
         publisher_id = int(pb) if pb is not None else None
 
         # 検索条件で使っているIDを文字列に変換
         search_cond_str = None
-        if genre_id is not None:
+        if search_str is not None:
+            search_cond_str = f"検索:{search_str}"
+        elif genre_id is not None:
             genre = DbGenre.get_genre(db, current_user.org_id, genre_id)
             search_cond_str = f"ジャンル:{genre.genre_name}"
         elif author_id is not None:
@@ -36,7 +39,7 @@ def main(app):
         books = DbBook.get_books_collection(
             db,
             org_mem["organization"].org_id,
-            search_str=ss,
+            search_str=search_str,
             genre_id=genre_id,
             author_id=author_id,
             publisher_id=publisher_id
