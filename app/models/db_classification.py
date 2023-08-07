@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, delete, func
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.expression import and_
 
@@ -62,3 +62,53 @@ class DbClassification(Base):
             ret[cb[0]] = cb[1]
 
         return ret
+
+
+    @staticmethod
+    def get_classifications_with_genre(db, org_id, genre_id):
+        """genre_idをキーにclassificationを返す
+
+        Args:
+            db (_type_): db
+            org_id (_type_): org_id
+            genre_id (_type_): genre_id
+        """
+        classes = db.scalars(
+            select(
+                DbClassification
+            ).where(
+                and_(
+                    DbClassification.org_id == org_id,
+                    DbClassification.genre_id == genre_id
+                )
+            )
+        ).all()
+
+        if (classes is None) or (len(classes)==0):
+            return None
+
+        return classes
+
+
+    @staticmethod
+    def delete_classification_by_genre(db, org_id, genre_id):
+        """ジャンルID指定で削除
+
+        Args:
+            db (_type_): _description_
+            org_id (_type_): _description_
+            genre_id (_type_): _description_
+        """
+        db.execute(
+            delete(
+                DbClassification
+            ).where(
+                and_(
+                    DbClassification.org_id == org_id,
+                    DbClassification.genre_id == genre_id
+                )
+            )
+        )
+
+        return
+

@@ -133,11 +133,42 @@ def delete_genre(db, org_id, form):
     # 対象のジャンルID、ジャンル
     genre_id = form.get("del_genre_id")
 
-    # 削除
+    # genre_id=0で作成するbook_id
+    new_classification_book_ids = []
+
+    # 削除対象のジャンルを持つclassificationを取得
+    classes = DbClassification.get_classifications_with_genre(db, org_id, genre_id)
+    if classes:
+        # bookが今のgenre_idにしか登録されていない場合は、0のレコードを生成する
+        for cur_cls in classes:
+            registed_classes = DbClassification.get_classifications(db, org_id, cur_cls.book_id)
+            if len(registed_classes) == 1: 
+                # このgenre_idにしか登録されていないので、0のレコードを生成
+                new_classification_book_ids.append(cur_cls.book_id)
+    # classificationを削除
+    DbClassification.delete_classification_by_genre(db, org_id, genre_id)
+
+    # classificationを作成
+    new_classifications = []
+    for cur_book_id in new_classification_book_ids:
+        new_classifications.append(
+            DbClassification(
+                org_id = org_id,
+                genre_id = 0,           # ジャンル=0は、分類なし
+                book_id = cur_book_id
+            )
+        )
+    for c in new_classifications:
+        db.add(c)
+
+    # ジャンルを削除
     DbGenre.delete_genre(db, org_id, genre_id)
 
     # commit
     db.commit()
+    
+    for c in new_classifications:
+        db.refresh(c)
 
 
 def edit_genre_order(db, org_id, form):
