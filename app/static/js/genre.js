@@ -1,13 +1,23 @@
 
 $(function(){
     $("#tbl_genre td, #tbl_genre th").click(function(){
-        // tr要素にgenre_idを設定しているので取得
-        let genre_id = $(this).parent().attr("genre_id");
-        let rdo_genre = $("#rdo_genre_"+genre_id);
-        rdo_genre.prop("checked", true);
+        if(!$('input[name="check"]').prop("checked")) {
+            // チェックされていない＝参照モード
+            // 選択された行のページへ飛ぶ
+            let genre_id = $(this).parent().attr("genre_id");
+            if( genre_id ){
+                window.location.href = main_page_url + "?gn=" + genre_id;
+            }
+        } else {
+            // チェックされている＝編集モード
+            // tr要素にgenre_idを設定しているので取得
+            let genre_id = $(this).parent().attr("genre_id");
+            let rdo_genre = $("#rdo_genre_"+genre_id);
+            rdo_genre.prop("checked", true);
 
-        // ラジオボタン変更処理
-        changed_genre(rdo_genre);
+            // ラジオボタン変更処理
+            changed_genre(rdo_genre);
+        }
     });
 
     $("#btn_genre_sort_up").click(function(){
@@ -24,6 +34,18 @@ $(function(){
     $("input[name='rdo_genre_select']").change(function(){
         changed_genre($(this));
     });
+
+    // 編集モードのtoggle-button
+    $(".btn_toggle").on("click", function() {
+        if(!$('input[name="check"]').prop("checked")) {
+            // チェックされていない＝参照モード
+            $(".toggle_edit_mode").css("display", "none")
+        } else {
+            // チェックされている＝編集モード
+            $(".toggle_edit_mode").css("display", "")
+        }
+    });
+
 });
 
 // ジャンル変更時に、フォームに設定する

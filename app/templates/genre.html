@@ -43,7 +43,7 @@ genre
 {% macro show_genre_trs(cur_genre, depth=0) -%}
 <tr genre_id="{{ cur_genre.genre.genre_id }}">
     {% if member.is_admin -%}
-    <th>
+    <th class="toggle_edit_mode">
         <input type="radio" name="rdo_genre_select"
             id="rdo_genre_{{ cur_genre.genre.genre_id }}"
             genre_id="{{ cur_genre.genre.genre_id }}" genre_name="{{ cur_genre.genre.genre_name }}"
@@ -51,9 +51,7 @@ genre
     </th>
     {% endif %}
     <td style="padding-left:{{ 15 + depth * 35 }}px">
-        <a href="{{ url_for('main', gn=cur_genre.genre.genre_id) }}" class="a_type1">
         {{- cur_genre.genre.genre_name -}}
-        </a>
     </td>
     <td class="text_center">
         {{ genre_book_num[cur_genre.genre.genre_id] }}
@@ -69,14 +67,26 @@ genre
     {% endfor -%}
 {% endmacro -%}
 
+
 {% block body -%}
 <div id="genre_mastermaintenance">
+    {% if member.is_admin -%}
+    <div id="div_edit_mode">
+        <div>
+            {# label forを使いたかったが、.btn_toggle clickと動きが変わるのでやめている -#}
+            <label>編集モード</label>
+        </div>
+        <div class="btn_toggle checked">{# 注意:divのclassとcheckboxを合わせること #}
+            <input type="checkbox" name="check" id="chk_edit_mode" checked />
+        </div>
+    </div>
+    {% endif %}
     <div id="div_genre_list">
         {# ジャンル一覧テーブル -#}
         <table id="tbl_genre" class="tbl_type1">
             <tr>
                 {% if member.is_admin -%}
-                <th />
+                <th class="toggle_edit_mode" />
                 {% endif %}
                 <th>ジャンル</th>
                 <th>本の数</th>
@@ -89,7 +99,7 @@ genre
 
         {% if member.is_admin -%}
         {# 並び順変更ボタン -#}
-        <div id="div_genre_sort_pos_chagne">
+        <div id="div_genre_sort_pos_chagne" class="toggle_edit_mode">
             <form method="POST" id="frm_edit_order" name="frm_edit_order">
                 {{ edit_order_form.csrf_token }}
                 {{ edit_order_form.edit_order_genre_id }}
@@ -117,7 +127,7 @@ genre
     </div>
     {% endif %}
     {# ジャンル変更コマンド -#}
-    <div id="div_commands">
+    <div id="div_commands" class="toggle_edit_mode">
         <input type="radio" name="rdo_genre_command" id="rdo_add_genre"
             class="rdo_genre_command" checked />
         <label class="lbl_tab_command" for="rdo_add_genre">新規</label>
@@ -195,5 +205,7 @@ genre
             ["ジャンル","{{ url_for('genre') }}"]
         ]
     );
+    
+    var main_page_url = "{{ url_for('main') }}";
 </script>
 {% endblock -%}
