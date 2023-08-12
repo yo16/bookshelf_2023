@@ -61,10 +61,10 @@
         >
             メンバー一覧
         </label>
-        <label id="admin_menu2" class="menu_tab"
+        <label id="menu4" class="menu_tab"
             onclick="window.location.href='{{ url_for("genre") }}';"
         >
-            ジャンル一覧
+            ジャンル
         </label>
         {% if member.is_admin -%}
         <label id="admin_menu1" class="menu_tab admin_menu_tab"
@@ -74,6 +74,14 @@
                 <use xlink:href="#wrench"></use>
             </svg>
             本の登録
+        </label>
+        <label id="admin_menu2" class="menu_tab admin_menu_tab"
+            onclick="window.location.href='{{ url_for("genre_edit") }}';"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
+                <use xlink:href="#wrench"></use>
+            </svg>
+            ジャンル
         </label>
         {% endif -%}
     </div>

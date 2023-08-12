@@ -3,25 +3,10 @@
     margin-right: 20px;
 }
 
-#div_edit_mode {
-    margin-left: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.9em;
-}
-
 #div_genre_list {
     display: flex;
     flex-direction: row;
     gap: 5px;
-}
-#frm_edit_order {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
 }
 
 #tbl_genre th, #tbl_genre td{
@@ -29,60 +14,5 @@
     padding-bottom: 3px;
     /* leftはhtmlに直接定義 */
 }
-#div_genre_sort_pos_chagne button {
-    border: 0;
-    padding: 0;
-    background-color: var(--base-color);
-}
-#div_genre_sort_pos_chagne svg {
-    fill: var(--accent3-color-pale2);
-    filter: drop-shadow(2px 2px 0 var(--accent3-color));
-}
-#div_genre_sort_pos_chagne svg:hover {
-    transform: translate(1px, 2px);
-    filter:none;
-}
-#div_genre_sort_pos_chagne svg:active {
-    transform: translate(2px, 3px);
-    filter:none;
-}
 
 
-/* commands */
-#div_commands {
-    margin: 20px 20px 0 40px;
-    flex-wrap: wrap;
-    display: flex;
-    flex-direction: row;
-    gap: 0px;
-}
-/* 通常のタブ */
-.lbl_tab_command {
-    background-color: var(--accent2-color-pale);
-    opacity: 0.5;
-    padding: 5px 20px 0px 20px;
-    margin: 0px 3px;
-    border-radius: 7px 7px 0 0;
-    font-size: 0.95rem;
-    text-align: center;
-    display: block;
-    order: -1;
-}
-.lbl_tab_command:hover {
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-}
-.rdo_genre_command {
-    display: none;
-}
-/* 選択されているタブ */
-.rdo_genre_command:checked + .lbl_tab_command {
-    opacity: 1.0;
-}
-.div_command_content {
-    display: none;
-    width: 100%;
-}
-.rdo_genre_command:checked + .lbl_tab_command + .div_command_content {
-    display: block;
-}

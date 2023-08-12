@@ -42,16 +42,10 @@ genre
 {# tbl_genreのtrを作成する #}
 {% macro show_genre_trs(cur_genre, depth=0) -%}
 <tr genre_id="{{ cur_genre.genre.genre_id }}">
-    {% if member.is_admin -%}
-    <th class="toggle_edit_mode">
-        <input type="radio" name="rdo_genre_select"
-            id="rdo_genre_{{ cur_genre.genre.genre_id }}"
-            genre_id="{{ cur_genre.genre.genre_id }}" genre_name="{{ cur_genre.genre.genre_name }}"
-            parent_genre_id="{{ cur_genre.genre.parent_genre_id }}" />
-    </th>
-    {% endif %}
     <td style="padding-left:{{ 15 + depth * 35 }}px">
-        {{- cur_genre.genre.genre_name -}}
+        <a href="{{ url_for('main', gn=cur_genre.genre.genre_id) }}" class="a_type1">
+            {{- cur_genre.genre.genre_name -}}
+        </a>
     </td>
     <td class="text_center">
         {{ genre_book_num[cur_genre.genre.genre_id] }}
@@ -70,24 +64,10 @@ genre
 
 {% block body -%}
 <div id="genre_mastermaintenance">
-    {% if member.is_admin -%}
-    <div id="div_edit_mode">
-        <div>
-            {# label forを使いたかったが、.btn_toggle clickと動きが変わるのでやめている -#}
-            <label>編集モード</label>
-        </div>
-        <div class="btn_toggle checked">{# 注意:divのclassとcheckboxを合わせること #}
-            <input type="checkbox" name="check" id="chk_edit_mode" checked />
-        </div>
-    </div>
-    {% endif %}
     <div id="div_genre_list">
         {# ジャンル一覧テーブル -#}
         <table id="tbl_genre" class="tbl_type1">
             <tr>
-                {% if member.is_admin -%}
-                <th class="toggle_edit_mode" />
-                {% endif %}
                 <th>ジャンル</th>
                 <th>本の数</th>
                 {% if debug -%}
@@ -96,107 +76,7 @@ genre
             </tr>
             {{ show_genre_trs(genres) }}
         </table>
-
-        {% if member.is_admin -%}
-        {# 並び順変更ボタン -#}
-        <div id="div_genre_sort_pos_chagne" class="toggle_edit_mode">
-            <form method="POST" id="frm_edit_order" name="frm_edit_order">
-                {{ edit_order_form.csrf_token }}
-                {{ edit_order_form.edit_order_genre_id }}
-                {{ edit_order_form.edit_order_delta }}
-                {{ edit_order_form.method }}
-                <button id="btn_genre_sort_up" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
-                        <use xlink:href="#sort-up-solid"></use>
-                    </svg>
-                </button>
-                <button id="btn_genre_sort_down" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" height="50px">
-                        <use xlink:href="#sort-down-solid"></use>
-                    </svg>
-                </button>
-            </form>
-        </div>
-        {% endif %}
     </div>
-    
-    {% if member.is_admin -%}
-    {% if message is not none %}
-    <div id="div_message" class="error_message">
-        {{ message }}
-    </div>
-    {% endif %}
-    {# ジャンル変更コマンド -#}
-    <div id="div_commands" class="toggle_edit_mode">
-        <input type="radio" name="rdo_genre_command" id="rdo_add_genre"
-            class="rdo_genre_command" checked />
-        <label class="lbl_tab_command" for="rdo_add_genre">新規</label>
-        <div id="div_add_genre" class="div_command_content">
-            <form method="POST" name="frm_regist">
-                {{ regist_form.csrf_token }}
-                <table class="tbl_type2">
-                    <tr>
-                        <th>親ジャンル</th>
-                        <td><input type="text" id="txt_regist_parent_genre" readonly /></td>
-                    </tr>
-                    <tr>
-                        <th>ジャンル名</th>
-                        <td>{{ regist_form.reg_genre_name }}</td>
-                    </tr>
-                </table>
-                {{ regist_form.reg_parent_genre_id }}
-                {{ regist_form.method }}
-                <button type="submit" class="btn_submit">追加</button>
-            </form>
-        </div>
-
-        <input type="radio" name="rdo_genre_command" id="rdo_edit_genre"
-            class="rdo_genre_command" />
-        <label class="lbl_tab_command" for="rdo_edit_genre">変更</label>
-        <div id="div_edit_genre" class="div_command_content">
-            <form method="POST" name="frm_edit">
-                {{ edit_form.csrf_token }}
-                <table class="tbl_type2">
-                    <tr>
-                        <th>親ジャンル</th>
-                        <td>
-                            <select id="sel_edit_parent_genre_id">
-                                {{ create_genre_opt(genres) }}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>ジャンル名</th>
-                        <td>{{ edit_form.edit_genre_name }}</td>
-                    </tr>
-                </table>
-                {{ edit_form.edit_genre_id }}
-                {{ edit_form.edit_parent_genre_id }}
-                {{ edit_form.edit_sort_key }}
-                {{ edit_form.method }}
-                <button type="submit" class="btn_submit">変更</button>
-            </form>
-        </div>
-
-        <input type="radio" name="rdo_genre_command" id="rdo_delete_genre"
-            class="rdo_genre_command" />
-        <label class="lbl_tab_command" for="rdo_delete_genre">削除</label>
-        <div id="div_delete_genre" class="div_command_content">
-            <form method="POST" name="frm_del">
-                {{ delete_form.csrf_token }}
-                <table class="tbl_type2">
-                    <tr>
-                        <th>ジャンル名</th>
-                        <td><input type="text" id="txt_delete_genre_id" readonly /></td>
-                    </tr>
-                </table>
-                {{ delete_form.del_genre_id }}
-                {{ delete_form.method }}
-                <button type="submit" class="btn_submit">削除</button>
-            </form>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <script language="JavaScript">
