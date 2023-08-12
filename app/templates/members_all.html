@@ -1,4 +1,4 @@
-{% extends "base_internal_admin.html" %}
+{% extends "base_internal.html" %}
 
 {% block title -%}
 member
@@ -14,159 +14,27 @@ member
 {# ------ organization ---------------------- -#}
 <div id="organization">
     <span id="org_name">{{ organization.org_name }}</span>{# -#}
-    {% if current_user.is_admin -%}
-    <span id="org_id">({{ organization.org_id }})</span>
-    {% endif -%}
 </div>
 
 {# ------ organization ---------------------- -#}
 <div id="members">
     <table id="tbl_members" class="tbl_type1">
         <tr>
-            {% if current_user.is_admin -%}
-            <th>選択</th>
-            <th>#</th>
-            <th>ID</th>
-            {% endif -%}
             <th>名前</th>
             <th>管理者</th>
-            {% if current_user.is_admin -%}
-            <th>使用可能</th>
-            {% endif %}
         </tr>
         {% for m in members -%}
+        {% if m.is_enabled -%}{# この画面では、enabledのメンバーだけを表示 #}
         <tr member_id="{{ m.member_id }}">
-            {% if current_user.is_admin -%}
-            <td class="text_center">
-                <input type="radio"
-                    name="rdo_member_select"
-                    id="rdo_member_select_{{ m.member_id }}"
-                    value="{{ m.member_id }}"
-                    member_code="{{ m.member_code }}"
-                    member_name="{{ m.member_name }}"
-                    is_admin="{{ m.is_admin }}"
-                    is_enabled="{{ m.is_enabled }}" />
-            </td>
-            <td>{{ m.member_id }}</td>
-            <td>{{ m.member_code }}</td>
-            {% endif -%}
             <td>
                 <a href="{{ url_for('members', member_id=m.member_id) }}" class="a_type1">{{ m.member_name }}</a>
             </td>
             <td>{% if m.is_admin %}管理者{% endif %}</td>
-            {% if current_user.is_admin -%}
-            <td class="text_center">{% if m.is_enabled %}〇{% else %}×{% endif %}</td>
-            {% endif %}
         </tr>
+        {% endif %}
         {% endfor %}
     </table>
 </div>
-
-{% if current_user.is_admin -%}
-<div id="div_commands">
-    <input type="radio" name="rdo_member_command" id="rdo_add_member"
-        class="rdo_member_command" checked />
-    <label class="lbl_tab_command" for="rdo_add_member">追加</label>
-    <div id="div_add_member" class="div_command_content">
-        <form method="POST" name="frm_regist">
-            {{ regist_form.csrf_token }}
-            <table class="tbl_type2">
-                <tr>
-                    <th>ログインID</th>
-                    <td>{{ regist_form.reg_member_code }}</td>
-                </tr>
-                <tr>
-                    <th>表示される名前</th>
-                    <td>{{ regist_form.reg_member_name }}</td>
-                </tr>
-                <tr>
-                    <th>パスワード</th>
-                    <td>{{ regist_form.reg_password }}</td>
-                </tr>
-                <tr>
-                    <th>管理者</th>
-                    <td><input type="checkbox" id="registform_is_admin" /></td>
-                </tr>
-            </table>
-            {{ regist_form.reg_is_admin }}
-            {{ regist_form.method }}
-            <button type="submit" class="btn_submit">追加</button>
-        </form>
-    </div>
-
-    <input type="radio" name="rdo_member_command" id="rdo_edit_member"
-        class="rdo_member_command" />
-    <label class="lbl_tab_command" for="rdo_edit_member">編集</label>
-    <div id="div_edit_member" class="div_command_content">
-        <form method="POST" name="frm_edit">
-            {{ edit_form.csrf_token }}
-            <table class="tbl_type2">
-            <tr>
-                <th>#</th>
-                <td>{{ edit_form.edit_member_id }}</td>
-            </tr>
-            <tr>
-                <th>ログインID</th>
-                <td>{{ edit_form.edit_member_code }}</td>
-            </tr>
-            <tr>
-                <th>表示される名前</th>
-                <td>{{ edit_form.edit_member_name }}</td>
-            </tr>
-            <tr>
-                <th>パスワード</th>
-                <td>{{ edit_form.edit_password }}</td>
-            </tr>
-            <tr>
-                <th>管理者</th>
-                <td><input type="checkbox" id="editform_is_admin" /></td>
-            </tr>
-            <tr>
-                <th>使用可能</th>
-                <td><input type="checkbox" id="editform_is_enabled" /></td>
-            </tr>
-            {{ edit_form.edit_is_admin }}
-            {{ edit_form.edit_is_enabled }}
-            {{ edit_form.method }}
-        </table>
-        <button type="submit" class="btn_submit">編集</button>
-    </form>
-    </div>
-
-    <input type="radio" name="rdo_member_command" id="rdo_delete_member"
-        class="rdo_member_command" />
-    <label class="lbl_tab_command" for="rdo_delete_member">削除</label>
-    <div id="div_delete_member" class="div_command_content">
-        <form method="POST" name="frm_delete">
-            {{ delete_form.csrf_token }}
-            <table class="tbl_type2">
-                <tr>
-                    <th>#</th>
-                    <td>{{ delete_form.del_member_id }}</td>
-                </tr>
-                <tr>
-                    <th>ログインID</th>
-                    <td><input id="del_member_code" readonly /></td>
-                </tr>
-                <tr>
-                    <th>表示される名前</th>
-                    <td><input id="del_member_name" readonly /></td>
-                </tr>
-                <tr>
-                    <th>管理者</th>
-                    <td><input type="checkbox" id="del_is_admin" /></td>
-                </tr>
-                <tr>
-                    <th>使用可能</th>
-                    <td><input type="checkbox" id="del_is_enabled" /></td>
-                </tr>
-            </table>
-            {{ delete_form.method }}
-            <button type="submit" class="btn_submit">削除</button>
-        </form>
-    </div>
-</div>
-{% endif -%}
 
 <script language="JavaScript">
     make_breadcrumbs(
@@ -174,5 +42,7 @@ member
             ["メンバー","{{ url_for('members_all') }}"]
         ]
     );
+
+    var member_page_url = "{{ url_for('members') }}";
 </script>
 {% endblock -%}

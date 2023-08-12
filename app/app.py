@@ -15,6 +15,7 @@ from views import (
     maintenance_view_main,
     members_view_main,
     members_all_view_main,
+    members_all_edit_view_main,
     genre_view_main,
     genre_edit_view_main,
     get_book_with_isbn_view_main,
@@ -135,6 +136,12 @@ def members_all():
     return members_all_view_main(app)
 
 
+@app.route("/genre", methods=["GET"])
+@login_required
+@log_info
+def genre():
+    return genre_view_main(app)
+
 
 # ****** login必要（管理者ユーザー） ******
 def admin_required(func):
@@ -180,20 +187,20 @@ def get_book_with_isbn():
 #    return members_view_main(app)
 
 
-@app.route("/genre", methods=["GET"])
-@login_required
-@admin_required
-@log_info
-def genre():
-    return genre_view_main(app)
-
-
 @app.route("/genre_edit", methods=["GET", "POST"])
 @login_required
 @admin_required
 @log_info
 def genre_edit():
     return genre_edit_view_main(app)
+
+
+@app.route("/members_all_edit/", methods=["GET", "POST"])
+@login_required
+@admin_required
+@log_info
+def members_all_edit():
+    return members_all_edit_view_main(app)
 
 
 @app.route("/regist_member_with_csv", methods=["POST"])
