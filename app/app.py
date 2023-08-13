@@ -147,9 +147,9 @@ def genre():
 def admin_required(func):
     @wraps(func)
     def admin_wrapper(*args, **keywords):
-        # 管理者以外はbooksへ飛ばす
+        # 管理者以外はmainへ飛ばす
         if not current_user.is_admin:
-            redirect(url_for("main"))
+            return redirect(url_for("main"))
         return func(*args, **keywords)
     
     return admin_wrapper
