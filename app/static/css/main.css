@@ -101,8 +101,7 @@
     background: linear-gradient(180deg, var(--base-color) 70%, var(--accent2-color-pale) 100%);
 }
 @media screen and (max-width: 600px) {
-    /* 表示スタイルに依存せず、backgroundは表示しない */
-    .book_image {
+    #main_books .books_grid_large .book_image {
         background: none;
     }
 }
@@ -180,6 +179,11 @@
     align-items: flex-end;
     justify-content: center;
     background: linear-gradient(180deg, var(--base-color) 70%, var(--accent2-color-pale) 100%);
+}
+@media screen and (max-width: 600px) {
+    #main_books .books_grid_small .book_image {
+        background: none;
+    }
 }
 #main_books .books_grid_small .book_image img {
     max-height: var(--book-image-height-grid-small);
