@@ -21,6 +21,8 @@ def main(app):
     org_mem = get_org_mem()
     org_id = org_mem["organization"].org_id
 
+    default_select_genre_id = None
+    default_select_menu = None
     genres = []
     with get_db() as db:
         # 本来は、methodを分けたいが、ブラウザが対応していないので
@@ -31,22 +33,43 @@ def main(app):
                 # 追加（中でcommitする）
                 regist_genre(db, org_id, request.form)
 
+                # 更新後の画面のメンテ
+                # ラジオボタンの選択 → キープ
+                default_select_genre_id = request.form.get("reg_parent_genre_id")
+                # 登録したジャンル名 → クリア
+                regist_form.reg_genre_name.data = ""
+                default_select_menu = "regist"
+
             elif (method=="PUT"):
                 delta = request.form.get("edit_order_delta")
                 if (delta):
                     # edit2_sort_order_delta がある場合は位置の変更
                     edit_genre_order(db, org_id, request.form)
-                    
+            
+                    # 更新後の画面のメンテ
+                    # ラジオボタンの選択 → キープ
+                    default_select_genre_id = request.form.get("edit_order_genre_id")
+                    # メニュー → なし
+                    default_select_menu = "edit_order"
+
                 else:
                     # ない場合は項目の変更
                     # 編集（この関数内でget_dbしてcommitする）
                     edit_genre(db, org_id, request.form)
+
+                    # 更新後の画面のメンテ
+                    # ラジオボタンの選択 → キープ
+                    default_select_genre_id = request.form.get("edit_genre_id")
+                    # メニュー → 編集
+                    default_select_menu = "edit"
 
             elif (method=="DELETE"):
                 # 削除（この関数内でget_dbしてcommitする）
                 ret = delete_genre(db, org_id, request.form)
                 if ret < 0:
                     message = "子ジャンルがあるジャンルは削除できません"
+                # メニュー → 削除
+                default_select_menu = "delete"
 
         # 登録されているgenre情報を取得
         genres = get_genre_info(db, org_id)
@@ -65,6 +88,8 @@ def main(app):
         genres = genres,
         genre_book_num = genre_book_num,
         message = message,
+        default_select_genre_id = default_select_genre_id,
+        default_select_menu = default_select_menu,
         debug = False
     )
 

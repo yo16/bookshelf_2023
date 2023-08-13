@@ -24,6 +24,9 @@ $(function(){
     $("input[name='rdo_genre_select']").change(function(){
         changed_genre($(this));
     });
+
+    // 初期値設定
+    initialize_settings();
 });
 
 // ジャンル変更時に、フォームに設定する
@@ -52,3 +55,34 @@ function changed_genre(rdo_genre){
     $("#txt_delete_genre_id").val(genre_name);
     $("#del_genre_id").val(genre_id);
 }
+
+// 初期値設定
+function initialize_settings(){
+    // ジャンルの選択
+    function set_genre_rdo(){
+        // 順序編集用の値が設定されていたら、対応するラジオボタンをチェックする
+        let rdo_genre = $("#rdo_genre_"+default_select_genre_id);
+        rdo_genre.prop("checked", true);
+
+        console.log(default_select_genre_id);
+
+        // ラジオボタン変更処理
+        changed_genre(rdo_genre);
+    }
+
+    // デフォルトのメニュー
+    function set_menu(){
+        if (default_select_menu=="regist"){
+            $("#rdo_add_genre").prop("checked", true);
+        } else if (default_select_menu=="edit"){
+            $("#rdo_edit_genre").prop("checked", true);
+        } else if (default_select_menu=="delete"){
+            $("#rdo_delete_genre").prop("checked", true);
+        }
+    }
+
+    if( default_select_genre_id != "None" ){ set_genre_rdo(); }
+    $("#rdo_add_genre").prop("checked", true);
+    if( default_select_menu != "None" ){ set_menu(); }
+}
+

@@ -118,7 +118,7 @@ genre_edit
     {# ジャンル変更コマンド -#}
     <div id="div_commands">
         <input type="radio" name="rdo_genre_command" id="rdo_add_genre"
-            class="rdo_genre_command" checked />
+            class="rdo_genre_command" />
         <label class="lbl_tab_command" for="rdo_add_genre">新規</label>
         <div id="div_add_genre" class="div_command_content">
             <form method="POST" name="frm_regist">
@@ -194,5 +194,8 @@ genre_edit
             ["ジャンル編集","{{ url_for('genre') }}"]
         ]
     );
+
+    var default_select_genre_id = "{{ default_select_genre_id }}";
+    var default_select_menu = "{{ default_select_menu }}";
 </script>
 {% endblock -%}
