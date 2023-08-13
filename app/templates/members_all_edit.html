@@ -51,7 +51,7 @@ member
             <td>{{ m.member_code }}</td>
             {% endif -%}
             <td>
-                <a href="{{ url_for('members', member_id=m.member_id) }}" class="a_type1">{{ m.member_name }}</a>
+                {{ m.member_name }}
             </td>
             <td>{% if m.is_admin %}管理者{% endif %}</td>
             {% if current_user.is_admin -%}
