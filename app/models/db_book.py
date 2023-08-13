@@ -142,6 +142,8 @@ class DbBook(Base):
         
         stmt = stmt.group_by(
             DbBook.book_id
+        ).order_by(
+            DbBook.book_name
         )
         
         # 検索実行
