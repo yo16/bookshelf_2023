@@ -3,15 +3,6 @@
     margin-right: 20px;
 }
 
-#div_edit_mode {
-    margin-left: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.9em;
-}
-
 #div_genre_list {
     display: flex;
     flex-direction: row;
