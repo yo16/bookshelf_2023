@@ -20,12 +20,43 @@
 
 /* 検索form */
 #main_search {
-    text-align: right;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 10px 0px 20px;
+}
+#div_display_style {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+#div_display_style button {
+    border: none;
+    background-color: var(--base-color);
+}
+#div_display_style svg {
+    height: 1.5em;
+    vertical-align: middle;
+    fill: var(--accent1-color);
+    opacity: 0.4;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in;
+}
+#div_display_style svg:hover {
+    fill: var(--accent3-color);
+}
+#div_display_style input[name="rdo_display_style"]:checked + label svg {
+    fill: var(--accent3-color);
+    opacity: 1.0;
+}
+#div_display_style input[name="rdo_display_style"] {
+    display: none;
 }
 #frm_search {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
     gap: 5px;
 }
 #input_ss {
