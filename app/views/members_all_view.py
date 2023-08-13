@@ -1,7 +1,4 @@
-from flask_login import current_user
 from flask import render_template
-from sqlalchemy import update, delete
-from sqlalchemy.sql.expression import and_
 
 from models import get_db, DbMember
 from .view_common import get_org_mem
