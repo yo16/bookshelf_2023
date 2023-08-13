@@ -82,8 +82,17 @@ class DbBook(Base):
         ).where(
             DbCollection.org_id==org_id
         ).subquery()
+        # group_concatで、名前とidの順序を一致してくれるかどうかは微妙
         stmt = select(
-            DbBook
+            DbBook,
+            func.group_concat(DbAuthor.author_name),
+            func.group_concat(DbAuthor.author_id),
+        ).join(
+            target = DbWriting,
+            onclause = DbBook.book_id == DbWriting.book_id
+        ).join(
+            target = DbAuthor,
+            onclause  = DbWriting.author_id == DbAuthor.author_id
         ).join(
             target = subq,
             onclause = DbBook.book_id == subq.c.book_id
@@ -131,8 +140,12 @@ class DbBook(Base):
                 onclause = DbBook.publisher_id == subq_publisher.c.publisher_id
             )
         
+        stmt = stmt.group_by(
+            DbBook.book_id
+        )
+        
         # 検索実行
-        exec_result = db.scalars(stmt).all()
+        exec_result = db.execute(stmt).all()
         if (exec_result is None) or (len(exec_result) == 0):
             return []
         

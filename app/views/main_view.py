@@ -44,10 +44,19 @@ def main(app):
             author_id=author_id,
             publisher_id=publisher_id
         )
+    
+    # booksの情報を整理
+    book_info = []
+    for bi in books:
+        book_info.append({
+            "book": bi[0],
+            "authors": bi[1].split(","),
+            "author_ids": bi[2].split(","),
+        })
 
     return render_template(
         "main.html", **org_mem,
-        books=books,
+        books=book_info,
         search_str=ss,
         genre_id=genre_id,
         author_id=author_id,

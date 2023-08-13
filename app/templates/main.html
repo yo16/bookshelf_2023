@@ -42,7 +42,7 @@
 <div id="main_search">
     <div id="div_display_style">
         <div>
-            <input type="radio" name="rdo_display_style" id="display_style_grid_small" checked />
+            <input type="radio" name="rdo_display_style" id="display_style_grid_small" value="grid_small" />
             <label for="display_style_grid_small">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
                     <use xlink:href="#grid_small"></use>
@@ -50,7 +50,7 @@
             </label>
         </div>
         <div>
-            <input type="radio" name="rdo_display_style" id="display_style_grid_large" />
+            <input type="radio" name="rdo_display_style" id="display_style_grid_large" value="grid_large" checked />
             <label for="display_style_grid_large">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
                     <use xlink:href="#grid_large"></use>
@@ -58,8 +58,8 @@
             </label>
         </div>
         <div>
-            <input type="radio" name="rdo_display_style" id="display_style_list_solid" />
-            <label for="display_style_list_solid">
+            <input type="radio" name="rdo_display_style" id="display_style_list" value="list" />
+            <label for="display_style_list">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <use xlink:href="#list-solid"></use>
                 </svg>
@@ -78,21 +78,32 @@
 
 {# ---------- book list ----------- #}
 <div id="main_books">
-{% for b in books -%}
-<div class="one_book">
-    <div class="book_image">
-        <a href="{{ url_for('books', book_id=b.book_id) }}">
-            <img src="{{ b.image_url }}" />
-        </a>
+    <div id="div_books_display_style" class="books_grid_large">
+    {% for book_info in books -%}
+        <div class="one_book">
+            <div class="book_image">
+                <a href="{{ url_for('books', book_id=book_info.book.book_id) }}">
+                    <img src="{{ book_info.book.image_url }}" />
+                </a>
+            </div>
+            <div class="book_title">
+                <a href="{{ url_for('books', book_id=book_info.book.book_id) }}">
+                    {{ book_info.book.book_name }}
+                </a>
+            </div>
+            <div class="book_author">
+                {% for author in book_info.authors -%}
+                {% if (loop.index0>0) -%}
+                    、{# -#}
+                {% endif -%}
+                <a href="{{ url_for('main', au=book_info.author_ids[loop.index0]) }}">
+                    {{ author }}
+                </a>
+                {% endfor -%}
+            </div>
+        </div>
+    {% endfor -%}
     </div>
-    <div class="book_title">
-        <a href="{{ url_for('books', book_id=b.book_id) }}">
-            {{ b.book_name }}
-        </a>
-    </div>
-    </a>
-</div>
-{% endfor -%}
 </div>
 
 <script language="JavaScript">
