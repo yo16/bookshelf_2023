@@ -6,9 +6,12 @@ services:
     volumes:
       - ./app:/app
       - socket:/tmp
+      - book_image:/app/static/img/book
     container_name: 'bookshelf-app-server'
     ports:
       - '5000:5000'
+    dns:
+      - 8.8.8.8
     networks:
       - bookshelf-network
     environment:
@@ -49,3 +52,4 @@ networks:
 volumes:
   socket:
   db_volume:
+  book_image:

@@ -5,7 +5,7 @@ from datetime import datetime
 import re
 
 from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection, DbGenre, DbClassification
-from .view_common import get_org_mem
+from .view_common import get_org_mem, get_image_path
 from .forms import RegistBookForm
 
 
@@ -24,7 +24,7 @@ def main(app):
 
         if form.validate_on_submit():
             # 登録処理（内部でcommitする）
-            new_book_id = regist_info(db, org_mem["organization"].org_id)
+            new_book_id = regist_info(app, db, org_mem["organization"].org_id)
 
             # 登録が終わったら、登録済みのmaintenanceページを表示
             return redirect(url_for("maintenance", book_id=new_book_id))
@@ -50,7 +50,7 @@ def main(app):
     )
 
 
-def regist_info(db, org_id):
+def regist_info(app, db, org_id):
     """登録情報をもとに、関連テーブルを登録する（この関数内部でcommitする）
     """
     req = {
@@ -91,7 +91,7 @@ def regist_info(db, org_id):
             req[item] = None
     
     # 登録する情報
-    book, is_new_book = create_book(db, req)
+    book, is_new_book = create_book(app, db, req)
     authors = None
     writings = None
     publisher = None
@@ -180,10 +180,12 @@ def regist_info(db, org_id):
     
 
 
-def create_book(db, info):
+def create_book(app, db, info):
     """登録するDbBookを作成
 
     Args:
+        app
+        db
         info (dict): requestから集めた情報
     Returns
         DbBook, Boolean
@@ -196,11 +198,13 @@ def create_book(db, info):
         # なかったので、新しいIDを取得して作る
         is_new_book = True
         new_book_id = DbBook.get_new_book_id(db)
+        
+        # 本情報を作成
         cur_book = DbBook(
             book_id = new_book_id,
             isbn = info["isbn"],
             book_name = info["book_name"],
-            image_url = info["image_url"],
+            image_url = get_image_path(app, new_book_id, info["image_url"]),
             publisher_id = None,
             published_dt = info["published_dt"],
             page_count = info["page_count"],

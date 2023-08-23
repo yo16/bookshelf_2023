@@ -45,6 +45,20 @@ def main(app):
             publisher_id=publisher_id
         )
     
+        if False:
+            from .view_common import get_image_path
+            # for debug
+            # book.image_urlがhttpsから始まっていたら、
+            # ダウンロードして、urlを書き換えてdb更新する
+            do_update = False
+            for bi in books:
+                if bi[0].image_url.startswith("https"):
+                    bi[0].image_url = get_image_path(app, bi[0].book_id, bi[0].image_url)
+                    do_update = True
+            if do_update:
+                db.commit()
+
+    
     # booksの情報を整理
     book_info = []
     for bi in books:
