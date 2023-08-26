@@ -5,7 +5,7 @@ from datetime import datetime
 import re
 
 from models import get_db, DbBook, DbAuthor, DbWriting, DbPublisher, DbCollection, DbGenre, DbClassification
-from .view_common import get_org_mem, get_image_path
+from .view_common import get_org_mem, get_image_file_path
 from .forms import RegistBookForm
 
 
@@ -13,15 +13,16 @@ def main(app):
     form = RegistBookForm(request.form)
     org_mem = get_org_mem()
 
-    # getでbook_idが指定されている場合は、DBから情報を取得
-    book_id = request.args.get("book_id", None)
     book_info = None
     genres = []
     with get_db() as db:
+        # getでbook_idが指定されている場合は、DBから情報を取得
+        book_id = request.args.get("book_id", None)
         if book_id:
             book_info = DbBook.get_book_info(db, book_id, org_mem["organization"].org_id)
             form.isbn.data = book_info["book"].isbn
 
+        # postでsubmitされている場合は、登録
         if form.validate_on_submit():
             # 登録処理（内部でcommitする）
             new_book_id = regist_info(app, db, org_mem["organization"].org_id)
@@ -198,13 +199,16 @@ def create_book(app, db, info):
         # なかったので、新しいIDを取得して作る
         is_new_book = True
         new_book_id = DbBook.get_new_book_id(db)
+
+        # 画像のurlから画像をダウンロードして、そのパスを取得しておく
+        image_local_path = get_image_file_path(app, new_book_id, info["image_url"])
         
         # 本情報を作成
         cur_book = DbBook(
             book_id = new_book_id,
             isbn = info["isbn"],
             book_name = info["book_name"],
-            image_url = get_image_path(app, new_book_id, info["image_url"]),
+            image_url = info["image_url"],
             publisher_id = None,
             published_dt = info["published_dt"],
             page_count = info["page_count"],
@@ -212,6 +216,7 @@ def create_book(app, db, info):
             dimensions_width = info["dimensions_width"],
             dimensions_thickness = info["dimensions_thickness"],
             original_description = info["original_description"],
+            image_local_path = image_local_path,
         )
 
     return cur_book, is_new_book
@@ -238,7 +243,6 @@ def create_authors(db, info):
             select(DbAuthor).where(DbAuthor.author_name == author_name)
         ).scalar()
         if author is None:
-            print("ADDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             # 未登録なので登録
             is_new_author = True
             if not new_author_id:
@@ -249,7 +253,6 @@ def create_authors(db, info):
                 author_name = author_name
             )
         else:
-            print("UPPPPPPPPPPPPPPPPPPPPPPPPPPPPPdt")
             # 登録されている
             is_new_author = False
             author = author

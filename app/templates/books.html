@@ -22,7 +22,13 @@
 <div id="book_main">
     <div id="container_top">
         <div id="content_book_img" class="book_contents">
-            <img src="{{ book_info.book.image_url }}" />
+            <img src="
+            {%- if book_info.book.image_local_path -%}
+                {{ book_info.book.image_local_path -}}
+            {% else -%}
+                {{ book_info.book.image_url -}}
+            {% endif -%}
+            " />
         </div>
         <div id="content_book_detail" class="book_contents">
             <div id="book_details">

@@ -49,9 +49,9 @@ $(function(){
     });
 
     // 最初からISBNが入っている場合は、検索する
-    if ($("#isbn").val().length > 0) {
-        search_book($("#isbn").val());
-    }
+    // if ($("#isbn").val().length > 0) {
+    //     search_book($("#isbn").val());
+    // }
 });
 
 // ISBNから本情報を検索して設定

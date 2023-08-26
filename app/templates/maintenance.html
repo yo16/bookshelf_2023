@@ -122,7 +122,7 @@ maintenance
 
 <script language="JavaScript">
     {% if book_info -%}
-    {# book_infoがあったら、一覧から #}
+    {# book_infoがあったら、一覧から -#}
     let bc =[
         [
             "蔵書一覧",
@@ -138,65 +138,63 @@ maintenance
         ]
     ];
     {% else -%}
-    {# book_infoがなかったら、メンテから #}
+    {# book_infoがなかったら、メンテから -#}
     let bc = [["本の追加","{{ url_for('maintenance') }}"]];
     {% endif -%}
 
     make_breadcrumbs(bc);
+
+    {# book_infoがあったら、その内容を反映させる -#}
+    {% if book_info %}  {#- このbook_infoはpython -#}
+    let book_info = {}; {#- このbook_infoはJavaScript #}
+    book_info["isbn"] = "{{ book_info.book.isbn }}";
+    book_info["book_name"] = "{{ book_info.book.book_name }}";
+    book_info["authors"] = [];
+    {% for author in book_info.authors -%}
+    book_info["authors"].push("{{ author.author_name }}");
+    {% endfor -%}
+    book_info["publisher_code"] = "{{ book_info.publisher.publisher_code }}";
+    book_info["publisher_name"] = "{{ book_info.publisher.publisher_name }}";
+    {% if book_info.book.image_local_path -%}
+    book_info["image_url"] = "{{ book_info.book.image_local_path }}"
+    {% else -%}
+    book_info["image_url"] = "{{ book_info.book.book_name }}"
+    {% endif -%}
+    book_info["published_dt"] = "{{ book_info.book.published_dt.strftime('%Y-%m-%d') }}";
+    book_info["original_description"] = "{{ book_info.book.original_description }}";
+    book_info["description"] = "{{ book_info.collection.description }}";
+    {% if book_info.book.page_count -%}
+    book_info["page_count"] = {{ book_info.book.page_count }};
+    {% else -%}
+    book_info["page_count"] = "";
+    {% endif -%}
+    {% if book_info.book.dimensions_height -%}
+    book_info["dimensions_height"] = {{ book_info.book.dimensions_height }};
+    {% else -%}
+    book_info["dimensions_height"] = "";
+    {% endif -%}
+    {% if book_info.book.dimensions_width -%}
+    book_info["dimensions_width"] = {{ book_info.book.dimensions_width }};
+    {% else -%}
+    book_info["dimensions_width"] = "";
+    {% endif -%}
+    {% if book_info.book.dimensions_thickness -%}
+    book_info["dimensions_thickness"] = {{ book_info.book.dimensions_thickness }};
+    {% else -%}
+    book_info["dimensions_thickness"] = "";
+    {% endif -%}
+    book_info["genres"] = [];
+    {% for genre in genres -%}
+    book_info["genres"].push({
+        "genre_id": "{{ genre.genre_id }}",
+        "genre_name": "{{ genre.genre_name }}"
+    });
+    {% endfor -%}
+    book_info["added_dt"] = "{{ book_info.collection.added_dt.strftime('%Y-%m-%d') }}";
+    book_info["num_of_same_books"] = {{ book_info.collection.num_of_same_books }};
+
+    set_book_info(book_info);
+    {% endif -%}
+
 </script>
-
-{#
-<!-- ------------------------------------------------------------------------ -->
-
-<!--
-<hr />
-<hr />
-<hr />
-maintenance
-<h1>本の登録</h1>
-<form method="POST">
-    {{ render_error(form.isbn) }}
-    {{ form.csrf_token }}
-    <p>
-        <label for="isbn">isbn: </label>{{ form.isbn(placeholder="ISBNコード(10桁 or 13桁)") }}
-        <button type="button" id="search_book">検索</button>
-        <span id="spnSearchISBNMessage"></span>
-    </p>
-    <p>book_name: <input type="text" id="book_name" name="book_name" /></p>
-    <p>image:
-        <span id="spnImageThumbnail" style="display:None" >
-            <img id="img_thumbnail" /><br />
-        </span>
-    </p>
-    <p>image_url: <input type="text" id="image_url" name="image_url" />
-    <p>author:<br />
-        {% for i in range(10) %}
-        <input type="text" id="author{{ i }}" name="author{{ i }}" /><br />
-        {% endfor %}
-    </p>
-    <p>num_of_authors: <input type="text" id="num_of_authors" name="num_of_authors" /></p>
-    <p>publisher_code: <input type="text" id="publisher_code" name="publisher_code" /></p>
-    <p>publisher_name: <input type="text" id="publisher_name" name="publisher_name" /></p>
-    <p>published_dt: <input type="text" id="published_dt" name="published_dt" /></p>
-    <p>original_description: <textarea id="original_description" name="original_description" readonly></textarea></p>
-    <p>description: <textarea id="description" name="description"></textarea></p>
-    <p>page_count: <input type="text" id="page_count" name="page_count" /></p>
-    <p>dimensions_height: <input type="text" id="dimensions_height" name="dimensions_height" /></p>
-    <p>dimensions_width: <input type="text" id="dimensions_width" name="dimensions_width" /></p>
-    <p>dimensions_thickness: <input type="text" id="dimensions_thickness" name="dimensions_thickness" /></p>
-    <p>genres:<br />
-        <select id="sel_genre">
-        {% for g in genres -%}
-            <option value="{{ g.genre_id }}">{{ g.genre_name }}</option>
-        {% endfor -%}
-        </select>
-        <button type="button" id="btn_add_genre">add genre →</button>
-        <input type="text" id="genres" name="genres" /></p>
-    <p>num_of_same_books: <input type="text" id="num_of_same_books" name="num_of_same_books" value="1" /></p>
-    <p>org_id: <input type="text" id="org_id" name="org_id" value="{{ organization.org_id }}" /></p>
-    <p>added_dt: <input type="date" id="added_dt" name="added_dt" value="{{ now.strftime('%Y-%m-%d') }}" /></p>
-    <p><button type="submit">本の登録</button></p>
-</form>
--->
-#}
 {% endblock -%}

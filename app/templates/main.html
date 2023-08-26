@@ -83,7 +83,13 @@
         <div class="one_book">
             <div class="book_image">
                 <a href="{{ url_for('books', book_id=book_info.book.book_id) }}">
-                    <img src="{{ book_info.book.image_url }}" />
+                    <img src="
+                    {%- if book_info.book.image_local_path -%}
+                        {{ book_info.book.image_local_path -}}
+                    {% else -%}
+                        {{ book_info.book.image_url -}}
+                    {% endif -%}
+                    " />
                 </a>
             </div>
             <div class="book_title">
