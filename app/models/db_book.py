@@ -29,6 +29,7 @@ class DbBook(Base):
     dimensions_width: Mapped[int] = mapped_column()
     dimensions_thickness: Mapped[int] = mapped_column()
     original_description: Mapped[str] = mapped_column(String(1000))
+    image_local_path: Mapped[str] = mapped_column(String(100))
 
     @staticmethod
     def get_new_book_id(db):

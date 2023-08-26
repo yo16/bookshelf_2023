@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `book` (
     `dimensions_width`      INT,
     `dimensions_thickness`  INT,
     `original_description`  VARCHAR(1000),
+    `image_local_path`      VARCHAR(100),
     PRIMARY KEY (book_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
