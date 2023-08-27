@@ -107,7 +107,7 @@ function search_book(isbn_input){
             book_info["image_url"] = js_data["image_url"];
         }
         book_info["published_dt"] = js_data["published_dt"];
-        book_info["original_description"] = js_data["original_description"];
+        book_info["original_description"] = js_data["description"];
         book_info["description"] = js_data["description"];
         book_info["page_count"] = js_data["page_count"];
         book_info["dimensions_height"] = js_data["dimensions_height"];
@@ -142,7 +142,7 @@ function set_book_info(book_info){
     let val_pattern_items = [
         "book_name",
         "image_url",
-        "description_original",
+        "original_description",
         "description",
         "publisher_code",
         "publisher_name",
