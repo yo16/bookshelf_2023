@@ -142,8 +142,11 @@ def main(app):
                 })
         
         # 出版者
-        ret_dic["publisher_code"] = DbPublisher.get_publisher_code_from_isbn(isbn)
-        ret_dic["publisher_name"] = "to be implemented!"
+        with get_db() as db:
+            pub_code = DbPublisher.get_publisher_code_from_isbn(isbn)
+            publisher = DbPublisher.get_publisher_by_pubcode(db, pub_code)
+            ret_dic["publisher_code"] = pub_code
+            ret_dic["publisher_name"] = publisher.publisher_name
 
         # collection
         now_dt = datetime.now()
