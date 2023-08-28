@@ -78,7 +78,7 @@ def main(app):
             db.refresh(his)
         else:
             # 残がない場合は、エラーメッセージを返す
-            msg = "すべて貸し出されており、残ってる本がありません。"
+            msg = "残っている貸出可能な本がありません。"
 
     return redirect(url_for("books", book_id=book_id, msg=msg))
 

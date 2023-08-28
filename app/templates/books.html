@@ -20,6 +20,11 @@
     </symbol>
 </svg>
 <div id="book_main">
+    {% if message -%}
+    <div id="container_message">
+        {{ message }}
+    </div>
+    {% endif -%}
     <div id="container_top">
         <div id="content_book_img" class="book_contents">
             <img src="

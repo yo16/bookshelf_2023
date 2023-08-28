@@ -7,8 +7,9 @@
     --accent3-color: #4891c1;
     --accent3-color-pale: #4891c140;
     --accent3-color-pale2: #c5d5da;   /* 不透明でpaleに近い色 */
-    --debug-color: #e39cb9;
     --text-bg-white: #f6f6f6;
+    --text-error-msg: #f66;
+    --debug-color: #e39cb9;
 }
 
 body {

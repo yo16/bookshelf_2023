@@ -7,6 +7,13 @@
     margin-left: 30px;
     margin-right: 20px;
 }
+#container_message {
+    background: var(--text-bg-white);
+    padding: 5px 10px;
+    color: var(--text-error-msg);
+    font-size: 1.1em;
+    border: 1px solid var(--text-error-msg);
+}
 #container_top {
     display: flex;
     flex-direction: row;
