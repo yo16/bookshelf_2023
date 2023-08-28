@@ -8,7 +8,7 @@
     --accent3-color-pale: #4891c140;
     --accent3-color-pale2: #c5d5da;   /* 不透明でpaleに近い色 */
     --text-bg-white: #f6f6f6;
-    --text-error-msg: #f66;
+    --text-error-msg: #e66;
     --debug-color: #e39cb9;
 }
 
@@ -196,13 +196,8 @@ input[type=checkbox] {
 }
 
 
-.error_message {
-    color: #f00;
-}
-
-
 /* errorメッセージのためのdiv */
-.div_error_message {
+.error_message {
     background: var(--text-bg-white);
     padding: 5px 10px;
     color: var(--text-error-msg);
