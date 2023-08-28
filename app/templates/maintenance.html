@@ -28,96 +28,98 @@ maintenance
     </symbol>
 </svg>
 
-<form method="POST" action="{{ url_for('maintenance') }}" id="frm_regist_book" name="frm_regist_book">
-<table class="tbl_type2">
-<tr>
-    <th>ISBN</th>
-    <td id="td_isbn_search">
-        {{ form.isbn }}
-        <button id="btn_search_book" type="button" class="btn_submit btn_small">検索</button>
-    </td>
-</tr>
-</table>
+<div id="div_error_message" class="error_message hide"></div>
 
-<div id="details_and_buttons">
-    {% set items = [
-        {'header_title': 'タイトル', 'id': 'book_name', 'type': 'text', 'readonly': 1},
-        {'header_title': '画像', 'id': 'image_url', 'type': 'img', 'readonly': 1 },
-        {'header_title': '概要<br />original', 'id': 'original_description', 'type': 'hidden', 'readonly': 1},
-        {'header_title': '概要', 'id': 'description', 'type': 'area'},
-        {'header_title': '著者', 'id': 'authors', 'type': 'authors'},
-        {'header_title': '出版者CD', 'id': 'publisher_code', 'type': 'text', 'readonly': 1},
-        {'header_title': '出版者', 'id': 'publisher_name', 'type': 'text', 'readonly': 1},
-        {'header_title': '出版日', 'id': 'published_dt', 'type': 'date', 'readonly': 1},
-        {'header_title': 'ページ数', 'id': 'page_count', 'type': 'text', 'class': 'text_right', 'readonly': 1},
-        {'header_title': 'サイズ-高さ', 'id': 'dimensions_height', 'type': 'text', 'class': 'text_right', 'readonly': 1},
-        {'header_title': 'サイズ-幅', 'id': 'dimensions_width', 'type': 'text', 'class': 'text_right', 'readonly': 1},
-        {'header_title': 'サイズ-厚さ', 'id': 'dimensions_thickness', 'type': 'text', 'class': 'text_right', 'readonly': 1},
-        {'header_title': 'システム<br />登録日', 'id': 'added_dt', 'type': 'date', 'value': 'now', 'readonly': 1},
-        {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text', 'class': 'text_right'},
-        {'header_title': 'ジャンル', 'id': 'genres', 'type': 'genres'},
-    ] -%}
-    <table id="tbl_detail" class="tbl_type2">
-    {% for item in items -%}
-    {% if item.readonly == 1 %}{% set readonly = 'readonly' %}{% else %}{% set readonly = '' %}{% endif %}
-    <tr{% if (item.type=='hidden') %} style="display:none;"{% endif %}>
-        <th>{{ item.header_title|safe }}</th>
-        <td>
-            {% if (item.type=='text') -%}
-                <input type="text" id="{{ item.id }}" name="{{ item.id }}"
-                {%- if ('class' in item) %} class="{{ item.class }}"{% endif -%} {{ readonly }} />
-            {% elif (item.type=='date') -%}
-                <input type="date" id="{{ item.id }}" name="{{ item.id }}" {{ readonly }} />
-            {% elif (item.type=='area') or (item.type=='hidden') -%}
-                <textarea id="{{ item.id }}" name="{{ item.id }}" {{ readonly }}></textarea>
-            {% elif (item.type=='img') -%}
-                <input type="hidden" id="{{ item.id }}" name="{{ item.id }}" />
-                <img id="{{ item.id }}_img" />
-            {% elif (item.type=='authors') -%}
-                <textarea id="{{ item.id }}" name="{{ item.id }}" style="display:none" ></textarea>
-                <span id="spn_authors"></span>
-            {% elif (item.type=='genres') -%}
-                <span id="spn_genres">
-                    <select id="sel_genre_master">
-                        {% for g in genres -%}
-                        <option value="{{ g.genre_id }}">{{ g.genre_name }}</option>
-                        {% endfor %}
-                    </select>
-                    <span id="spn_genre_buttons">
-                        <button id="btn_select_genre" class="btn_submit btn_small">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" height="12px">
-                                <use xlink:href="#arrow-down-solid"></use>
-                            </svg>
-                            選択
-                        </button>
-                        <button id="btn_remove_genre" class="btn_submit btn_small">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" height="12px">
-                                <use xlink:href="#arrow-up-solid"></use>
-                            </svg>
-                            除外
-                        </button>
-                        <input type="text" id="{{ item.id }}" name="{{ item.id }}" />
-                    </span>
-                    <select id="sel_genre_selected" size="5">
-                    </select>
-                </span>
-            {% endif -%}
+<form method="POST" action="{{ url_for('maintenance') }}" id="frm_regist_book" name="frm_regist_book">
+    <table class="tbl_type2">
+    <tr>
+        <th>ISBN</th>
+        <td id="td_isbn_search">
+            {{ form.isbn }}
+            <button id="btn_search_book" type="button" class="btn_submit btn_small">検索</button>
         </td>
     </tr>
-    {% endfor -%}
     </table>
-    <div id="buttons">
-        {{ form.csrf_token }}
-        <button type="button" class="btn_submit" id="btn_regist_book">
-        {# book_infoがあると更新で、ないと新規 #}
-        {%- if book_info -%}
-            更新
-        {%- else -%}
-            登録
-        {%- endif -%}
-        </button>
+
+    <div id="details_and_buttons">
+        {% set items = [
+            {'header_title': 'タイトル', 'id': 'book_name', 'type': 'text', 'readonly': 1},
+            {'header_title': '画像', 'id': 'image_url', 'type': 'img', 'readonly': 1 },
+            {'header_title': '概要<br />original', 'id': 'original_description', 'type': 'hidden', 'readonly': 1},
+            {'header_title': '概要', 'id': 'description', 'type': 'area'},
+            {'header_title': '著者', 'id': 'authors', 'type': 'authors'},
+            {'header_title': '出版者CD', 'id': 'publisher_code', 'type': 'text', 'readonly': 1},
+            {'header_title': '出版者', 'id': 'publisher_name', 'type': 'text', 'readonly': 1},
+            {'header_title': '出版日', 'id': 'published_dt', 'type': 'date', 'readonly': 1},
+            {'header_title': 'ページ数', 'id': 'page_count', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+            {'header_title': 'サイズ-高さ', 'id': 'dimensions_height', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+            {'header_title': 'サイズ-幅', 'id': 'dimensions_width', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+            {'header_title': 'サイズ-厚さ', 'id': 'dimensions_thickness', 'type': 'text', 'class': 'text_right', 'readonly': 1},
+            {'header_title': 'システム<br />登録日', 'id': 'added_dt', 'type': 'date', 'value': 'now', 'readonly': 1},
+            {'header_title': '所有数', 'id': 'num_of_same_books', 'type': 'text', 'class': 'text_right'},
+            {'header_title': 'ジャンル', 'id': 'genres', 'type': 'genres'},
+        ] -%}
+        <table id="tbl_detail" class="tbl_type2">
+        {% for item in items -%}
+        {% if item.readonly == 1 %}{% set readonly = 'readonly' %}{% else %}{% set readonly = '' %}{% endif %}
+        <tr{% if (item.type=='hidden') %} style="display:none;"{% endif %}>
+            <th>{{ item.header_title|safe }}</th>
+            <td>
+                {% if (item.type=='text') -%}
+                    <input type="text" id="{{ item.id }}" name="{{ item.id }}"
+                    {%- if ('class' in item) %} class="{{ item.class }}"{% endif -%} {{ readonly }} />
+                {% elif (item.type=='date') -%}
+                    <input type="date" id="{{ item.id }}" name="{{ item.id }}" {{ readonly }} />
+                {% elif (item.type=='area') or (item.type=='hidden') -%}
+                    <textarea id="{{ item.id }}" name="{{ item.id }}" {{ readonly }}></textarea>
+                {% elif (item.type=='img') -%}
+                    <input type="hidden" id="{{ item.id }}" name="{{ item.id }}" />
+                    <img id="{{ item.id }}_img" />
+                {% elif (item.type=='authors') -%}
+                    <textarea id="{{ item.id }}" name="{{ item.id }}" style="display:none" ></textarea>
+                    <span id="spn_authors"></span>
+                {% elif (item.type=='genres') -%}
+                    <span id="spn_genres">
+                        <select id="sel_genre_master">
+                            {% for g in genres -%}
+                            <option value="{{ g.genre_id }}">{{ g.genre_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <span id="spn_genre_buttons">
+                            <button id="btn_select_genre" class="btn_submit btn_small">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" height="12px">
+                                    <use xlink:href="#arrow-down-solid"></use>
+                                </svg>
+                                選択
+                            </button>
+                            <button id="btn_remove_genre" class="btn_submit btn_small">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" height="12px">
+                                    <use xlink:href="#arrow-up-solid"></use>
+                                </svg>
+                                除外
+                            </button>
+                            <input type="text" id="{{ item.id }}" name="{{ item.id }}" />
+                        </span>
+                        <select id="sel_genre_selected" size="5">
+                        </select>
+                    </span>
+                {% endif -%}
+            </td>
+        </tr>
+        {% endfor -%}
+        </table>
+        <div id="buttons">
+            {{ form.csrf_token }}
+            <button type="button" class="btn_submit" id="btn_regist_book">
+            {# book_infoがあると更新で、ないと新規 #}
+            {%- if book_info -%}
+                更新
+            {%- else -%}
+                登録
+            {%- endif -%}
+            </button>
+        </div>
     </div>
-</div>
 </form>
 
 <script language="JavaScript">

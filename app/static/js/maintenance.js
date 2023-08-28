@@ -64,16 +64,21 @@ function search_book(isbn_input){
     $("#isbn").val(isbn);
 
     // isbnコードをチェックする
-    $("#spnSearchISBNMessage").empty();
+    $("#div_error_message").empty();
     if (!validate_isbn_code(isbn)) {
+        // 異常な場合は、メッセージを表示
+        $("#div_error_message").removeClass("hide");
+        $("#div_error_message").addClass("show");
+
         console.log('illigal ISBN code.');
-        $("#spnSearchISBNMessage")
-            .append($("<br></br>"))
-            .append($("<span></span>")
-                .addClass("warning_message")
-                .text("ISBNコードが不正です。")
-            );
+        $("#div_error_message")
+            .text("ISBNコードが不正です。")
+        ;
         return;
+    } else {
+        // 正常な場合は、メッセージを非表示
+        $("#div_error_message").removeClass("show");
+        $("#div_error_message").addClass("hide");
     }
     
     dispLoading("検索中...");
