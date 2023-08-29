@@ -186,7 +186,7 @@ maintenance
     book_info["dimensions_thickness"] = "";
     {% endif -%}
     book_info["genres"] = [];
-    {% for genre in genres -%}
+    {% for genre in book_info.genres -%}
     book_info["genres"].push({
         "genre_id": "{{ genre.genre_id }}",
         "genre_name": "{{ genre.genre_name }}"
