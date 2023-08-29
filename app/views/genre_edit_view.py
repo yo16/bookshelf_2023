@@ -5,6 +5,9 @@ from models import get_db, DbGenre, DbClassification
 from .view_common import get_org_mem
 from .forms import RegistGenreForm, EditGenreForm, DeleteGenreForm, EditGenreOrderForm
 
+class ExceptInvalidParam(Exception):
+    pass
+
 
 def main(app):
     message = None
@@ -30,15 +33,19 @@ def main(app):
         if regist_form.is_submitted():
             method = request.form.get("method")
             if (method=="POST"):
-                # 追加（中でcommitする）
-                regist_genre(db, org_id, request.form)
+                try:
+                    # 追加（中でcommitする）
+                    regist_genre(db, org_id, request.form)
 
-                # 更新後の画面のメンテ
-                # ラジオボタンの選択 → キープ
-                default_select_genre_id = request.form.get("reg_parent_genre_id")
-                # 登録したジャンル名 → クリア
-                regist_form.reg_genre_name.data = ""
-                default_select_menu = "regist"
+                    # 更新後の画面のメンテ
+                    # ラジオボタンの選択 → キープ
+                    default_select_genre_id = request.form.get("reg_parent_genre_id")
+                    # 登録したジャンル名 → クリア
+                    regist_form.reg_genre_name.data = ""
+                    default_select_menu = "regist"
+                
+                except Exception as e:
+                    message = f"{e}"
 
             elif (method=="PUT"):
                 delta = request.form.get("edit_order_delta")
@@ -104,7 +111,10 @@ def regist_genre(db, org_id, form):
     """登録情報からgenreを作成する（当関数内でcommitする）
     """
     # 親ジャンルID、親ジャンル情報
-    parent_genre_id = int(form.get("reg_parent_genre_id"))
+    parent_genre_id_str = form.get("reg_parent_genre_id", default="")
+    if len(parent_genre_id_str)==0:
+        raise ExceptInvalidParam("親ジャンルが指定されていません")
+    parent_genre_id = int(parent_genre_id_str)
     parent_genre = DbGenre.get_genre(db, org_id, parent_genre_id)
 
     # 親のgenre情報から、今回のsort_keyを取得
