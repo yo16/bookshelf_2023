@@ -24,7 +24,8 @@ from views import (
     logout_view_main,
     export_books_view_main,
     regist_member_with_csv_view_main,
-    test_view_main
+    test_view_main,
+    billing_view_main,
 )
 
 
@@ -209,6 +210,14 @@ def members_all_edit():
 @log_info
 def regist_member_with_csv():
     return regist_member_with_csv_view_main(app)
+
+
+@app.route("/billing", methods=["GET"])
+@login_required
+@admin_required
+@log_info
+def billing():
+    return billing_view_main(app)
 
 
 

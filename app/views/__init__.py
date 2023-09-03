@@ -16,3 +16,4 @@ from .logout_view import main as logout_view_main
 from .export_books_view import main as export_books_view_main
 from .regist_member_with_csv_view import main as regist_member_with_csv_view_main
 from .test_view import main as test_view_main
+from .billing_view import main as billing_view_main

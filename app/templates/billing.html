@@ -1,0 +1,36 @@
+{% extends "base_internal_admin.html" %}
+
+{% block title -%}
+billing
+{% endblock -%}
+
+{% block header_append -%}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/billing.css') }}" />
+{% endblock -%}
+
+
+{% block body -%}
+<script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+<div id="div_billing_main">
+    <div id="div_title">内容</div>
+    <div>本サービスは{{ book_upper_limit }}冊まで無料でご使用いただけます。それ以外に制限はございません。<br />月額サービスをご登録いただくと、{{ book_upper_limit }}冊を超え、無制限に本の登録ができるようになります。</div>
+    <br />
+    <stripe-buy-button
+        buy-button-id="buy_btn_1NmGiPJa6XaiCbVIwmDwA4Fs"
+        publishable-key="pk_test_51NLRMVJa6XaiCbVIAQU66gZutLlIIrk3zZhR5eqlBblqZX36Jj1q6tDtp8XLTiGgwPihH1ed112yZZPi88Tqtq2600IweoSovz"
+    >
+    </stripe-buy-button>
+
+</div>
+
+<script language="JavaScript">
+    make_breadcrumbs(
+        [
+            ["お支払い","{{ url_for('billing') }}"]
+        ]
+    );
+</script>
+{% endblock -%}

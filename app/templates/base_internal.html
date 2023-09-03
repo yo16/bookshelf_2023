@@ -91,6 +91,14 @@
             </svg>
             メンバー
         </label>
+        <label id="admin_menu4" class="menu_tab admin_menu_tab"
+            onclick="window.location.href='{{ url_for("billing") }}';"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="16px">
+                <use xlink:href="#wrench"></use>
+            </svg>
+            お支払い
+        </label>
         {% endif -%}
     </div>
     {#
